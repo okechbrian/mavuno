@@ -21,20 +21,6 @@ Soilbacked energy credit for smallholder farms — a prototype showing how soils
  **Dashboard** — live operations view with Uganda map + perfarm cards + streaming ledger + dark mode
  **Phone simulator** — Nokiastyle browser phone that mirrors the USSD state machine
 
-## Run locally
-
-```bat
-python m venv .venv
-.venv\Scripts\pip install r requirements.txt
-.venv\Scripts\python ml\generate_data.py
-.venv\Scripts\python ml\train.py
-.venv\Scripts\uvicorn app.main:app port 8000 reload
-```
-
-Open:
- `http://localhost:8000/` — operations dashboard
- `http://localhost:8000/phone` — USSD simulator
-
 
 ## Documentation
 

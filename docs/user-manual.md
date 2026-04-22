@@ -15,23 +15,32 @@ This manual covers three audiences:
 
 Mavuno reads your soil data and decides how much **energy credit** you can borrow. Energy credit is not money — it is a voucher that only runs your irrigation pump. If the soil says your crop will grow, Mavuno approves credit. If the soil says the season will fail, Mavuno protects you from taking on debt you can't repay.
 
-### 1.2 Checking your score
+### 1.2 Dialling Mavuno
 
-1. Dial `*165*ACP#` from your registered SIM.
-2. The menu appears:
-   ```
-   Welcome [Name] ([crop])
-   1. Check YPS score
-   2. Request Energy Credit
-   3. Balance
-   4. Exit
-   ```
-3. Press **1** then **send**.
-4. The reply shows:
-   - Your YPS score (0 to 1000)
-   - Your tier (full / partial / denied)
-   - The credit ceiling in Ugandan shillings
-   - The number of kWh you are eligible for
+Dial `*165*ACP#` from your registered SIM. The menu appears:
+
+```
+Mavuno
+Welcome [Name] ([crop])
+1. YPS score
+2. Energy credit
+3. Balance
+4. Market price
+5. Sell produce
+6. Ask Mavuno
+7. Exit
+```
+
+Every menu item is one digit + **send**. Menus 1–3 are the credit loop. Menus 4–6 are the community resource layer: live prices, buyer matching, and an AI agronomist.
+
+### 1.3 Checking your YPS score (menu 1)
+
+Press **1** then **send**. The reply shows:
+
+- Your YPS score (0 to 1000)
+- Your tier (full / partial / denied)
+- The credit ceiling in Ugandan shillings
+- The number of kWh you are eligible for
 
 | Tier | YPS range | kWh | Credit ceiling |
 |---|---|---|---|
@@ -39,29 +48,59 @@ Mavuno reads your soil data and decides how much **energy credit** you can borro
 | Partial | 400 – 699 | 25 kWh | UGX 75,000 |
 | Denied | below 400 | 0 | — |
 
-### 1.3 Requesting an Energy Credit Token
+### 1.4 Requesting an Energy Credit Token (menu 2)
 
-1. Dial `*165*ACP#`.
-2. Press **2** — *Request Energy Credit*.
-3. Press **1** to confirm.
-4. The reply shows your token ID, the kWh allocated, your pump, and the 72-hour expiry.
+1. Press **2** — *Energy credit*.
+2. Press **1** to confirm.
+3. The reply shows your token ID, the kWh allocated, your pump, and the 72-hour expiry.
 
 **Important:**
 - The token is locked to the pump within **5 km of your farm**. It will not work at other pumps.
 - The token expires after **72 hours**. Use it or lose it.
 - The token is **not money**. It cannot be withdrawn or transferred.
 
-### 1.4 Checking your balance
+### 1.5 Checking your balance (menu 3)
 
-Dial `*165*ACP#` and press **3**. The reply lists your active tokens and remaining kWh.
+Press **3**. The reply lists your active tokens and remaining kWh.
 
-### 1.5 What if I'm denied?
+### 1.6 What if I'm denied?
 
 A "denied" result means your recent soil readings suggest the crop will struggle this season. This is not a punishment. Mavuno is protecting you from taking a loan you may not be able to repay. Options:
 
 - Improve soil moisture (mulching, drip irrigation) and re-check in 7 days — the score refreshes on a rolling 7-day window.
 - Speak to your PDM extension officer.
 - Ask the SACCO about a smaller group-liability loan outside Mavuno.
+
+### 1.7 Today's market price (menu 4)
+
+Press **4**. The reply shows, for your crop and region:
+
+- Today's farmgate price per kilogram (UGX/kg)
+- The 7-day average with a trend arrow (↑ rising · ↓ falling · = flat)
+- The 7-day price range (low – high)
+
+No inputs needed — Mavuno picks the crop from your registered profile and the region from your district.
+
+### 1.8 Posting an offer to sell produce (menu 5)
+
+1. Press **5**.
+2. Enter the weight in kilograms, then **send**.
+3. Enter your floor price in UGX per kilogram, then **send**.
+4. Mavuno auto-matches up to three pre-verified buyers and replies with names and their offered prices. If no buyer matches immediately, you'll receive an SMS when one does.
+
+Your offer goes into the shared ledger; you can always ask the SACCO to verify that the buyer you sell to was a Mavuno-matched offer.
+
+### 1.9 Asking Mavuno for advice (menu 6)
+
+1. Press **6**.
+2. Type a short question — e.g. *"coffee berry borer what do I do"*, *"how much water for maize"*, *"best time to plant beans"* — then **send**.
+3. Mavuno replies in one or two SMS-length lines, conditioned on your live soil reading.
+
+If the AI service is temporarily unavailable, the reply is tagged *(offline)* and comes from a rule-based fallback — you still get an answer, never silence.
+
+### 1.10 Exiting (menu 7)
+
+Press **7**. The reply is *Webale. Grow strong.* and the session ends. No charge is made for ending a call.
 
 ---
 

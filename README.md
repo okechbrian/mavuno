@@ -4,6 +4,22 @@
 
 Soil-backed energy credit for smallholder farms — a prototype showing how soil-sensor data can replace collateral as the signal that underwrites irrigation financing.
 
+---
+
+## Future Makers Hackathon 2026 — submission index
+
+Submitted to MoSTI Uganda's Future Makers Hackathon 2026 ("Powering Uganda to a $500B Economy"). Application deadline: **2026-04-22**. Demo window: **2026-04-28 → 2026-05-03**.
+
+- **Live prototype:** https://loop-instructional-directive-clocks.trycloudflare.com (ephemeral Cloudflare quick tunnel → laptop `:8000`; promoted to a named tunnel before the demo window)
+- **Public source:** https://github.com/okechbrian/mavuno
+- **Short concept note →** [`docs/concept-note.md`](docs/concept-note.md)
+- **Written summary →** [`docs/written-summary.md`](docs/written-summary.md)
+- **Demo pitch (9-slide, 5:00 script, 8 Q&A cards) →** [`docs/pitch-deck.md`](docs/pitch-deck.md)
+- **User manual (farmer / pump operator / partner) →** [`docs/user-manual.md`](docs/user-manual.md)
+- **Submission email draft →** [`docs/submission-email.md`](docs/submission-email.md)
+
+---
+
 ## What's inside
 
 - **YPS (Yield Probability Score)** — a gradient-boosted classifier turns 7 soil features into a 0–1000 credit signal
@@ -76,8 +92,11 @@ Open:
 
 ## Documentation
 
+- [`docs/concept-note.md`](docs/concept-note.md) — 1-page concept note (Future Makers 2026 submission)
+- [`docs/written-summary.md`](docs/written-summary.md) — long-form written summary (Future Makers 2026 submission)
+- [`docs/pitch-deck.md`](docs/pitch-deck.md) — 9-slide, 5-minute pitch script with speaker notes and 8 Q&A cards
 - [`docs/user-manual.md`](docs/user-manual.md) — farmer, pump operator, and partner guides
-- [`docs/pitch-deck.md`](docs/pitch-deck.md) — 8-slide pitch script with speaker notes and Q&A cards
+- [`docs/submission-email.md`](docs/submission-email.md) — committee-facing email draft
 
 ## Stack
 

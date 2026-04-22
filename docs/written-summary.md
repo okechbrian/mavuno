@@ -13,7 +13,7 @@ Mavuno ("harvest" in Swahili) is a soil-backed energy-credit system for Ugandan 
 
 The thesis is that Uganda's path to a $500B economy runs through smallholder productivity (~70% of employment, ~24% of GDP), and that smallholder productivity is currently blocked by four simultaneous walls: no collateral, no reliable grid, no weather signal, and no market signal. Mavuno collapses all four into one USSD call and one audit ledger, built on rails Uganda already owns — the **Parish Development Model (PDM)**, **UEDCL's Electricity Access Scale-up Project (EASP)**, and mobile money.
 
-A working prototype is live today. It has a trained ML model (90.5% test accuracy), a working USSD state machine (Africa's Talking callback compatible), a hash-chained audit ledger (273 entries and counting, verified intact), and a browser-hosted dashboard + Nokia-style phone simulator for on-stage demos.
+A working prototype is live today. It has a trained ML model (90.5% test accuracy), a working USSD state machine (Africa's Talking callback compatible), a hash-chained audit ledger (verified intact on every call to `/ledger/verify`), and a browser-hosted dashboard + Nokia-style phone simulator for on-stage demos.
 
 ## 2. Problem context — Uganda, 2024–2026
 
@@ -189,8 +189,10 @@ Our single-sentence differentiator: *"The only credit product that is gated by l
 As of submission:
 
 - `/health` → `{"ok": true, "service": "mavuno"}`
-- `/ledger/verify` → `{"ok": true, "length": 273}` — chain intact, no tamper.
+- `/ledger/verify` → `{"ok": true, "length": <growing>}` — chain intact on every call.
 - `/score/UG-MBL-0001` → Akello (Mbale, coffee) YPS **862**, tier **full**, 60 kWh allocated, UGX 200,000 credit ceiling.
+- `/score/UG-GUL-0002` → Okello (Gulu, maize) — drought conditions, tier **denied**. The system refuses to lend into a failing season.
+- `/score/UG-MBR-0003` → Namazzi (Mbarara, beans) — middling discipline, tier **partial**, 25 kWh allocated.
 - Dashboard + phone simulator verified via public URL.
 
 ## 14. Links

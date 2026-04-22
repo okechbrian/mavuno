@@ -74,7 +74,7 @@ All three use rails that **already exist** — Parish Development Model (PDM, UG
 - **Prototype live:** https://loop-instructional-directive-clocks.trycloudflare.com — dashboard, phone simulator, full API.
 - **Source (public):** https://github.com/okechbrian/mavuno
 - **Stack:** Python 3.12 · FastAPI · scikit-learn · uvicorn · USSD (Africa's Talking callback shape) · SHA-256 ledger.
-- **Ledger state:** 273 entries, chain verified intact.
+- **Ledger state:** chain verified intact — `/ledger/verify` returns `{"ok": true}` on every call.
 - **Runs on:** any 2G feature phone for the farmer; standard laptop for the operator dashboard.
 
 ## 9. Team

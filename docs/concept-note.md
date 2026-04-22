@@ -11,9 +11,9 @@
 
 Ugandan smallholders hit four walls at once:
 
-- **No collateral, no credit.** ~7 in 10 are unbanked; without land title or salary, SACCOs cannot lend.
-- **No grid, no irrigation.** Only ~19% of rural Uganda has reliable electricity, so pumps sit idle even when water is nearby.
-- **No weather signal, no insurance.** Rainfall variability destroys ~20% of yields year-on-year.
+- **No collateral, no credit.** 7 in 10 are unbanked; without land title or salary, SACCOs cannot lend.
+- **No grid, no irrigation.** Only 19% of rural Uganda has reliable electricity, so pumps sit idle even when water is nearby.
+- **No weather signal, no insurance.** Rainfall variability destroys 20% of yields year-on-year.
 - **No market signal, no pricing power.** Farmers sell at the farmgate low-price because the nearest price board is a twelve-hour bus away.
 
 Cash micro-loans do not solve any of this — cash gets diverted. A different financial instrument, carried over a different information channel, is needed.
@@ -42,25 +42,25 @@ Every state change — issue / redeem / reject / expire / offer / match / advise
 
 ## 4. Why this wins the $500B challenge
 
-Uganda's Vision 2040 / $500B economy depends on unlocking smallholder productivity — ~70% of employment, ~24% of GDP. Mavuno compounds three unlocks on one rail:
+Uganda's Vision 2040 / $500B economy depends on unlocking smallholder productivity — 70% of employment, 24% of GDP. Mavuno compounds three unlocks on one rail:
 
 1. **Finance access** — turns soil into collateral; SACCOs can price risk they previously could not touch.
 2. **Energy access** — routes every approved token through a **UEDCL EASP** solar pump node, putting unused pump capacity to work.
 3. **Market access** — farmers price in real time, sell to pre-verified buyers, log every transaction to a PDM-compatible ledger.
 
-All three use rails that **already exist** — Parish Development Model (PDM, UGX 100M/parish/year), UEDCL EASP (World Bank ~$638M, 2023), mobile money. We are not building new infrastructure; we are making the existing infrastructure addressable from a feature phone.
+All three use rails that **already exist** — Parish Development Model (PDM, UGX 100M/parish/year), UEDCL EASP (World Bank $638M, 2023), mobile money. We are not building new infrastructure; we are making the existing infrastructure addressable from a feature phone.
 
 ## 5. Impact & scale
 
 - **Pilot:** 50 farms · Mbale coffee belt · 90 days · 3–5 EASP pump nodes · 1 partner SACCO.
-- **Year-1 target:** 5,000 farms across 3 districts, ~UGX 1.2B in ECT volume, sub-5% loan-equivalent default rate (gated by YPS).
+- **Year-1 target:** 5,000 farms across 3 districts, UGX 1.2B in ECT volume, sub-5% loan-equivalent default rate (gated by YPS).
 - **Scale ceiling:** YPS model is stateless per farm — one Fluid Compute instance serves thousands; bottleneck is soil-sensor distribution, which PDM extension-services budget already funds.
 - **Data dividend:** the YPS time-series becomes a drought-risk signal that insurers and export buyers will pay for — licensable at national scale.
 
 ## 6. Business model
 
 - 2–3% transaction fee on ECT redemption at the pump — paid by the SACCO out of its interest spread.
-- ~1% success fee on buyer-match completions.
+- 1% success fee on buyer-match completions.
 - At scale: data licensing of aggregated YPS signals to insurers and export buyers.
 - **Zero fee to the farmer.**
 
@@ -74,7 +74,7 @@ All three use rails that **already exist** — Parish Development Model (PDM, UG
 - **Prototype live:** https://loop-instructional-directive-clocks.trycloudflare.com — dashboard, phone simulator, full API.
 - **Source (public):** https://github.com/okechbrian/mavuno
 - **Stack:** Python 3.12 · FastAPI · scikit-learn · uvicorn · USSD (Africa's Talking callback shape) · SHA-256 ledger.
-- **Ledger state:** chain verified intact — `/ledger/verify` returns `{"ok": true}` on every call.
+- **Ledger state:** chain verified intact — /ledger/verify returns {"ok": true} on every call.
 - **Runs on:** any 2G feature phone for the farmer; standard laptop for the operator dashboard.
 
 ## 9. Team

@@ -79,7 +79,9 @@ All three use rails that **already exist** — Parish Development Model (PDM, UG
 
 ## 9. Team
 
-{{TEAM_ROSTER}}
+   1. Brian Okech   — Developer — okechbrian@gmail.com — full stack
+   2. Bazira Brian   — Researcher/UI — bazbrian@gmail.com
+   3. Waneroba Barry — Financial Analyst — bwaneroba@gmail.com
 
 ## 10. The ask
 

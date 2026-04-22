@@ -1,4 +1,4 @@
-# Mavuno — Written Summary
+# Mavuno  Written Summary
 
 **Future Makers Hackathon 2026 — National Science Week 2026**
 **Ministry of Science, Technology & Innovation (MoSTI), Uganda**

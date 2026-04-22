@@ -26,9 +26,7 @@ Soilbacked energy credit for smallholder farms a prototype showing how soilsenso
 
  [`docs/conceptnote.md`](docs/conceptnote.md)  1page concept note (Future Makers 2026 submission)
  [`docs/writtensummary.md`](docs/writtensummary.md)  longform written summary (Future Makers 2026 submission)
- [`docs/pitchdeck.md`](docs/pitchdeck.md)  9slide, 5minute pitch script with speaker notes and 8 Q&A cards
  [`docs/usermanual.md`](docs/usermanual.md)  farmer, pump operator, and partner guides
- [`docs/submissionemail.md`](docs/submissionemail.md)  committeefacing email draft
 
 ## Stack
 

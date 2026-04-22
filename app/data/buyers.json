@@ -1,0 +1,85 @@
+{
+  "buyers": [
+    {
+      "buyer_id": "BY-001",
+      "name": "NABASUMBA SACCO",
+      "region": "Eastern",
+      "crops": [
+        "coffee",
+        "maize"
+      ],
+      "floor_ugx_per_kg": 7500,
+      "contact": "+256701000010",
+      "radius_km": 40,
+      "gps": {
+        "lat": 1.08,
+        "lng": 34.18
+      }
+    },
+    {
+      "buyer_id": "BY-002",
+      "name": "KOOPCO Traders",
+      "region": "Eastern",
+      "crops": [
+        "coffee",
+        "beans"
+      ],
+      "floor_ugx_per_kg": 7200,
+      "contact": "+256701000011",
+      "radius_km": 60,
+      "gps": {
+        "lat": 1.1,
+        "lng": 34.2
+      }
+    },
+    {
+      "buyer_id": "BY-003",
+      "name": "Gulu Grain Co-op",
+      "region": "Northern",
+      "crops": [
+        "maize",
+        "beans"
+      ],
+      "floor_ugx_per_kg": 1300,
+      "contact": "+256701000012",
+      "radius_km": 50,
+      "gps": {
+        "lat": 2.77,
+        "lng": 32.3
+      }
+    },
+    {
+      "buyer_id": "BY-004",
+      "name": "Mbarara Growers Union",
+      "region": "Western",
+      "crops": [
+        "beans",
+        "coffee"
+      ],
+      "floor_ugx_per_kg": 3400,
+      "contact": "+256701000013",
+      "radius_km": 45,
+      "gps": {
+        "lat": -0.61,
+        "lng": 30.65
+      }
+    },
+    {
+      "buyer_id": "BY-005",
+      "name": "Uganda Crop Exchange",
+      "region": "Central",
+      "crops": [
+        "coffee",
+        "beans",
+        "maize"
+      ],
+      "floor_ugx_per_kg": 2000,
+      "contact": "+256701000014",
+      "radius_km": 120,
+      "gps": {
+        "lat": 0.35,
+        "lng": 32.58
+      }
+    }
+  ]
+}

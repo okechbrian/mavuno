@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Mavuno — Where soil becomes credit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2416;
+    --ink-soft: #2e382a;
+    --muted: #74705f;
+    --muted-soft: #9a9584;
+    --bg: #f4efe3;
+    --bg-alt: #ede7d6;
+    --paper: #fbf8ee;
+    --line: #d9d2bd;
+    --line-soft: #e6dfc9;
+    --accent: #2e4d1f;
+    --accent-soft: #4a6b37;
+    --gold: #a17b2c;
+    --clay: #a0542c;
+    --warn: #8a5a1c;
+    --bad: #8a2f24;
+    --map-land: #e4dcc3;
+    --map-water: #c6d4d8;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f2ece0;
+    --ink-soft: #d9d3c4;
+    --muted: #8e887c;
+    --muted-soft: #6a6558;
+    --bg: #14140f;
+    --bg-alt: #1a1a14;
+    --paper: #1c1b14;
+    --line: #2d2b21;
+    --line-soft: #242219;
+    --accent: #c4d19c;
+    --accent-soft: #a7b87a;
+    --gold: #d4a656;
+    --clay: #c87a52;
+    --warn: #d4a656;
+    --bad: #d07668;
+    --map-land: #22221a;
+    --map-water: #1d2528;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    transition: background 250ms ease, color 250ms ease;
+  }
+  .display { font-family: "Fraunces", Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
+  .mono { font-family: "JetBrains Mono", Consolas, monospace; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500; color: var(--muted);
+  }
+  a { color: inherit; }
+
+  /* Header — editorial masthead */
+  header.masthead {
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .masthead-inner {
+    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 14px; }
+  .brand .mark {
+    font-family: "Fraunces", serif; font-weight: 500; font-size: 28px;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .brand .wordmark-sub {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500;
+    padding-left: 14px; border-left: 1px solid var(--line);
+  }
+  nav.primary { display: flex; align-items: center; gap: 28px; }
+  nav.primary a {
+    font-size: 13px; font-weight: 500; text-decoration: none; color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  nav.primary a:hover { color: var(--accent); }
+  nav.primary .cta {
+    padding: 9px 18px; border: 1px solid var(--ink); border-radius: 2px;
+    color: var(--ink); transition: background 160ms, color 160ms;
+  }
+  nav.primary .cta:hover { background: var(--ink); color: var(--paper); }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 7px 12px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    font-family: "Inter", sans-serif; font-weight: 500; cursor: pointer;
+    border-radius: 2px; transition: all 160ms;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* Hero — editorial lede */
+  .hero {
+    max-width: 1180px; margin: 0 auto; padding: 88px 40px 56px;
+    display: grid; grid-template-columns: 1fr 320px; gap: 80px; align-items: end;
+  }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 32px; padding: 56px 28px 40px; } }
+  .hero .lede .eyebrow { margin-bottom: 22px; display: block; }
+  .hero h1 {
+    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 24px;
+    color: var(--ink);
+  }
+  .hero h1 em {
+    font-style: italic; font-weight: 300; color: var(--accent);
+  }
+  .hero p.standfirst {
+    font-family: "Fraunces", serif; font-weight: 300; font-size: 19px;
+    line-height: 1.55; color: var(--ink-soft); max-width: 58ch; margin: 0;
+  }
+  .hero aside {
+    border-left: 1px solid var(--line); padding-left: 28px;
+    font-size: 13px; color: var(--muted); line-height: 1.7;
+  }
+  .hero aside .label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 500; color: var(--muted-soft); margin-bottom: 10px;
+  }
+  .hero aside .value {
+    font-family: "Fraunces", serif; font-size: 32px; font-weight: 400;
+    color: var(--ink); letter-spacing: -0.02em; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero aside .value .unit { font-size: 14px; color: var(--muted); margin-left: 4px; font-family: "Inter", sans-serif; }
+  .hero aside .divider { height: 1px; background: var(--line); margin: 18px 0; }
+
+  /* Stat strip */
+  .stat-strip {
+    max-width: 1180px; margin: 24px auto 0; padding: 32px 40px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
+  }
+  @media (max-width: 720px) { .stat-strip { grid-template-columns: repeat(2, 1fr); padding: 24px 28px; } }
+  .stat .label {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500; color: var(--muted); margin-bottom: 8px;
+  }
+  .stat .num {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 36px;
+    color: var(--ink); letter-spacing: -0.02em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .num .unit { font-size: 13px; color: var(--muted); font-family: "Inter", sans-serif; margin-left: 4px; font-weight: 400; }
+
+  /* Section */
+  section.sect {
+    max-width: 1180px; margin: 0 auto; padding: 72px 40px;
+  }
+  @media (max-width: 720px) { section.sect { padding: 56px 28px; } }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 40px;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .section-head .title {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 32px;
+    letter-spacing: -0.02em; margin: 6px 0 0; color: var(--ink);
+  }
+  .section-head .desc { font-size: 14px; color: var(--muted); max-width: 48ch; margin-top: 8px; }
+  .section-head .tools { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Buttons — flat editorial */
+  .btn {
+    font-family: "Inter", sans-serif; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 16px;
+    border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    cursor: pointer; border-radius: 2px; transition: background 150ms, color 150ms;
+  }
+  .btn:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+  .btn.ghost { border-color: var(--line); color: var(--muted); }
+  .btn.ghost:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); background: transparent; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Farm profiles */
+  .farms { display: flex; flex-direction: column; gap: 0; }
+  .farm {
+    padding: 40px 0; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 72px 1fr 220px 200px; gap: 40px; align-items: center;
+  }
+  .farm:last-child { border-bottom: none; }
+  @media (max-width: 860px) { .farm { grid-template-columns: 1fr; gap: 20px; } }
+  .farm .index {
+    font-family: "Fraunces", serif; font-size: 44px; font-weight: 300;
+    color: var(--muted-soft); letter-spacing: -0.02em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .farm .who h3 {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 26px;
+    letter-spacing: -0.015em; margin: 0 0 6px; line-height: 1.15;
+  }
+  .farm .who .meta {
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+  .farm .who .meta .sep { margin: 0 8px; color: var(--muted-soft); }
+  .farm .who .crop {
+    display: inline-block; margin-top: 10px;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 500; color: var(--accent);
+    padding-top: 8px; border-top: 1px solid var(--line); padding-right: 40px;
+  }
+  .farm .gauge { text-align: right; }
+  .farm .gauge .score {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 56px;
+    line-height: 1; letter-spacing: -0.03em; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .farm .gauge .score .of { font-size: 16px; color: var(--muted-soft); margin-left: 2px; font-family: "Inter", sans-serif; font-weight: 400; }
+  .farm .gauge .tier-line {
+    margin-top: 10px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .farm .gauge .tier-line .tier-mark {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px;
+    vertical-align: middle;
+  }
+  .tier-full { color: var(--accent); }
+  .tier-full .tier-mark { background: var(--accent); }
+  .tier-partial { color: var(--gold); }
+  .tier-partial .tier-mark { background: var(--gold); }
+  .tier-denied { color: var(--bad); }
+  .tier-denied .tier-mark { background: var(--bad); }
+  .farm .gauge .alloc { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .farm .actions-col { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+  @media (max-width: 860px) { .farm .actions-col { align-items: flex-start; } .farm .gauge { text-align: left; } }
+  .farm .actions-col .balance-line {
+    font-size: 12px; color: var(--muted); letter-spacing: 0.03em;
+    padding-top: 4px;
+  }
+  .farm .actions-col .balance-line b { color: var(--ink); font-weight: 500; }
+
+  /* Map section — full editorial treatment */
+  .map-section { background: var(--bg-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .map-section .inner { max-width: 1180px; margin: 0 auto; padding: 72px 40px; }
+  @media (max-width: 720px) { .map-section .inner { padding: 56px 28px; } }
+  .map-section .layout { display: grid; grid-template-columns: 280px 1fr; gap: 60px; align-items: start; }
+  @media (max-width: 820px) { .map-section .layout { grid-template-columns: 1fr; gap: 32px; } }
+  .map-section h2.display {
+    font-size: 28px; font-weight: 400; margin: 8px 0 16px; letter-spacing: -0.02em;
+  }
+  .map-section p.map-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin: 0 0 24px; }
+  .map-legend { font-size: 12px; color: var(--muted); }
+  .map-legend .li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .map-legend .li:last-child { border-bottom: none; }
+  .map-legend .sw { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .map-frame {
+    background: var(--paper); border: 1px solid var(--line); padding: 28px;
+    position: relative;
+  }
+  svg.uganda { width: 100%; height: 420px; display: block; }
+  @media (max-width: 720px) { svg.uganda { height: 320px; } }
+  svg.uganda .land { fill: var(--map-land); stroke: var(--muted-soft); }
+  svg.uganda .water { fill: var(--map-water); stroke: var(--muted-soft); }
+  svg.uganda text { fill: var(--ink); font-family: "Inter", sans-serif; font-size: 11px; font-weight: 500; }
+  svg.uganda .label-sub { fill: var(--muted); font-size: 9px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+  .dot { cursor: pointer; }
+  .dot circle { transition: r 160ms; }
+  .dot:hover circle { r: 9; }
+
+  /* Ledger section */
+  .ledger-box { border: 1px solid var(--line); background: var(--paper); }
+  .ledger-head {
+    padding: 20px 24px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  .ledger-head .eyebrow { font-size: 10px; }
+  .ledger-head .count {
+    font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted);
+  }
+  .ledger-head .live-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500;
+  }
+  .ledger-head .live-badge::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+  .ledger { max-height: 460px; overflow-y: auto; }
+  .ledger .row {
+    padding: 14px 24px; border-bottom: 1px solid var(--line-soft);
+    display: grid; grid-template-columns: 80px 104px 1fr 110px; gap: 20px; align-items: center;
+    font-size: 13px;
+  }
+  .ledger .row:last-child { border-bottom: none; }
+  .ledger .row.fresh { animation: flashIn 1600ms ease-out; }
+  @keyframes flashIn {
+    0% { background: rgba(46, 77, 31, 0.06); }
+    100% { background: transparent; }
+  }
+  .ledger .ts { font-family: "JetBrains Mono", monospace; color: var(--muted); font-size: 11px; }
+  .ledger .tag {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 500; padding: 4px 10px; border: 1px solid; border-radius: 2px;
+    text-align: center; display: inline-block;
+  }
+  .tag-issue  { color: var(--accent); border-color: var(--accent); }
+  .tag-redeem { color: var(--gold); border-color: var(--gold); }
+  .tag-reject { color: var(--bad); border-color: var(--bad); }
+  .tag-expire { color: var(--muted); border-color: var(--muted); }
+  .ledger .payload {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: var(--ink-soft);
+  }
+  .ledger .hash {
+    font-family: "JetBrains Mono", monospace; color: var(--muted-soft);
+    font-size: 11px; text-align: right;
+  }
+  .empty { padding: 48px 24px; text-align: center; color: var(--muted); font-size: 13px; font-style: italic; }
+
+  /* Scrollbar */
+  .ledger::-webkit-scrollbar { width: 6px; }
+  .ledger::-webkit-scrollbar-track { background: transparent; }
+  .ledger::-webkit-scrollbar-thumb { background: var(--line); border-radius: 0; }
+
+  /* CRP — market pulse + offers + advisor */
+  .crp-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); margin-top: 24px;
+  }
+  @media (max-width: 820px) { .crp-grid { grid-template-columns: 1fr; } }
+  .pulse-card {
+    background: var(--paper); padding: 28px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .pulse-card .crop {
+    font-family: "Fraunces", serif; font-size: 22px; font-weight: 400;
+    letter-spacing: -0.01em; text-transform: capitalize;
+  }
+  .pulse-card .price {
+    font-family: "Fraunces", serif; font-size: 38px; font-weight: 300;
+    line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .pulse-card .price .cur { font-size: 13px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-right: 6px;
+    font-family: "Inter", sans-serif; font-weight: 500;
+  }
+  .pulse-card .trend {
+    font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted);
+  }
+  .pulse-card .trend .up   { color: var(--accent); }
+  .pulse-card .trend .down { color: var(--bad); }
+  .pulse-card .trend .flat { color: var(--muted); }
+  .pulse-card svg.spark { width: 100%; height: 40px; margin-top: 4px; }
+  .pulse-card .region {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted-soft); font-weight: 500;
+  }
+
+  .offers-list { border: 1px solid var(--line); background: var(--paper); }
+  .offer-row {
+    display: grid; grid-template-columns: 110px 1fr 110px 110px 130px;
+    gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--line-soft);
+    align-items: center; font-size: 13px;
+  }
+  .offer-row:last-child { border-bottom: none; }
+  @media (max-width: 820px) {
+    .offer-row { grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+    .offer-row .offer-match { grid-column: 1 / -1; }
+  }
+  .offer-row .oid { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); }
+  .offer-row .farmer { font-weight: 500; }
+  .offer-row .kg { font-variant-numeric: tabular-nums; color: var(--muted); }
+  .offer-row .floor { font-family: "Fraunces", serif; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .offer-row .offer-match { font-size: 12px; color: var(--accent); }
+  .offer-row.fresh { animation: flashIn 1600ms ease-out; }
+  .offers-empty { padding: 28px 20px; color: var(--muted); font-style: italic; }
+
+  .ask-box { border: 1px solid var(--line); background: var(--paper); padding: 32px; margin-top: 24px; }
+  .ask-box .ask-controls {
+    display: grid; grid-template-columns: 1fr 120px; gap: 12px; align-items: stretch;
+  }
+  @media (max-width: 720px) { .ask-box .ask-controls { grid-template-columns: 1fr; } }
+  .ask-box select, .ask-box textarea {
+    font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 2px;
+    padding: 12px 14px; resize: none; min-height: 64px;
+  }
+  .ask-box select { min-height: 44px; padding: 8px 14px; }
+  .ask-box textarea:focus, .ask-box select:focus { outline: 1px solid var(--accent); }
+  .ask-box .ask-row {
+    display: grid; grid-template-columns: 220px 1fr auto; gap: 12px; align-items: start;
+  }
+  @media (max-width: 820px) { .ask-box .ask-row { grid-template-columns: 1fr; } }
+  .ask-answer {
+    margin-top: 22px; padding: 24px 28px; border-left: 2px solid var(--accent);
+    font-family: "Fraunces", serif; font-size: 22px; font-weight: 300;
+    line-height: 1.4; letter-spacing: -0.005em; color: var(--ink);
+    min-height: 64px;
+  }
+  .ask-answer .cite {
+    display: block; margin-top: 10px; font-family: "Inter", sans-serif;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted-soft); font-weight: 500;
+  }
+  .ask-examples {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
+  }
+  .ask-examples button {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 6px 12px; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; cursor: pointer; border-radius: 2px;
+    font-family: "Inter", sans-serif;
+  }
+  .ask-examples button:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--ink); color: var(--paper);
+    padding: 12px 22px; font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 500;
+    opacity: 0; transition: all 220ms ease; border-radius: 2px;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Footer */
+  footer.colophon {
+    border-top: 1px solid var(--line); margin-top: 48px; background: var(--paper);
+  }
+  .colophon-inner {
+    max-width: 1180px; margin: 0 auto; padding: 48px 40px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+  }
+  @media (max-width: 720px) { .colophon-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 28px; } }
+  .colophon h4 {
+    font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px;
+  }
+  .colophon .mission {
+    font-family: "Fraunces", serif; font-size: 22px; font-weight: 300;
+    line-height: 1.35; letter-spacing: -0.01em; color: var(--ink);
+    max-width: 34ch;
+  }
+  .colophon ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--muted); line-height: 2; }
+  .colophon .fineprint {
+    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+    border-top: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  @media (max-width: 720px) { .colophon .fineprint { flex-direction: column; gap: 6px; padding: 20px 28px; } }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <span class="mark">Mavuno</span>
+      <span class="wordmark-sub">Soil · Credit · Solar</span>
+    </div>
+    <nav class="primary">
+      <a href="/">Operations</a>
+      <a href="/phone">Field Simulator</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">Dark</button>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="lede">
+    <span class="eyebrow">Operations · Uganda</span>
+    <h1 class="display">Where soil <em>becomes</em> credit.</h1>
+    <p class="standfirst">
+      A yield-probability score, calibrated on seven soil signals, replaces collateral as the gateway to irrigation finance. Each approved farm receives a GPS-locked energy credit — non-cashable, redeemable only at its dedicated solar pump. On the same USSD session: live market prices, a buyer-matching marketplace, and an AI agronomist.
+    </p>
+  </div>
+  <aside>
+    <div class="label">Ceiling deployed</div>
+    <div class="value" id="hero-ceiling">—<span class="unit">UGX</span></div>
+    <div class="divider"></div>
+    <div class="label">Credits active</div>
+    <div class="value" id="hero-active">—<span class="unit">kWh</span></div>
+    <div class="divider"></div>
+    <div class="label">Chain integrity</div>
+    <div class="value" id="hero-integrity" style="font-size: 20px;">Verifying…</div>
+  </aside>
+</div>
+
+<!-- Stat strip -->
+<div class="stat-strip">
+  <div class="stat">
+    <div class="label">Farms onboarded</div>
+    <div class="num" id="stat-farms">—</div>
+  </div>
+  <div class="stat">
+    <div class="label">Average YPS</div>
+    <div class="num" id="stat-yps">—<span class="unit">/ 1000</span></div>
+  </div>
+  <div class="stat">
+    <div class="label">Ledger entries</div>
+    <div class="num" id="stat-entries">—</div>
+  </div>
+  <div class="stat">
+    <div class="label">Regions</div>
+    <div class="num">3<span class="unit">districts</span></div>
+  </div>
+</div>
+
+<!-- Farms -->
+<section class="sect">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Field partners</span>
+      <h2 class="title">Active smallholders</h2>
+      <p class="desc">Three farms, three profiles. Each profile tells the panel a different story about discipline, climate exposure, and readiness for credit.</p>
+    </div>
+    <div class="tools">
+      <button class="btn ghost" id="refresh">Refresh</button>
+      <button class="btn ghost" id="verify">Verify ledger</button>
+      <button class="btn primary" id="run-all">Run full cycle</button>
+    </div>
+  </div>
+  <div class="farms" id="farms"><div class="empty">Loading field data…</div></div>
+</section>
+
+<!-- Map -->
+<div class="map-section">
+  <div class="inner">
+    <div class="layout">
+      <div>
+        <span class="eyebrow">Geography</span>
+        <h2 class="display">Three districts.<br>One protocol.</h2>
+        <p class="map-desc">Mbale's coffee belt, Mbarara's bean plateau, and Gulu's drought-pressed maize corridor anchor the pilot. Each location runs identical software; each tells the model a different story.</p>
+        <div class="map-legend" id="map-legend">
+          <!-- populated by JS -->
+        </div>
+      </div>
+      <div class="map-frame">
+        <svg class="uganda" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+          <path class="land" d="M 70,250 L 48,180 L 70,105 L 118,58 L 210,40 L 275,58 L 335,98 L 348,160 L 320,220 L 270,270 L 170,278 L 92,265 Z"
+                stroke-width="1.2"/>
+          <ellipse class="water" cx="290" cy="250" rx="42" ry="22" stroke-width="0.8"/>
+          <text x="282" y="253" class="label-sub" text-anchor="middle">L. Victoria</text>
+
+          <g class="dot" data-farm="UG-MBL-0001">
+            <circle cx="305" cy="165" r="6" fill="var(--accent)"/>
+            <text x="316" y="162">Mbale</text>
+            <text x="316" y="176" class="label-sub">Coffee · Full</text>
+          </g>
+          <g class="dot" data-farm="UG-GUL-0002">
+            <circle cx="185" cy="70" r="6" fill="var(--bad)"/>
+            <text x="196" y="67">Gulu</text>
+            <text x="196" y="81" class="label-sub">Maize · Denied</text>
+          </g>
+          <g class="dot" data-farm="UG-MBR-0003">
+            <circle cx="150" cy="228" r="6" fill="var(--gold)"/>
+            <text x="80" y="225" text-anchor="end">Mbarara</text>
+            <text x="80" y="239" class="label-sub" text-anchor="end">Beans · Partial</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CRP — Market pulse -->
+<section class="sect">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Market pulse · today</span>
+      <h2 class="title">What the farmgate pays.</h2>
+      <p class="desc">Indicative daily crop prices for the three pilot regions, refreshed from a committed snapshot. The same numbers reach the farmer's feature phone on USSD menu 4 — no kiosk, no co-op noticeboard, no twelve-hour bus ride.</p>
+    </div>
+  </div>
+  <div class="crp-grid" id="crp-grid">
+    <div class="pulse-card"><div class="crop">Loading…</div></div>
+    <div class="pulse-card"><div class="crop">Loading…</div></div>
+    <div class="pulse-card"><div class="crop">Loading…</div></div>
+  </div>
+</section>
+
+<!-- CRP — Open offers -->
+<section class="sect">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Live marketplace</span>
+      <h2 class="title">Open offers.</h2>
+      <p class="desc">When a farmer dials USSD menu 5 and lists produce at a floor price, the engine auto-matches up to three buyers inside the region. Every offer and every match lands in the ledger chain below.</p>
+    </div>
+  </div>
+  <div class="offers-list" id="offers-list">
+    <div class="offers-empty">No open offers. Dial *165# menu 5 to post.</div>
+  </div>
+</section>
+
+<!-- CRP — Ask Mavuno -->
+<section class="sect">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">AI advisor</span>
+      <h2 class="title">Ask Mavuno.</h2>
+      <p class="desc">An agronomy co-pilot conditioned on the selected farm's live soil readings, crop, and tier. Runs on Groq's hosted Llama 3.3 with a two-second hard timeout and a rule-based fallback, so the advice keeps flowing when the network doesn't.</p>
+    </div>
+  </div>
+  <div class="ask-box">
+    <div class="ask-row">
+      <select id="ask-farm"></select>
+      <textarea id="ask-q" placeholder="e.g. coffee leaves are curling, what's wrong?"></textarea>
+      <button class="btn primary" id="ask-btn">Ask</button>
+    </div>
+    <div class="ask-examples">
+      <button data-q="Coffee pest">Coffee pest</button>
+      <button data-q="When to irrigate maize">When to irrigate maize</button>
+      <button data-q="Best time to sell beans">Best time to sell beans</button>
+      <button data-q="Fertiliser schedule">Fertiliser schedule</button>
+    </div>
+    <div class="ask-answer" id="ask-answer">Select a farm and type a question — or tap a suggestion.</div>
+  </div>
+</section>
+
+<!-- Ledger -->
+<section class="sect">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Audit trail</span>
+      <h2 class="title">Live ledger</h2>
+      <p class="desc">Every issuance, redemption, rejection, and expiry is written to an append-only SHA-256 hash chain. Tamper with one row and every subsequent row fails verification.</p>
+    </div>
+  </div>
+  <div class="ledger-box">
+    <div class="ledger-head">
+      <span class="live-badge">Streaming</span>
+      <span class="count" id="ledger-count">0 entries</span>
+    </div>
+    <div class="ledger" id="ledger"><div class="empty">No activity yet. Run a field cycle to populate the chain.</div></div>
+  </div>
+</section>
+
+<footer class="colophon">
+  <div class="colophon-inner">
+    <div>
+      <h4>Mavuno</h4>
+      <p class="mission">Replacing collateral with soil data, so smallholder farms can reach the sun.</p>
+    </div>
+    <div>
+      <h4>Protocol</h4>
+      <ul>
+        <li>Yield Probability Score</li>
+        <li>Energy Credit Token</li>
+        <li>Hash-chain ledger</li>
+        <li>USSD-first interface</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Field</h4>
+      <ul>
+        <li>Mbale · Coffee</li>
+        <li>Mbarara · Beans</li>
+        <li>Gulu · Maize</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fineprint">
+    <span>Mavuno Protocol · Uganda</span>
+    <span id="fineprint-time">—</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const THEME_KEY = "mavuno-theme";
+const themeBtn = document.getElementById("theme-toggle");
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
+themeBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+};
+
+async function jget(url) { return (await fetch(url)).json(); }
+async function jpost(url, body) {
+  const res = await fetch(url, {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body || {})});
+  return res.json();
+}
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+const TIER_LABEL = ["denied","partial","full"];
+function tierClass(t) { return "tier-" + (TIER_LABEL[t] || "denied"); }
+function fmtUGX(n) { return (n || 0).toLocaleString(); }
+function tagClass(type) {
+  const t = type.toUpperCase();
+  if (t.includes("ISSUE")) return "tag-issue";
+  if (t.includes("REDEEM")) return "tag-redeem";
+  if (t.includes("REJECT")) return "tag-reject";
+  if (t.includes("EXPIRE")) return "tag-expire";
+  if (t.includes("OFFER")) return "tag-issue";
+  if (t.includes("MATCH")) return "tag-redeem";
+  if (t.includes("ADVISE")) return "tag-expire";
+  return "tag-issue";
+}
+
+let lastFarms = {};
+let lastScores = {};
+let lastBalances = {};
+
+async function loadFarms() {
+  const farms = await jget("/farms");
+  lastFarms = farms;
+  const ids = Object.keys(farms);
+  const scores = await Promise.all(ids.map(id => jget("/score/" + id)));
+  const balances = await Promise.all(ids.map(id => jget("/ect/balance/" + id)));
+
+  const container = document.getElementById("farms");
+  container.innerHTML = "";
+  let totalCeiling = 0, totalActive = 0, totalYps = 0;
+
+  ids.forEach((id, i) => {
+    const f = farms[id]; const score = scores[i]; const bal = balances[i];
+    lastScores[id] = score; lastBalances[id] = bal;
+    const tier = score.tier ?? 0;
+    const yps = score.yps ?? 0;
+    totalCeiling += score.credit_ceiling_ugx || 0;
+    totalActive += bal.kwh_remaining || 0;
+    totalYps += yps;
+
+    const card = document.createElement("div");
+    card.className = "farm";
+    card.innerHTML = `
+      <div class="index">0${i+1}</div>
+      <div class="who">
+        <h3>${f.farmer_name}</h3>
+        <div class="meta">${f.district}<span class="sep">·</span>${f.phone}<span class="sep">·</span>${f.acres} acres<span class="sep">·</span>pump ${f.pump.name}</div>
+        <div class="crop">${f.crop}</div>
+      </div>
+      <div class="gauge">
+        <div class="score">${yps}<span class="of">/1000</span></div>
+        <div class="tier-line ${tierClass(tier)}"><span class="tier-mark"></span>${TIER_LABEL[tier] || "denied"} tier</div>
+        <div class="alloc">${score.kwh_allocated || 0} kWh · UGX ${fmtUGX(score.credit_ceiling_ugx)}</div>
+      </div>
+      <div class="actions-col">
+        <button class="btn primary" data-id="${id}" data-act="cycle">Run cycle</button>
+        <button class="btn" data-id="${id}" data-act="issue">Issue credit</button>
+        <div class="balance-line">Active: <b>${bal.kwh_remaining || 0} kWh</b> · ${bal.active_tokens || 0} token${(bal.active_tokens||0)===1?'':'s'}</div>
+      </div>`;
+    container.appendChild(card);
+  });
+
+  // hero + stat updates
+  document.getElementById("hero-ceiling").innerHTML = fmtUGX(totalCeiling) + '<span class="unit">UGX</span>';
+  document.getElementById("hero-active").innerHTML = totalActive + '<span class="unit">kWh</span>';
+  document.getElementById("stat-farms").textContent = ids.length;
+  document.getElementById("stat-yps").innerHTML = (ids.length ? Math.round(totalYps / ids.length) : 0) + '<span class="unit">/ 1000</span>';
+
+  // map legend
+  const legend = document.getElementById("map-legend");
+  legend.innerHTML = ids.map(id => {
+    const f = farms[id]; const score = lastScores[id];
+    const tierIdx = score.tier ?? 0;
+    const color = tierIdx === 2 ? 'var(--accent)' : tierIdx === 1 ? 'var(--gold)' : 'var(--bad)';
+    return `<div class="li"><span class="sw" style="background:${color}"></span><span>${f.district} — ${f.crop}<br><span style="color:var(--muted-soft); font-size:11px; letter-spacing:0.1em; text-transform:uppercase;">${TIER_LABEL[tierIdx]}</span></span></div>`;
+  }).join("");
+
+  attachActions();
+}
+
+function attachActions() {
+  document.querySelectorAll(".farm .btn").forEach(b => { b.onclick = onAction; });
+}
+
+async function onAction(e) {
+  const b = e.currentTarget;
+  const id = b.dataset.id, act = b.dataset.act;
+  if (!id) return;
+  b.disabled = true;
+  try {
+    if (act === "cycle") {
+      const r = await jpost("/demo/cycle", {farm_id: id});
+      if (r.error) toast("Error · " + r.error);
+      else if (r.ect && r.ect.error) toast("ECT · " + r.ect.error);
+      else toast("Cycle complete · " + id);
+    } else if (act === "issue") {
+      const r = await jpost("/ect/issue", {farm_id: id});
+      toast(r.error ? ("Issue error · " + r.error) : ("Issued · " + r.token_id));
+    }
+  } finally {
+    b.disabled = false;
+    await loadFarms();
+    await refreshLedger();
+  }
+}
+
+let knownHashes = new Set();
+async function refreshLedger() {
+  const data = await jget("/ledger?limit=30");
+  const el = document.getElementById("ledger");
+  document.getElementById("ledger-count").textContent = `${data.length} ${data.length === 1 ? "entry" : "entries"}`;
+  document.getElementById("stat-entries").textContent = data.length;
+  if (!data.rows.length) {
+    el.innerHTML = '<div class="empty">No activity yet. Run a field cycle to populate the chain.</div>';
+    return;
+  }
+  el.innerHTML = data.rows.slice().reverse().map(r => {
+    const t = new Date(r.entry.ts * 1000).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    const type = r.entry.type;
+    const payload = JSON.stringify(r.entry.payload);
+    const h = r.hash.slice(0, 10);
+    const fresh = !knownHashes.has(r.hash) && knownHashes.size > 0;
+    return `<div class="row${fresh ? ' fresh' : ''}">
+      <span class="ts">${t}</span>
+      <span class="tag ${tagClass(type)}">${type.replace("ECT_","")}</span>
+      <span class="payload">${payload}</span>
+      <span class="hash">${h}…</span>
+    </div>`;
+  }).join("");
+  knownHashes = new Set(data.rows.map(r => r.hash));
+}
+
+async function verifyIntegrity() {
+  try {
+    const r = await jget("/ledger/verify");
+    const el = document.getElementById("hero-integrity");
+    if (r.ok) el.textContent = r.length + " verified";
+    else el.textContent = "Tampered · " + r.first_bad_line;
+  } catch(e) { document.getElementById("hero-integrity").textContent = "offline"; }
+}
+
+document.getElementById("run-all").onclick = async () => {
+  const farms = await jget("/farms");
+  for (const id in farms) await jpost("/demo/cycle", {farm_id: id});
+  toast("Cycle complete · all farms");
+  loadFarms(); refreshLedger(); verifyIntegrity();
+};
+document.getElementById("refresh").onclick = () => { loadFarms(); refreshLedger(); verifyIntegrity(); };
+document.getElementById("verify").onclick = async () => {
+  const r = await jget("/ledger/verify");
+  toast(r.ok ? `Chain verified · ${r.length} entries` : `Tampered · line ${r.first_bad_line}`);
+  verifyIntegrity();
+};
+document.querySelectorAll(".dot").forEach(d => {
+  d.addEventListener("click", () => {
+    const id = d.dataset.farm;
+    const target = document.querySelector(`.farm [data-id="${id}"]`);
+    if (target) target.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+});
+
+function tick() {
+  document.getElementById("fineprint-time").textContent = new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+}
+tick(); setInterval(tick, 30000);
+
+// ---- CRP: market pulse, offers, advisor ---------------------------------
+const CRP_PULSE = [
+  {crop: "coffee", region: "Eastern"},
+  {crop: "maize",  region: "Northern"},
+  {crop: "beans",  region: "Western"},
+];
+
+function sparkSvg(series, trend) {
+  if (!series || !series.length) return "";
+  const ys = series.map(p => p.ugx);
+  const min = Math.min(...ys), max = Math.max(...ys);
+  const rng = Math.max(max - min, 1);
+  const w = 260, h = 40, pad = 2;
+  const pts = ys.map((y, i) => {
+    const x = pad + (i * (w - 2*pad)) / (ys.length - 1);
+    const yy = h - pad - ((y - min) / rng) * (h - 2*pad);
+    return `${x.toFixed(1)},${yy.toFixed(1)}`;
+  }).join(" ");
+  const stroke = trend === "up" ? "var(--accent)" : trend === "down" ? "var(--bad)" : "var(--muted)";
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polyline fill="none" stroke="${stroke}" stroke-width="1.4" points="${pts}"/>
+  </svg>`;
+}
+
+async function loadPrices() {
+  try {
+    const results = await Promise.all(CRP_PULSE.map(p =>
+      jget(`/crp/prices?crop=${p.crop}&region=${p.region}`)
+    ));
+    const grid = document.getElementById("crp-grid");
+    grid.innerHTML = results.map(r => {
+      if (r.error) return `<div class="pulse-card"><div class="crop">${r.error}</div></div>`;
+      const arrow = r.trend === "up" ? "\u2191" : r.trend === "down" ? "\u2193" : "=";
+      const sparkline = sparkSvg(r.series.slice(-14), r.trend);
+      return `<div class="pulse-card">
+        <div class="region">${r.region}</div>
+        <div class="crop">${r.crop}</div>
+        <div class="price"><span class="cur">UGX</span>${fmtUGX(r.today.ugx)}<span class="cur" style="margin-left:6px;">/${r.unit}</span></div>
+        ${sparkline}
+        <div class="trend">7d avg ${fmtUGX(r.last7_avg)} <span class="${r.trend}">${arrow} ${r.trend}</span> · range ${fmtUGX(r.last7_min)}–${fmtUGX(r.last7_max)}</div>
+      </div>`;
+    }).join("");
+  } catch (e) {
+    console.warn("loadPrices failed", e);
+  }
+}
+
+let knownOfferIds = new Set();
+async function loadOffers() {
+  try {
+    const data = await jget("/crp/offers?limit=6");
+    const el = document.getElementById("offers-list");
+    if (!data.offers || !data.offers.length) {
+      el.innerHTML = '<div class="offers-empty">No open offers. Dial *165# menu 5 to post.</div>';
+      return;
+    }
+    // Fetch matches in parallel (best-effort)
+    const matchResults = await Promise.all(data.offers.map(o =>
+      jpost("/crp/match/" + o.offer_id).catch(() => ({matches: []}))
+    ));
+    el.innerHTML = data.offers.map((o, i) => {
+      const fresh = !knownOfferIds.has(o.offer_id) && knownOfferIds.size > 0;
+      const m = matchResults[i] || {matches: []};
+      const matchTxt = (m.matches && m.matches.length)
+        ? m.matches.length + " buyer" + (m.matches.length === 1 ? "" : "s") + " · top " + m.matches[0].name
+        : "No match yet";
+      return `<div class="offer-row${fresh ? ' fresh' : ''}">
+        <span class="oid">${o.offer_id}</span>
+        <span class="farmer">${o.farmer_name} <span style="color:var(--muted);">· ${o.region}</span></span>
+        <span class="kg">${o.kg} kg ${o.crop}</span>
+        <span class="floor">UGX ${fmtUGX(o.floor_ugx_per_kg)}</span>
+        <span class="offer-match">${matchTxt}</span>
+      </div>`;
+    }).join("");
+    knownOfferIds = new Set(data.offers.map(o => o.offer_id));
+  } catch (e) {
+    console.warn("loadOffers failed", e);
+  }
+}
+
+async function askMavuno() {
+  const sel = document.getElementById("ask-farm");
+  const q = document.getElementById("ask-q").value.trim();
+  const ansEl = document.getElementById("ask-answer");
+  if (!sel.value) { ansEl.textContent = "Select a farm first."; return; }
+  if (!q) { ansEl.textContent = "Type a question or tap a suggestion."; return; }
+  ansEl.innerHTML = '<span style="color:var(--muted);font-style:italic;">Thinking…</span>';
+  try {
+    const r = await jpost("/crp/ask", {farm_id: sel.value, question: q});
+    if (r.error) { ansEl.textContent = "Error · " + r.error; return; }
+    ansEl.innerHTML = `"${r.answer}"<span class="cite">Mavuno · ${r.source === 'groq' ? 'Llama 3.3 · live' : 'offline fallback'} · ${r.context.crop} · YPS ${r.context.yps}</span>`;
+  } catch (e) {
+    ansEl.textContent = "Network error.";
+  }
+}
+
+function wireAsk() {
+  const sel = document.getElementById("ask-farm");
+  sel.innerHTML = Object.keys(lastFarms).map(id => {
+    const f = lastFarms[id];
+    return `<option value="${id}">${f.farmer_name} (${f.crop})</option>`;
+  }).join("");
+  document.getElementById("ask-btn").onclick = askMavuno;
+  document.querySelectorAll(".ask-examples button").forEach(b => {
+    b.onclick = () => {
+      document.getElementById("ask-q").value = b.dataset.q;
+      askMavuno();
+    };
+  });
+}
+
+loadFarms().then(wireAsk);
+refreshLedger();
+verifyIntegrity();
+loadPrices();
+loadOffers();
+setInterval(refreshLedger, 2000);
+setInterval(loadFarms, 10000);
+setInterval(verifyIntegrity, 15000);
+setInterval(loadPrices, 30000);
+setInterval(loadOffers, 5000);
+</script>
+</body>
+</html>

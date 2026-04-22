@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.vercel/
+app/data/ledger.jsonl
+app/data/tokens.jsonl
+.pytest_cache/
+.DS_Store

@@ -1,0 +1,5402 @@
+[
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-22",
+    "soil_moisture": 25.48,
+    "temp_c": 23.13,
+    "rainfall_mm": 3.96,
+    "humidity_pct": 55.93,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-23",
+    "soil_moisture": 25.16,
+    "temp_c": 23.04,
+    "rainfall_mm": 5.75,
+    "humidity_pct": 51.9,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-24",
+    "soil_moisture": 24.99,
+    "temp_c": 24.25,
+    "rainfall_mm": 1.59,
+    "humidity_pct": 45.49,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-25",
+    "soil_moisture": 25.11,
+    "temp_c": 20.61,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.78,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-26",
+    "soil_moisture": 24.64,
+    "temp_c": 24.0,
+    "rainfall_mm": 0.56,
+    "humidity_pct": 40.3,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-27",
+    "soil_moisture": 25.3,
+    "temp_c": 23.23,
+    "rainfall_mm": 2.44,
+    "humidity_pct": 40.02,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-28",
+    "soil_moisture": 24.61,
+    "temp_c": 23.78,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.81,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-29",
+    "soil_moisture": 24.51,
+    "temp_c": 23.22,
+    "rainfall_mm": 0.98,
+    "humidity_pct": 56.0,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-30",
+    "soil_moisture": 24.61,
+    "temp_c": 22.1,
+    "rainfall_mm": 3.78,
+    "humidity_pct": 40.44,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-10-31",
+    "soil_moisture": 24.61,
+    "temp_c": 20.79,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.35,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-01",
+    "soil_moisture": 24.7,
+    "temp_c": 24.02,
+    "rainfall_mm": 1.8,
+    "humidity_pct": 44.69,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-02",
+    "soil_moisture": 23.97,
+    "temp_c": 22.71,
+    "rainfall_mm": 1.06,
+    "humidity_pct": 51.33,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-03",
+    "soil_moisture": 24.46,
+    "temp_c": 21.18,
+    "rainfall_mm": 2.58,
+    "humidity_pct": 43.97,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-04",
+    "soil_moisture": 24.1,
+    "temp_c": 24.77,
+    "rainfall_mm": 3.96,
+    "humidity_pct": 50.41,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-05",
+    "soil_moisture": 24.0,
+    "temp_c": 23.41,
+    "rainfall_mm": 2.52,
+    "humidity_pct": 50.51,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-06",
+    "soil_moisture": 24.06,
+    "temp_c": 23.62,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 39.54,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-07",
+    "soil_moisture": 24.41,
+    "temp_c": 25.95,
+    "rainfall_mm": 1.65,
+    "humidity_pct": 50.43,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-08",
+    "soil_moisture": 24.24,
+    "temp_c": 22.97,
+    "rainfall_mm": 2.49,
+    "humidity_pct": 53.01,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-09",
+    "soil_moisture": 24.09,
+    "temp_c": 26.3,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.35,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-10",
+    "soil_moisture": 24.09,
+    "temp_c": 23.52,
+    "rainfall_mm": 1.9,
+    "humidity_pct": 35.23,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-11",
+    "soil_moisture": 23.98,
+    "temp_c": 24.51,
+    "rainfall_mm": 4.66,
+    "humidity_pct": 42.52,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-12",
+    "soil_moisture": 23.78,
+    "temp_c": 23.23,
+    "rainfall_mm": 3.52,
+    "humidity_pct": 46.71,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-13",
+    "soil_moisture": 23.85,
+    "temp_c": 24.76,
+    "rainfall_mm": 1.87,
+    "humidity_pct": 49.88,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-14",
+    "soil_moisture": 23.79,
+    "temp_c": 23.51,
+    "rainfall_mm": 0.89,
+    "humidity_pct": 37.69,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-15",
+    "soil_moisture": 24.09,
+    "temp_c": 24.39,
+    "rainfall_mm": 1.68,
+    "humidity_pct": 43.83,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-16",
+    "soil_moisture": 23.58,
+    "temp_c": 23.37,
+    "rainfall_mm": 0.98,
+    "humidity_pct": 40.99,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-17",
+    "soil_moisture": 23.96,
+    "temp_c": 24.6,
+    "rainfall_mm": 5.44,
+    "humidity_pct": 45.89,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-18",
+    "soil_moisture": 24.09,
+    "temp_c": 23.88,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.91,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-19",
+    "soil_moisture": 24.05,
+    "temp_c": 27.68,
+    "rainfall_mm": 1.31,
+    "humidity_pct": 46.59,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-20",
+    "soil_moisture": 24.04,
+    "temp_c": 22.22,
+    "rainfall_mm": 3.99,
+    "humidity_pct": 48.89,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-21",
+    "soil_moisture": 24.31,
+    "temp_c": 22.6,
+    "rainfall_mm": 4.53,
+    "humidity_pct": 38.18,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-22",
+    "soil_moisture": 24.28,
+    "temp_c": 27.23,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.43,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-23",
+    "soil_moisture": 24.17,
+    "temp_c": 23.18,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.69,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-24",
+    "soil_moisture": 23.86,
+    "temp_c": 24.62,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 53.19,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-25",
+    "soil_moisture": 23.98,
+    "temp_c": 23.41,
+    "rainfall_mm": 3.46,
+    "humidity_pct": 39.39,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-26",
+    "soil_moisture": 24.33,
+    "temp_c": 25.83,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.58,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-27",
+    "soil_moisture": 24.39,
+    "temp_c": 25.01,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 39.19,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-28",
+    "soil_moisture": 24.53,
+    "temp_c": 24.26,
+    "rainfall_mm": 2.45,
+    "humidity_pct": 47.66,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-29",
+    "soil_moisture": 24.23,
+    "temp_c": 24.13,
+    "rainfall_mm": 2.58,
+    "humidity_pct": 42.51,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-11-30",
+    "soil_moisture": 25.06,
+    "temp_c": 24.46,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.52,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-01",
+    "soil_moisture": 24.27,
+    "temp_c": 24.9,
+    "rainfall_mm": 4.41,
+    "humidity_pct": 42.31,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-02",
+    "soil_moisture": 24.93,
+    "temp_c": 24.3,
+    "rainfall_mm": 3.79,
+    "humidity_pct": 56.08,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-03",
+    "soil_moisture": 24.64,
+    "temp_c": 22.51,
+    "rainfall_mm": 0.42,
+    "humidity_pct": 42.71,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-04",
+    "soil_moisture": 24.77,
+    "temp_c": 24.11,
+    "rainfall_mm": 2.82,
+    "humidity_pct": 51.12,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-05",
+    "soil_moisture": 24.88,
+    "temp_c": 25.74,
+    "rainfall_mm": 1.8,
+    "humidity_pct": 60.8,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-06",
+    "soil_moisture": 25.15,
+    "temp_c": 22.23,
+    "rainfall_mm": 0.25,
+    "humidity_pct": 49.83,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-07",
+    "soil_moisture": 24.99,
+    "temp_c": 24.54,
+    "rainfall_mm": 3.41,
+    "humidity_pct": 47.28,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-08",
+    "soil_moisture": 24.9,
+    "temp_c": 21.15,
+    "rainfall_mm": 1.64,
+    "humidity_pct": 52.17,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-09",
+    "soil_moisture": 25.32,
+    "temp_c": 21.51,
+    "rainfall_mm": 2.95,
+    "humidity_pct": 50.06,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-10",
+    "soil_moisture": 25.09,
+    "temp_c": 23.55,
+    "rainfall_mm": 2.8,
+    "humidity_pct": 42.67,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-11",
+    "soil_moisture": 25.57,
+    "temp_c": 24.11,
+    "rainfall_mm": 4.93,
+    "humidity_pct": 53.91,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-12",
+    "soil_moisture": 25.15,
+    "temp_c": 21.81,
+    "rainfall_mm": 3.87,
+    "humidity_pct": 51.48,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-13",
+    "soil_moisture": 25.83,
+    "temp_c": 28.94,
+    "rainfall_mm": 4.07,
+    "humidity_pct": 54.87,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-14",
+    "soil_moisture": 26.08,
+    "temp_c": 24.08,
+    "rainfall_mm": 2.38,
+    "humidity_pct": 53.27,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-15",
+    "soil_moisture": 25.67,
+    "temp_c": 22.69,
+    "rainfall_mm": 2.13,
+    "humidity_pct": 50.18,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-16",
+    "soil_moisture": 26.72,
+    "temp_c": 20.19,
+    "rainfall_mm": 4.56,
+    "humidity_pct": 42.0,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-17",
+    "soil_moisture": 26.0,
+    "temp_c": 24.56,
+    "rainfall_mm": 3.4,
+    "humidity_pct": 44.98,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-18",
+    "soil_moisture": 26.05,
+    "temp_c": 23.88,
+    "rainfall_mm": 1.91,
+    "humidity_pct": 51.75,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-19",
+    "soil_moisture": 26.41,
+    "temp_c": 21.83,
+    "rainfall_mm": 7.75,
+    "humidity_pct": 54.15,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-20",
+    "soil_moisture": 25.91,
+    "temp_c": 23.02,
+    "rainfall_mm": 2.23,
+    "humidity_pct": 55.56,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-21",
+    "soil_moisture": 26.41,
+    "temp_c": 22.5,
+    "rainfall_mm": 4.66,
+    "humidity_pct": 55.95,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-22",
+    "soil_moisture": 26.42,
+    "temp_c": 22.11,
+    "rainfall_mm": 2.8,
+    "humidity_pct": 48.68,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-23",
+    "soil_moisture": 27.44,
+    "temp_c": 23.15,
+    "rainfall_mm": 1.33,
+    "humidity_pct": 56.87,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-24",
+    "soil_moisture": 27.68,
+    "temp_c": 24.03,
+    "rainfall_mm": 0.91,
+    "humidity_pct": 50.19,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-25",
+    "soil_moisture": 27.56,
+    "temp_c": 21.35,
+    "rainfall_mm": 4.94,
+    "humidity_pct": 56.82,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-26",
+    "soil_moisture": 27.04,
+    "temp_c": 22.25,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.17,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-27",
+    "soil_moisture": 27.38,
+    "temp_c": 20.4,
+    "rainfall_mm": 7.52,
+    "humidity_pct": 46.48,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-28",
+    "soil_moisture": 27.46,
+    "temp_c": 22.4,
+    "rainfall_mm": 7.24,
+    "humidity_pct": 46.79,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-29",
+    "soil_moisture": 28.07,
+    "temp_c": 22.15,
+    "rainfall_mm": 2.5,
+    "humidity_pct": 56.62,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-30",
+    "soil_moisture": 27.92,
+    "temp_c": 21.17,
+    "rainfall_mm": 4.7,
+    "humidity_pct": 52.73,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2025-12-31",
+    "soil_moisture": 28.03,
+    "temp_c": 22.99,
+    "rainfall_mm": 7.84,
+    "humidity_pct": 48.81,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-01",
+    "soil_moisture": 28.78,
+    "temp_c": 19.0,
+    "rainfall_mm": 4.47,
+    "humidity_pct": 58.29,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-02",
+    "soil_moisture": 28.36,
+    "temp_c": 20.93,
+    "rainfall_mm": 4.46,
+    "humidity_pct": 53.22,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-03",
+    "soil_moisture": 28.24,
+    "temp_c": 23.07,
+    "rainfall_mm": 5.69,
+    "humidity_pct": 52.57,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-04",
+    "soil_moisture": 28.82,
+    "temp_c": 22.19,
+    "rainfall_mm": 6.7,
+    "humidity_pct": 59.52,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-05",
+    "soil_moisture": 28.44,
+    "temp_c": 20.82,
+    "rainfall_mm": 6.68,
+    "humidity_pct": 59.76,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-06",
+    "soil_moisture": 28.81,
+    "temp_c": 21.77,
+    "rainfall_mm": 7.84,
+    "humidity_pct": 54.09,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-07",
+    "soil_moisture": 29.12,
+    "temp_c": 21.22,
+    "rainfall_mm": 4.95,
+    "humidity_pct": 62.88,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-08",
+    "soil_moisture": 29.34,
+    "temp_c": 22.68,
+    "rainfall_mm": 8.09,
+    "humidity_pct": 57.82,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-09",
+    "soil_moisture": 29.42,
+    "temp_c": 20.92,
+    "rainfall_mm": 6.23,
+    "humidity_pct": 57.4,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-10",
+    "soil_moisture": 29.38,
+    "temp_c": 22.22,
+    "rainfall_mm": 4.04,
+    "humidity_pct": 68.84,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-11",
+    "soil_moisture": 29.18,
+    "temp_c": 19.44,
+    "rainfall_mm": 8.09,
+    "humidity_pct": 62.66,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-12",
+    "soil_moisture": 29.79,
+    "temp_c": 22.14,
+    "rainfall_mm": 5.85,
+    "humidity_pct": 54.53,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-13",
+    "soil_moisture": 29.75,
+    "temp_c": 20.12,
+    "rainfall_mm": 7.92,
+    "humidity_pct": 58.59,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-14",
+    "soil_moisture": 29.61,
+    "temp_c": 20.59,
+    "rainfall_mm": 6.88,
+    "humidity_pct": 56.82,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-15",
+    "soil_moisture": 29.73,
+    "temp_c": 21.38,
+    "rainfall_mm": 6.64,
+    "humidity_pct": 57.4,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-16",
+    "soil_moisture": 29.95,
+    "temp_c": 21.3,
+    "rainfall_mm": 3.34,
+    "humidity_pct": 53.2,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-17",
+    "soil_moisture": 29.99,
+    "temp_c": 20.57,
+    "rainfall_mm": 6.95,
+    "humidity_pct": 67.9,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-18",
+    "soil_moisture": 30.58,
+    "temp_c": 20.6,
+    "rainfall_mm": 6.37,
+    "humidity_pct": 55.8,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-19",
+    "soil_moisture": 30.43,
+    "temp_c": 20.35,
+    "rainfall_mm": 7.14,
+    "humidity_pct": 56.95,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-20",
+    "soil_moisture": 30.7,
+    "temp_c": 23.03,
+    "rainfall_mm": 6.36,
+    "humidity_pct": 63.36,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-21",
+    "soil_moisture": 30.85,
+    "temp_c": 20.07,
+    "rainfall_mm": 7.1,
+    "humidity_pct": 61.68,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-22",
+    "soil_moisture": 30.78,
+    "temp_c": 19.47,
+    "rainfall_mm": 6.78,
+    "humidity_pct": 64.36,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-23",
+    "soil_moisture": 31.28,
+    "temp_c": 22.02,
+    "rainfall_mm": 11.11,
+    "humidity_pct": 58.28,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-24",
+    "soil_moisture": 31.2,
+    "temp_c": 20.8,
+    "rainfall_mm": 11.25,
+    "humidity_pct": 58.31,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-25",
+    "soil_moisture": 30.78,
+    "temp_c": 19.58,
+    "rainfall_mm": 2.69,
+    "humidity_pct": 59.95,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-26",
+    "soil_moisture": 30.89,
+    "temp_c": 20.66,
+    "rainfall_mm": 7.69,
+    "humidity_pct": 72.18,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-27",
+    "soil_moisture": 31.49,
+    "temp_c": 19.53,
+    "rainfall_mm": 5.27,
+    "humidity_pct": 65.47,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-28",
+    "soil_moisture": 30.89,
+    "temp_c": 23.1,
+    "rainfall_mm": 9.49,
+    "humidity_pct": 60.87,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-29",
+    "soil_moisture": 30.85,
+    "temp_c": 22.35,
+    "rainfall_mm": 6.96,
+    "humidity_pct": 69.6,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-30",
+    "soil_moisture": 30.96,
+    "temp_c": 19.38,
+    "rainfall_mm": 7.25,
+    "humidity_pct": 63.82,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-01-31",
+    "soil_moisture": 31.37,
+    "temp_c": 21.18,
+    "rainfall_mm": 5.16,
+    "humidity_pct": 63.05,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-01",
+    "soil_moisture": 31.6,
+    "temp_c": 20.99,
+    "rainfall_mm": 8.77,
+    "humidity_pct": 58.3,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-02",
+    "soil_moisture": 31.17,
+    "temp_c": 22.1,
+    "rainfall_mm": 8.05,
+    "humidity_pct": 60.33,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-03",
+    "soil_moisture": 32.15,
+    "temp_c": 20.33,
+    "rainfall_mm": 9.79,
+    "humidity_pct": 64.55,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-04",
+    "soil_moisture": 32.35,
+    "temp_c": 22.77,
+    "rainfall_mm": 6.97,
+    "humidity_pct": 69.2,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-05",
+    "soil_moisture": 31.98,
+    "temp_c": 22.16,
+    "rainfall_mm": 5.57,
+    "humidity_pct": 67.89,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-06",
+    "soil_moisture": 32.14,
+    "temp_c": 17.45,
+    "rainfall_mm": 5.17,
+    "humidity_pct": 54.37,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-07",
+    "soil_moisture": 31.78,
+    "temp_c": 21.14,
+    "rainfall_mm": 10.57,
+    "humidity_pct": 65.03,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-08",
+    "soil_moisture": 32.38,
+    "temp_c": 17.98,
+    "rainfall_mm": 4.18,
+    "humidity_pct": 64.46,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-09",
+    "soil_moisture": 32.04,
+    "temp_c": 19.99,
+    "rainfall_mm": 3.48,
+    "humidity_pct": 64.37,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-10",
+    "soil_moisture": 31.56,
+    "temp_c": 21.03,
+    "rainfall_mm": 8.36,
+    "humidity_pct": 60.17,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-11",
+    "soil_moisture": 31.81,
+    "temp_c": 18.43,
+    "rainfall_mm": 7.52,
+    "humidity_pct": 69.7,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-12",
+    "soil_moisture": 31.69,
+    "temp_c": 20.76,
+    "rainfall_mm": 6.59,
+    "humidity_pct": 60.99,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-13",
+    "soil_moisture": 31.96,
+    "temp_c": 18.45,
+    "rainfall_mm": 6.55,
+    "humidity_pct": 58.99,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-14",
+    "soil_moisture": 32.59,
+    "temp_c": 20.05,
+    "rainfall_mm": 6.27,
+    "humidity_pct": 66.07,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-15",
+    "soil_moisture": 31.97,
+    "temp_c": 19.67,
+    "rainfall_mm": 8.89,
+    "humidity_pct": 68.79,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-16",
+    "soil_moisture": 31.84,
+    "temp_c": 19.14,
+    "rainfall_mm": 7.11,
+    "humidity_pct": 53.48,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-17",
+    "soil_moisture": 31.53,
+    "temp_c": 22.06,
+    "rainfall_mm": 10.95,
+    "humidity_pct": 63.72,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-18",
+    "soil_moisture": 32.15,
+    "temp_c": 20.48,
+    "rainfall_mm": 13.8,
+    "humidity_pct": 70.53,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-19",
+    "soil_moisture": 31.92,
+    "temp_c": 18.59,
+    "rainfall_mm": 4.42,
+    "humidity_pct": 65.9,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-20",
+    "soil_moisture": 31.7,
+    "temp_c": 17.9,
+    "rainfall_mm": 6.32,
+    "humidity_pct": 59.42,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-21",
+    "soil_moisture": 32.41,
+    "temp_c": 21.37,
+    "rainfall_mm": 7.58,
+    "humidity_pct": 72.16,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-22",
+    "soil_moisture": 31.89,
+    "temp_c": 18.77,
+    "rainfall_mm": 10.62,
+    "humidity_pct": 67.37,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-23",
+    "soil_moisture": 31.52,
+    "temp_c": 19.8,
+    "rainfall_mm": 5.79,
+    "humidity_pct": 57.67,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-24",
+    "soil_moisture": 32.07,
+    "temp_c": 22.97,
+    "rainfall_mm": 4.71,
+    "humidity_pct": 67.3,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-25",
+    "soil_moisture": 31.55,
+    "temp_c": 19.4,
+    "rainfall_mm": 6.29,
+    "humidity_pct": 60.05,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-26",
+    "soil_moisture": 31.71,
+    "temp_c": 18.9,
+    "rainfall_mm": 7.98,
+    "humidity_pct": 63.99,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-27",
+    "soil_moisture": 31.57,
+    "temp_c": 18.82,
+    "rainfall_mm": 6.24,
+    "humidity_pct": 67.88,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-02-28",
+    "soil_moisture": 31.73,
+    "temp_c": 18.74,
+    "rainfall_mm": 7.55,
+    "humidity_pct": 67.72,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-01",
+    "soil_moisture": 31.02,
+    "temp_c": 21.06,
+    "rainfall_mm": 5.98,
+    "humidity_pct": 66.65,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-02",
+    "soil_moisture": 31.22,
+    "temp_c": 17.57,
+    "rainfall_mm": 4.0,
+    "humidity_pct": 63.87,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-03",
+    "soil_moisture": 31.46,
+    "temp_c": 18.95,
+    "rainfall_mm": 8.48,
+    "humidity_pct": 55.14,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-04",
+    "soil_moisture": 31.29,
+    "temp_c": 18.53,
+    "rainfall_mm": 5.84,
+    "humidity_pct": 63.5,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-05",
+    "soil_moisture": 30.97,
+    "temp_c": 19.81,
+    "rainfall_mm": 9.1,
+    "humidity_pct": 60.18,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-06",
+    "soil_moisture": 31.39,
+    "temp_c": 18.73,
+    "rainfall_mm": 8.08,
+    "humidity_pct": 70.06,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-07",
+    "soil_moisture": 30.31,
+    "temp_c": 19.28,
+    "rainfall_mm": 8.11,
+    "humidity_pct": 61.62,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-08",
+    "soil_moisture": 31.08,
+    "temp_c": 19.61,
+    "rainfall_mm": 7.06,
+    "humidity_pct": 61.63,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-09",
+    "soil_moisture": 31.22,
+    "temp_c": 20.95,
+    "rainfall_mm": 7.49,
+    "humidity_pct": 60.12,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-10",
+    "soil_moisture": 30.63,
+    "temp_c": 19.96,
+    "rainfall_mm": 7.54,
+    "humidity_pct": 59.83,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-11",
+    "soil_moisture": 30.76,
+    "temp_c": 23.78,
+    "rainfall_mm": 8.41,
+    "humidity_pct": 60.05,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-12",
+    "soil_moisture": 30.93,
+    "temp_c": 20.1,
+    "rainfall_mm": 2.52,
+    "humidity_pct": 56.38,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-13",
+    "soil_moisture": 29.9,
+    "temp_c": 20.24,
+    "rainfall_mm": 6.55,
+    "humidity_pct": 69.54,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-14",
+    "soil_moisture": 30.45,
+    "temp_c": 20.5,
+    "rainfall_mm": 8.09,
+    "humidity_pct": 49.82,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-15",
+    "soil_moisture": 30.31,
+    "temp_c": 22.04,
+    "rainfall_mm": 3.39,
+    "humidity_pct": 66.31,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-16",
+    "soil_moisture": 30.22,
+    "temp_c": 20.32,
+    "rainfall_mm": 7.52,
+    "humidity_pct": 71.66,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-17",
+    "soil_moisture": 30.06,
+    "temp_c": 21.37,
+    "rainfall_mm": 5.25,
+    "humidity_pct": 55.76,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-18",
+    "soil_moisture": 30.13,
+    "temp_c": 19.77,
+    "rainfall_mm": 6.22,
+    "humidity_pct": 57.32,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-19",
+    "soil_moisture": 29.91,
+    "temp_c": 21.62,
+    "rainfall_mm": 8.06,
+    "humidity_pct": 56.86,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-20",
+    "soil_moisture": 29.56,
+    "temp_c": 19.71,
+    "rainfall_mm": 5.01,
+    "humidity_pct": 60.98,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-21",
+    "soil_moisture": 29.74,
+    "temp_c": 19.86,
+    "rainfall_mm": 7.54,
+    "humidity_pct": 65.56,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-22",
+    "soil_moisture": 29.51,
+    "temp_c": 24.12,
+    "rainfall_mm": 4.16,
+    "humidity_pct": 52.23,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-23",
+    "soil_moisture": 28.72,
+    "temp_c": 23.62,
+    "rainfall_mm": 6.91,
+    "humidity_pct": 57.85,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-24",
+    "soil_moisture": 29.2,
+    "temp_c": 19.75,
+    "rainfall_mm": 10.4,
+    "humidity_pct": 58.45,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-25",
+    "soil_moisture": 29.02,
+    "temp_c": 22.59,
+    "rainfall_mm": 6.37,
+    "humidity_pct": 58.59,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-26",
+    "soil_moisture": 28.62,
+    "temp_c": 22.28,
+    "rainfall_mm": 9.07,
+    "humidity_pct": 63.86,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-27",
+    "soil_moisture": 29.2,
+    "temp_c": 20.87,
+    "rainfall_mm": 3.23,
+    "humidity_pct": 56.17,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-28",
+    "soil_moisture": 28.6,
+    "temp_c": 23.35,
+    "rainfall_mm": 1.72,
+    "humidity_pct": 64.11,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-29",
+    "soil_moisture": 28.4,
+    "temp_c": 21.14,
+    "rainfall_mm": 2.98,
+    "humidity_pct": 47.84,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-30",
+    "soil_moisture": 28.56,
+    "temp_c": 21.96,
+    "rainfall_mm": 2.32,
+    "humidity_pct": 49.3,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-03-31",
+    "soil_moisture": 28.07,
+    "temp_c": 24.42,
+    "rainfall_mm": 4.28,
+    "humidity_pct": 47.91,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-01",
+    "soil_moisture": 27.96,
+    "temp_c": 21.57,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 54.81,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-02",
+    "soil_moisture": 27.83,
+    "temp_c": 23.1,
+    "rainfall_mm": 8.29,
+    "humidity_pct": 60.37,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-03",
+    "soil_moisture": 27.68,
+    "temp_c": 20.46,
+    "rainfall_mm": 9.63,
+    "humidity_pct": 54.69,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-04",
+    "soil_moisture": 27.63,
+    "temp_c": 22.15,
+    "rainfall_mm": 4.78,
+    "humidity_pct": 53.33,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-05",
+    "soil_moisture": 27.31,
+    "temp_c": 21.44,
+    "rainfall_mm": 4.21,
+    "humidity_pct": 51.0,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-06",
+    "soil_moisture": 27.13,
+    "temp_c": 22.49,
+    "rainfall_mm": 3.67,
+    "humidity_pct": 60.89,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-07",
+    "soil_moisture": 26.42,
+    "temp_c": 24.03,
+    "rainfall_mm": 6.57,
+    "humidity_pct": 42.67,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-08",
+    "soil_moisture": 26.98,
+    "temp_c": 21.9,
+    "rainfall_mm": 1.16,
+    "humidity_pct": 48.81,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-09",
+    "soil_moisture": 26.61,
+    "temp_c": 25.16,
+    "rainfall_mm": 5.75,
+    "humidity_pct": 58.72,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-10",
+    "soil_moisture": 27.03,
+    "temp_c": 20.9,
+    "rainfall_mm": 2.73,
+    "humidity_pct": 54.48,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-11",
+    "soil_moisture": 26.32,
+    "temp_c": 23.73,
+    "rainfall_mm": 3.2,
+    "humidity_pct": 49.83,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-12",
+    "soil_moisture": 26.77,
+    "temp_c": 23.39,
+    "rainfall_mm": 2.86,
+    "humidity_pct": 57.18,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-13",
+    "soil_moisture": 26.1,
+    "temp_c": 23.71,
+    "rainfall_mm": 4.67,
+    "humidity_pct": 49.52,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-14",
+    "soil_moisture": 26.4,
+    "temp_c": 20.97,
+    "rainfall_mm": 5.24,
+    "humidity_pct": 49.83,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-15",
+    "soil_moisture": 26.02,
+    "temp_c": 24.49,
+    "rainfall_mm": 1.89,
+    "humidity_pct": 43.4,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-16",
+    "soil_moisture": 25.59,
+    "temp_c": 23.88,
+    "rainfall_mm": 0.65,
+    "humidity_pct": 58.91,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-17",
+    "soil_moisture": 25.31,
+    "temp_c": 25.58,
+    "rainfall_mm": 3.54,
+    "humidity_pct": 49.36,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-18",
+    "soil_moisture": 25.66,
+    "temp_c": 23.69,
+    "rainfall_mm": 2.96,
+    "humidity_pct": 55.06,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-MBL-0001",
+    "crop": "coffee",
+    "date": "2026-04-19",
+    "soil_moisture": 25.74,
+    "temp_c": 23.37,
+    "rainfall_mm": 2.22,
+    "humidity_pct": 48.98,
+    "discipline": 0.9
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-22",
+    "soil_moisture": 5.54,
+    "temp_c": 23.77,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 52.04,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-23",
+    "soil_moisture": 5.21,
+    "temp_c": 26.11,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.81,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-24",
+    "soil_moisture": 3.94,
+    "temp_c": 25.27,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.93,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-25",
+    "soil_moisture": 5.41,
+    "temp_c": 23.93,
+    "rainfall_mm": 1.12,
+    "humidity_pct": 49.95,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-26",
+    "soil_moisture": 5.07,
+    "temp_c": 28.0,
+    "rainfall_mm": 2.32,
+    "humidity_pct": 52.43,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-27",
+    "soil_moisture": 1.52,
+    "temp_c": 24.65,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.27,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-28",
+    "soil_moisture": 5.33,
+    "temp_c": 25.52,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 43.16,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-29",
+    "soil_moisture": 3.39,
+    "temp_c": 24.54,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 39.98,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-30",
+    "soil_moisture": 2.71,
+    "temp_c": 28.27,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 59.71,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-10-31",
+    "soil_moisture": 5.06,
+    "temp_c": 27.0,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.87,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-01",
+    "soil_moisture": 3.23,
+    "temp_c": 26.94,
+    "rainfall_mm": 3.76,
+    "humidity_pct": 45.72,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-02",
+    "soil_moisture": 6.01,
+    "temp_c": 25.74,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 54.9,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-03",
+    "soil_moisture": 3.02,
+    "temp_c": 29.54,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 43.08,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-04",
+    "soil_moisture": 5.05,
+    "temp_c": 28.31,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 37.91,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-05",
+    "soil_moisture": 2.75,
+    "temp_c": 26.5,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.73,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-06",
+    "soil_moisture": 4.2,
+    "temp_c": 24.89,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.57,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-07",
+    "soil_moisture": 4.79,
+    "temp_c": 28.54,
+    "rainfall_mm": 0.08,
+    "humidity_pct": 47.71,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-08",
+    "soil_moisture": 3.71,
+    "temp_c": 24.44,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.36,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-09",
+    "soil_moisture": 4.24,
+    "temp_c": 25.04,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 50.51,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-10",
+    "soil_moisture": 3.7,
+    "temp_c": 27.99,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.32,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-11",
+    "soil_moisture": 5.29,
+    "temp_c": 26.2,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.8,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-12",
+    "soil_moisture": 3.01,
+    "temp_c": 26.52,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.67,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-13",
+    "soil_moisture": 5.79,
+    "temp_c": 25.65,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.83,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-14",
+    "soil_moisture": 6.09,
+    "temp_c": 27.29,
+    "rainfall_mm": 0.35,
+    "humidity_pct": 37.58,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-15",
+    "soil_moisture": 4.14,
+    "temp_c": 28.33,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 50.33,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-16",
+    "soil_moisture": 2.85,
+    "temp_c": 29.11,
+    "rainfall_mm": 2.88,
+    "humidity_pct": 43.19,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-17",
+    "soil_moisture": 2.97,
+    "temp_c": 29.18,
+    "rainfall_mm": 1.45,
+    "humidity_pct": 42.4,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-18",
+    "soil_moisture": 3.02,
+    "temp_c": 26.57,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 40.45,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-19",
+    "soil_moisture": 2.07,
+    "temp_c": 25.83,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.25,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-20",
+    "soil_moisture": 6.31,
+    "temp_c": 25.48,
+    "rainfall_mm": 0.29,
+    "humidity_pct": 44.06,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-21",
+    "soil_moisture": 3.69,
+    "temp_c": 27.97,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.1,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-22",
+    "soil_moisture": 4.08,
+    "temp_c": 27.69,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 57.54,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-23",
+    "soil_moisture": 2.78,
+    "temp_c": 26.13,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.57,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-24",
+    "soil_moisture": 2.82,
+    "temp_c": 28.7,
+    "rainfall_mm": 1.26,
+    "humidity_pct": 42.58,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-25",
+    "soil_moisture": 2.54,
+    "temp_c": 27.6,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.71,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-26",
+    "soil_moisture": 4.3,
+    "temp_c": 24.59,
+    "rainfall_mm": 1.58,
+    "humidity_pct": 54.64,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-27",
+    "soil_moisture": 3.01,
+    "temp_c": 26.26,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.46,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-28",
+    "soil_moisture": 5.16,
+    "temp_c": 29.83,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 41.94,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-29",
+    "soil_moisture": 1.86,
+    "temp_c": 25.69,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 55.05,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-11-30",
+    "soil_moisture": 3.34,
+    "temp_c": 27.09,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 52.18,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-01",
+    "soil_moisture": 8.43,
+    "temp_c": 25.92,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 51.63,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-02",
+    "soil_moisture": 5.46,
+    "temp_c": 29.45,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.8,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-03",
+    "soil_moisture": 5.39,
+    "temp_c": 28.31,
+    "rainfall_mm": 0.46,
+    "humidity_pct": 49.32,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-04",
+    "soil_moisture": 6.25,
+    "temp_c": 28.36,
+    "rainfall_mm": 1.64,
+    "humidity_pct": 50.23,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-05",
+    "soil_moisture": 4.3,
+    "temp_c": 26.78,
+    "rainfall_mm": 1.36,
+    "humidity_pct": 43.11,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-06",
+    "soil_moisture": 5.28,
+    "temp_c": 25.93,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 53.81,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-07",
+    "soil_moisture": 5.07,
+    "temp_c": 26.54,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 51.38,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-08",
+    "soil_moisture": 5.92,
+    "temp_c": 29.67,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 48.98,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-09",
+    "soil_moisture": 5.36,
+    "temp_c": 28.74,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.52,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-10",
+    "soil_moisture": 6.06,
+    "temp_c": 26.6,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.35,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-11",
+    "soil_moisture": 6.93,
+    "temp_c": 24.73,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.15,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-12",
+    "soil_moisture": 7.24,
+    "temp_c": 23.93,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 50.8,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-13",
+    "soil_moisture": 7.96,
+    "temp_c": 26.06,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 58.6,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-14",
+    "soil_moisture": 3.1,
+    "temp_c": 22.81,
+    "rainfall_mm": 0.51,
+    "humidity_pct": 46.97,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-15",
+    "soil_moisture": 3.92,
+    "temp_c": 27.11,
+    "rainfall_mm": 0.2,
+    "humidity_pct": 46.95,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-16",
+    "soil_moisture": 3.61,
+    "temp_c": 27.3,
+    "rainfall_mm": 1.1,
+    "humidity_pct": 49.57,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-17",
+    "soil_moisture": 8.89,
+    "temp_c": 24.32,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.9,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-18",
+    "soil_moisture": 5.89,
+    "temp_c": 26.23,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 52.43,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-19",
+    "soil_moisture": 4.03,
+    "temp_c": 27.97,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 56.57,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-20",
+    "soil_moisture": 6.79,
+    "temp_c": 26.42,
+    "rainfall_mm": 1.31,
+    "humidity_pct": 53.54,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-21",
+    "soil_moisture": 7.41,
+    "temp_c": 27.67,
+    "rainfall_mm": 0.66,
+    "humidity_pct": 55.17,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-22",
+    "soil_moisture": 6.33,
+    "temp_c": 27.77,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 60.96,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-23",
+    "soil_moisture": 6.55,
+    "temp_c": 23.4,
+    "rainfall_mm": 0.72,
+    "humidity_pct": 48.88,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-24",
+    "soil_moisture": 8.13,
+    "temp_c": 24.5,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 43.17,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-25",
+    "soil_moisture": 6.13,
+    "temp_c": 21.77,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 56.75,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-26",
+    "soil_moisture": 8.31,
+    "temp_c": 25.98,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 53.05,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-27",
+    "soil_moisture": 7.14,
+    "temp_c": 23.54,
+    "rainfall_mm": 3.88,
+    "humidity_pct": 58.01,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-28",
+    "soil_moisture": 6.92,
+    "temp_c": 25.25,
+    "rainfall_mm": 1.39,
+    "humidity_pct": 43.76,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-29",
+    "soil_moisture": 7.02,
+    "temp_c": 24.11,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 52.91,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-30",
+    "soil_moisture": 10.53,
+    "temp_c": 26.03,
+    "rainfall_mm": 0.04,
+    "humidity_pct": 57.52,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2025-12-31",
+    "soil_moisture": 10.01,
+    "temp_c": 26.39,
+    "rainfall_mm": 1.4,
+    "humidity_pct": 51.77,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-01",
+    "soil_moisture": 8.99,
+    "temp_c": 25.52,
+    "rainfall_mm": 3.18,
+    "humidity_pct": 58.52,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-02",
+    "soil_moisture": 9.71,
+    "temp_c": 24.06,
+    "rainfall_mm": 4.12,
+    "humidity_pct": 56.68,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-03",
+    "soil_moisture": 11.54,
+    "temp_c": 23.76,
+    "rainfall_mm": 5.06,
+    "humidity_pct": 57.02,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-04",
+    "soil_moisture": 7.17,
+    "temp_c": 24.0,
+    "rainfall_mm": 1.05,
+    "humidity_pct": 58.49,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-05",
+    "soil_moisture": 9.25,
+    "temp_c": 23.8,
+    "rainfall_mm": 1.75,
+    "humidity_pct": 67.42,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-06",
+    "soil_moisture": 11.37,
+    "temp_c": 25.24,
+    "rainfall_mm": 1.97,
+    "humidity_pct": 57.65,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-07",
+    "soil_moisture": 9.67,
+    "temp_c": 22.99,
+    "rainfall_mm": 1.48,
+    "humidity_pct": 49.04,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-08",
+    "soil_moisture": 9.45,
+    "temp_c": 25.43,
+    "rainfall_mm": 1.13,
+    "humidity_pct": 65.59,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-09",
+    "soil_moisture": 6.9,
+    "temp_c": 22.19,
+    "rainfall_mm": 2.65,
+    "humidity_pct": 63.28,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-10",
+    "soil_moisture": 11.83,
+    "temp_c": 23.64,
+    "rainfall_mm": 4.45,
+    "humidity_pct": 58.18,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-11",
+    "soil_moisture": 8.89,
+    "temp_c": 25.59,
+    "rainfall_mm": 3.7,
+    "humidity_pct": 50.82,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-12",
+    "soil_moisture": 11.74,
+    "temp_c": 26.27,
+    "rainfall_mm": 1.24,
+    "humidity_pct": 60.99,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-13",
+    "soil_moisture": 10.25,
+    "temp_c": 24.53,
+    "rainfall_mm": 1.48,
+    "humidity_pct": 55.97,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-14",
+    "soil_moisture": 9.51,
+    "temp_c": 25.83,
+    "rainfall_mm": 3.76,
+    "humidity_pct": 57.78,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-15",
+    "soil_moisture": 10.95,
+    "temp_c": 19.74,
+    "rainfall_mm": 5.06,
+    "humidity_pct": 51.24,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-16",
+    "soil_moisture": 9.2,
+    "temp_c": 22.27,
+    "rainfall_mm": 0.26,
+    "humidity_pct": 66.04,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-17",
+    "soil_moisture": 9.14,
+    "temp_c": 24.41,
+    "rainfall_mm": 2.85,
+    "humidity_pct": 62.91,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-18",
+    "soil_moisture": 10.15,
+    "temp_c": 21.91,
+    "rainfall_mm": 5.02,
+    "humidity_pct": 58.34,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-19",
+    "soil_moisture": 7.57,
+    "temp_c": 23.14,
+    "rainfall_mm": 6.11,
+    "humidity_pct": 65.34,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-20",
+    "soil_moisture": 9.67,
+    "temp_c": 23.21,
+    "rainfall_mm": 2.55,
+    "humidity_pct": 71.74,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-21",
+    "soil_moisture": 10.98,
+    "temp_c": 24.32,
+    "rainfall_mm": 5.33,
+    "humidity_pct": 62.81,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-22",
+    "soil_moisture": 10.02,
+    "temp_c": 23.33,
+    "rainfall_mm": 3.2,
+    "humidity_pct": 61.68,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-23",
+    "soil_moisture": 11.75,
+    "temp_c": 23.65,
+    "rainfall_mm": 4.88,
+    "humidity_pct": 61.71,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-24",
+    "soil_moisture": 10.77,
+    "temp_c": 20.53,
+    "rainfall_mm": 5.32,
+    "humidity_pct": 64.09,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-25",
+    "soil_moisture": 12.38,
+    "temp_c": 19.14,
+    "rainfall_mm": 7.74,
+    "humidity_pct": 61.89,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-26",
+    "soil_moisture": 12.65,
+    "temp_c": 21.88,
+    "rainfall_mm": 4.85,
+    "humidity_pct": 57.54,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-27",
+    "soil_moisture": 9.88,
+    "temp_c": 26.27,
+    "rainfall_mm": 3.31,
+    "humidity_pct": 64.1,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-28",
+    "soil_moisture": 12.42,
+    "temp_c": 24.1,
+    "rainfall_mm": 4.05,
+    "humidity_pct": 65.04,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-29",
+    "soil_moisture": 15.03,
+    "temp_c": 23.23,
+    "rainfall_mm": 4.21,
+    "humidity_pct": 68.66,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-30",
+    "soil_moisture": 12.96,
+    "temp_c": 25.06,
+    "rainfall_mm": 5.14,
+    "humidity_pct": 57.87,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-01-31",
+    "soil_moisture": 13.9,
+    "temp_c": 21.53,
+    "rainfall_mm": 4.52,
+    "humidity_pct": 59.99,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-01",
+    "soil_moisture": 11.16,
+    "temp_c": 23.71,
+    "rainfall_mm": 4.6,
+    "humidity_pct": 66.03,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-02",
+    "soil_moisture": 13.99,
+    "temp_c": 23.87,
+    "rainfall_mm": 3.52,
+    "humidity_pct": 68.89,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-03",
+    "soil_moisture": 13.35,
+    "temp_c": 21.32,
+    "rainfall_mm": 5.24,
+    "humidity_pct": 67.72,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-04",
+    "soil_moisture": 10.94,
+    "temp_c": 25.2,
+    "rainfall_mm": 3.78,
+    "humidity_pct": 64.97,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-05",
+    "soil_moisture": 11.2,
+    "temp_c": 23.13,
+    "rainfall_mm": 1.93,
+    "humidity_pct": 57.26,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-06",
+    "soil_moisture": 14.16,
+    "temp_c": 21.82,
+    "rainfall_mm": 2.17,
+    "humidity_pct": 53.8,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-07",
+    "soil_moisture": 10.51,
+    "temp_c": 21.08,
+    "rainfall_mm": 7.46,
+    "humidity_pct": 69.71,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-08",
+    "soil_moisture": 10.46,
+    "temp_c": 26.43,
+    "rainfall_mm": 6.17,
+    "humidity_pct": 63.12,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-09",
+    "soil_moisture": 7.5,
+    "temp_c": 26.47,
+    "rainfall_mm": 1.45,
+    "humidity_pct": 56.59,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-10",
+    "soil_moisture": 13.34,
+    "temp_c": 26.68,
+    "rainfall_mm": 7.01,
+    "humidity_pct": 67.69,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-11",
+    "soil_moisture": 12.65,
+    "temp_c": 24.3,
+    "rainfall_mm": 5.78,
+    "humidity_pct": 66.33,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-12",
+    "soil_moisture": 11.86,
+    "temp_c": 22.91,
+    "rainfall_mm": 2.76,
+    "humidity_pct": 63.56,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-13",
+    "soil_moisture": 8.9,
+    "temp_c": 22.86,
+    "rainfall_mm": 2.3,
+    "humidity_pct": 59.47,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-14",
+    "soil_moisture": 12.0,
+    "temp_c": 25.09,
+    "rainfall_mm": 6.12,
+    "humidity_pct": 57.15,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-15",
+    "soil_moisture": 10.07,
+    "temp_c": 24.41,
+    "rainfall_mm": 2.32,
+    "humidity_pct": 63.88,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-16",
+    "soil_moisture": 12.6,
+    "temp_c": 21.55,
+    "rainfall_mm": 4.49,
+    "humidity_pct": 58.32,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-17",
+    "soil_moisture": 10.69,
+    "temp_c": 23.49,
+    "rainfall_mm": 1.09,
+    "humidity_pct": 67.17,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-18",
+    "soil_moisture": 11.64,
+    "temp_c": 23.84,
+    "rainfall_mm": 4.71,
+    "humidity_pct": 71.75,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-19",
+    "soil_moisture": 11.86,
+    "temp_c": 22.38,
+    "rainfall_mm": 4.49,
+    "humidity_pct": 67.6,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-20",
+    "soil_moisture": 11.71,
+    "temp_c": 23.1,
+    "rainfall_mm": 2.83,
+    "humidity_pct": 61.51,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-21",
+    "soil_moisture": 9.29,
+    "temp_c": 25.67,
+    "rainfall_mm": 1.72,
+    "humidity_pct": 61.3,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-22",
+    "soil_moisture": 10.39,
+    "temp_c": 24.41,
+    "rainfall_mm": 3.6,
+    "humidity_pct": 70.92,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-23",
+    "soil_moisture": 10.42,
+    "temp_c": 23.5,
+    "rainfall_mm": 2.49,
+    "humidity_pct": 75.31,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-24",
+    "soil_moisture": 9.53,
+    "temp_c": 23.57,
+    "rainfall_mm": 5.4,
+    "humidity_pct": 66.55,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-25",
+    "soil_moisture": 11.14,
+    "temp_c": 22.93,
+    "rainfall_mm": 4.18,
+    "humidity_pct": 63.63,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-26",
+    "soil_moisture": 12.99,
+    "temp_c": 26.47,
+    "rainfall_mm": 2.94,
+    "humidity_pct": 57.39,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-27",
+    "soil_moisture": 11.2,
+    "temp_c": 27.05,
+    "rainfall_mm": 2.41,
+    "humidity_pct": 72.3,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-02-28",
+    "soil_moisture": 14.05,
+    "temp_c": 22.38,
+    "rainfall_mm": 5.11,
+    "humidity_pct": 72.1,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-01",
+    "soil_moisture": 10.59,
+    "temp_c": 22.93,
+    "rainfall_mm": 2.76,
+    "humidity_pct": 58.73,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-02",
+    "soil_moisture": 10.08,
+    "temp_c": 21.44,
+    "rainfall_mm": 3.94,
+    "humidity_pct": 59.78,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-03",
+    "soil_moisture": 11.47,
+    "temp_c": 20.98,
+    "rainfall_mm": 4.48,
+    "humidity_pct": 67.62,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-04",
+    "soil_moisture": 7.72,
+    "temp_c": 23.91,
+    "rainfall_mm": 6.22,
+    "humidity_pct": 57.22,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-05",
+    "soil_moisture": 13.69,
+    "temp_c": 24.02,
+    "rainfall_mm": 2.29,
+    "humidity_pct": 62.79,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-06",
+    "soil_moisture": 11.76,
+    "temp_c": 23.54,
+    "rainfall_mm": 4.72,
+    "humidity_pct": 58.25,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-07",
+    "soil_moisture": 11.03,
+    "temp_c": 21.35,
+    "rainfall_mm": 3.35,
+    "humidity_pct": 58.12,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-08",
+    "soil_moisture": 9.45,
+    "temp_c": 25.37,
+    "rainfall_mm": 5.69,
+    "humidity_pct": 65.46,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-09",
+    "soil_moisture": 8.77,
+    "temp_c": 23.09,
+    "rainfall_mm": 5.86,
+    "humidity_pct": 62.89,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-10",
+    "soil_moisture": 14.3,
+    "temp_c": 24.2,
+    "rainfall_mm": 3.75,
+    "humidity_pct": 60.39,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-11",
+    "soil_moisture": 10.59,
+    "temp_c": 23.44,
+    "rainfall_mm": 4.7,
+    "humidity_pct": 66.46,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-12",
+    "soil_moisture": 8.97,
+    "temp_c": 21.72,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 63.96,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-13",
+    "soil_moisture": 8.34,
+    "temp_c": 20.54,
+    "rainfall_mm": 3.91,
+    "humidity_pct": 73.62,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-14",
+    "soil_moisture": 10.04,
+    "temp_c": 25.08,
+    "rainfall_mm": 3.21,
+    "humidity_pct": 60.38,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-15",
+    "soil_moisture": 11.45,
+    "temp_c": 23.45,
+    "rainfall_mm": 3.5,
+    "humidity_pct": 62.2,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-16",
+    "soil_moisture": 8.72,
+    "temp_c": 25.43,
+    "rainfall_mm": 2.53,
+    "humidity_pct": 56.53,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-17",
+    "soil_moisture": 10.59,
+    "temp_c": 22.65,
+    "rainfall_mm": 2.84,
+    "humidity_pct": 59.97,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-18",
+    "soil_moisture": 11.38,
+    "temp_c": 24.77,
+    "rainfall_mm": 2.65,
+    "humidity_pct": 63.8,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-19",
+    "soil_moisture": 11.76,
+    "temp_c": 24.96,
+    "rainfall_mm": 2.63,
+    "humidity_pct": 52.85,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-20",
+    "soil_moisture": 7.58,
+    "temp_c": 23.72,
+    "rainfall_mm": 1.29,
+    "humidity_pct": 58.16,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-21",
+    "soil_moisture": 9.3,
+    "temp_c": 25.04,
+    "rainfall_mm": 2.28,
+    "humidity_pct": 61.21,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-22",
+    "soil_moisture": 9.19,
+    "temp_c": 21.35,
+    "rainfall_mm": 0.44,
+    "humidity_pct": 57.74,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-23",
+    "soil_moisture": 6.96,
+    "temp_c": 25.27,
+    "rainfall_mm": 5.28,
+    "humidity_pct": 64.22,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-24",
+    "soil_moisture": 8.47,
+    "temp_c": 26.68,
+    "rainfall_mm": 2.42,
+    "humidity_pct": 56.12,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-25",
+    "soil_moisture": 7.68,
+    "temp_c": 24.05,
+    "rainfall_mm": 1.25,
+    "humidity_pct": 58.32,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-26",
+    "soil_moisture": 8.82,
+    "temp_c": 24.58,
+    "rainfall_mm": 2.8,
+    "humidity_pct": 63.09,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-27",
+    "soil_moisture": 9.99,
+    "temp_c": 22.41,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 61.47,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-28",
+    "soil_moisture": 6.03,
+    "temp_c": 24.37,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.45,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-29",
+    "soil_moisture": 9.04,
+    "temp_c": 25.92,
+    "rainfall_mm": 0.47,
+    "humidity_pct": 43.16,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-30",
+    "soil_moisture": 7.11,
+    "temp_c": 25.43,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 56.69,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-03-31",
+    "soil_moisture": 7.85,
+    "temp_c": 25.78,
+    "rainfall_mm": 1.65,
+    "humidity_pct": 50.56,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-01",
+    "soil_moisture": 9.71,
+    "temp_c": 24.74,
+    "rainfall_mm": 1.25,
+    "humidity_pct": 50.42,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-02",
+    "soil_moisture": 6.87,
+    "temp_c": 23.72,
+    "rainfall_mm": 0.86,
+    "humidity_pct": 63.3,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-03",
+    "soil_moisture": 5.2,
+    "temp_c": 22.7,
+    "rainfall_mm": 4.05,
+    "humidity_pct": 53.35,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-04",
+    "soil_moisture": 6.22,
+    "temp_c": 26.75,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 63.18,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-05",
+    "soil_moisture": 8.3,
+    "temp_c": 24.53,
+    "rainfall_mm": 5.21,
+    "humidity_pct": 50.68,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-06",
+    "soil_moisture": 8.27,
+    "temp_c": 25.77,
+    "rainfall_mm": 3.4,
+    "humidity_pct": 61.18,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-07",
+    "soil_moisture": 6.97,
+    "temp_c": 24.26,
+    "rainfall_mm": 1.61,
+    "humidity_pct": 49.64,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-08",
+    "soil_moisture": 10.1,
+    "temp_c": 25.67,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 53.62,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-09",
+    "soil_moisture": 4.42,
+    "temp_c": 24.07,
+    "rainfall_mm": 2.89,
+    "humidity_pct": 49.08,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-10",
+    "soil_moisture": 4.79,
+    "temp_c": 26.4,
+    "rainfall_mm": 2.76,
+    "humidity_pct": 55.63,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-11",
+    "soil_moisture": 8.03,
+    "temp_c": 24.52,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 59.21,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-12",
+    "soil_moisture": 5.72,
+    "temp_c": 25.35,
+    "rainfall_mm": 2.85,
+    "humidity_pct": 54.16,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-13",
+    "soil_moisture": 6.88,
+    "temp_c": 29.03,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 55.7,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-14",
+    "soil_moisture": 6.09,
+    "temp_c": 26.25,
+    "rainfall_mm": 3.07,
+    "humidity_pct": 53.29,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-15",
+    "soil_moisture": 6.76,
+    "temp_c": 27.52,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.24,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-16",
+    "soil_moisture": 4.03,
+    "temp_c": 23.02,
+    "rainfall_mm": 3.94,
+    "humidity_pct": 44.62,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-17",
+    "soil_moisture": 5.27,
+    "temp_c": 25.62,
+    "rainfall_mm": 0.35,
+    "humidity_pct": 53.92,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-18",
+    "soil_moisture": 6.94,
+    "temp_c": 25.22,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 50.96,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-GUL-0002",
+    "crop": "maize",
+    "date": "2026-04-19",
+    "soil_moisture": 4.99,
+    "temp_c": 28.56,
+    "rainfall_mm": 0.54,
+    "humidity_pct": 52.94,
+    "discipline": 0.45
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-22",
+    "soil_moisture": 20.72,
+    "temp_c": 26.1,
+    "rainfall_mm": 1.52,
+    "humidity_pct": 41.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-23",
+    "soil_moisture": 20.39,
+    "temp_c": 23.41,
+    "rainfall_mm": 0.03,
+    "humidity_pct": 51.0,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-24",
+    "soil_moisture": 21.04,
+    "temp_c": 24.47,
+    "rainfall_mm": 1.63,
+    "humidity_pct": 56.33,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-25",
+    "soil_moisture": 20.05,
+    "temp_c": 28.38,
+    "rainfall_mm": 2.07,
+    "humidity_pct": 38.78,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-26",
+    "soil_moisture": 20.42,
+    "temp_c": 25.1,
+    "rainfall_mm": 3.45,
+    "humidity_pct": 50.73,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-27",
+    "soil_moisture": 19.53,
+    "temp_c": 22.73,
+    "rainfall_mm": 0.39,
+    "humidity_pct": 42.89,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-28",
+    "soil_moisture": 19.05,
+    "temp_c": 25.5,
+    "rainfall_mm": 4.09,
+    "humidity_pct": 48.91,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-29",
+    "soil_moisture": 18.42,
+    "temp_c": 25.32,
+    "rainfall_mm": 3.08,
+    "humidity_pct": 43.69,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-30",
+    "soil_moisture": 19.3,
+    "temp_c": 24.71,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.79,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-10-31",
+    "soil_moisture": 19.24,
+    "temp_c": 25.36,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.18,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-01",
+    "soil_moisture": 19.93,
+    "temp_c": 24.2,
+    "rainfall_mm": 3.98,
+    "humidity_pct": 44.2,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-02",
+    "soil_moisture": 19.42,
+    "temp_c": 26.19,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 37.24,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-03",
+    "soil_moisture": 17.78,
+    "temp_c": 26.72,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 58.68,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-04",
+    "soil_moisture": 18.6,
+    "temp_c": 25.13,
+    "rainfall_mm": 3.48,
+    "humidity_pct": 55.79,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-05",
+    "soil_moisture": 20.91,
+    "temp_c": 26.69,
+    "rainfall_mm": 2.4,
+    "humidity_pct": 48.59,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-06",
+    "soil_moisture": 19.71,
+    "temp_c": 24.07,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.5,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-07",
+    "soil_moisture": 18.81,
+    "temp_c": 24.24,
+    "rainfall_mm": 1.68,
+    "humidity_pct": 50.19,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-08",
+    "soil_moisture": 19.01,
+    "temp_c": 27.15,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.35,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-09",
+    "soil_moisture": 18.25,
+    "temp_c": 22.15,
+    "rainfall_mm": 0.07,
+    "humidity_pct": 44.63,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-10",
+    "soil_moisture": 20.23,
+    "temp_c": 25.91,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 54.44,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-11",
+    "soil_moisture": 19.94,
+    "temp_c": 25.85,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 40.32,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-12",
+    "soil_moisture": 18.49,
+    "temp_c": 26.62,
+    "rainfall_mm": 3.96,
+    "humidity_pct": 52.78,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-13",
+    "soil_moisture": 18.37,
+    "temp_c": 23.31,
+    "rainfall_mm": 0.46,
+    "humidity_pct": 36.19,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-14",
+    "soil_moisture": 19.1,
+    "temp_c": 24.78,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 37.04,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-15",
+    "soil_moisture": 19.26,
+    "temp_c": 24.2,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 30.64,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-16",
+    "soil_moisture": 18.78,
+    "temp_c": 27.66,
+    "rainfall_mm": 3.49,
+    "humidity_pct": 42.72,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-17",
+    "soil_moisture": 18.26,
+    "temp_c": 25.7,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.52,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-18",
+    "soil_moisture": 19.51,
+    "temp_c": 26.83,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 44.02,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-19",
+    "soil_moisture": 18.04,
+    "temp_c": 23.74,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.91,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-20",
+    "soil_moisture": 19.67,
+    "temp_c": 23.77,
+    "rainfall_mm": 3.19,
+    "humidity_pct": 43.77,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-21",
+    "soil_moisture": 18.86,
+    "temp_c": 23.84,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 49.61,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-22",
+    "soil_moisture": 19.57,
+    "temp_c": 24.53,
+    "rainfall_mm": 0.38,
+    "humidity_pct": 47.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-23",
+    "soil_moisture": 17.53,
+    "temp_c": 24.14,
+    "rainfall_mm": 1.86,
+    "humidity_pct": 39.07,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-24",
+    "soil_moisture": 19.24,
+    "temp_c": 22.88,
+    "rainfall_mm": 1.23,
+    "humidity_pct": 45.26,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-25",
+    "soil_moisture": 17.56,
+    "temp_c": 26.64,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 41.49,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-26",
+    "soil_moisture": 19.25,
+    "temp_c": 26.59,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.97,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-27",
+    "soil_moisture": 19.5,
+    "temp_c": 25.88,
+    "rainfall_mm": 0.76,
+    "humidity_pct": 43.96,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-28",
+    "soil_moisture": 18.43,
+    "temp_c": 24.94,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 31.32,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-29",
+    "soil_moisture": 19.62,
+    "temp_c": 26.14,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 41.03,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-11-30",
+    "soil_moisture": 19.85,
+    "temp_c": 27.84,
+    "rainfall_mm": 0.58,
+    "humidity_pct": 42.6,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-01",
+    "soil_moisture": 19.2,
+    "temp_c": 26.78,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 42.42,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-02",
+    "soil_moisture": 19.0,
+    "temp_c": 23.25,
+    "rainfall_mm": 0.89,
+    "humidity_pct": 54.72,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-03",
+    "soil_moisture": 19.8,
+    "temp_c": 24.26,
+    "rainfall_mm": 0.12,
+    "humidity_pct": 38.97,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-04",
+    "soil_moisture": 20.39,
+    "temp_c": 24.49,
+    "rainfall_mm": 0.4,
+    "humidity_pct": 62.95,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-05",
+    "soil_moisture": 19.95,
+    "temp_c": 23.43,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 52.94,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-06",
+    "soil_moisture": 19.87,
+    "temp_c": 22.36,
+    "rainfall_mm": 2.73,
+    "humidity_pct": 44.08,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-07",
+    "soil_moisture": 21.54,
+    "temp_c": 26.09,
+    "rainfall_mm": 0.07,
+    "humidity_pct": 54.05,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-08",
+    "soil_moisture": 20.01,
+    "temp_c": 25.7,
+    "rainfall_mm": 2.0,
+    "humidity_pct": 43.65,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-09",
+    "soil_moisture": 19.47,
+    "temp_c": 25.92,
+    "rainfall_mm": 0.44,
+    "humidity_pct": 46.11,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-10",
+    "soil_moisture": 19.29,
+    "temp_c": 24.96,
+    "rainfall_mm": 5.31,
+    "humidity_pct": 43.05,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-11",
+    "soil_moisture": 20.28,
+    "temp_c": 26.39,
+    "rainfall_mm": 1.1,
+    "humidity_pct": 50.91,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-12",
+    "soil_moisture": 19.41,
+    "temp_c": 24.86,
+    "rainfall_mm": 0.97,
+    "humidity_pct": 53.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-13",
+    "soil_moisture": 21.55,
+    "temp_c": 28.05,
+    "rainfall_mm": 2.58,
+    "humidity_pct": 50.82,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-14",
+    "soil_moisture": 20.77,
+    "temp_c": 23.58,
+    "rainfall_mm": 2.19,
+    "humidity_pct": 48.0,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-15",
+    "soil_moisture": 20.86,
+    "temp_c": 26.02,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 55.47,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-16",
+    "soil_moisture": 22.01,
+    "temp_c": 23.81,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.02,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-17",
+    "soil_moisture": 22.11,
+    "temp_c": 23.89,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 47.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-18",
+    "soil_moisture": 21.83,
+    "temp_c": 24.69,
+    "rainfall_mm": 1.39,
+    "humidity_pct": 48.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-19",
+    "soil_moisture": 20.84,
+    "temp_c": 22.42,
+    "rainfall_mm": 5.19,
+    "humidity_pct": 49.37,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-20",
+    "soil_moisture": 22.42,
+    "temp_c": 26.02,
+    "rainfall_mm": 4.05,
+    "humidity_pct": 49.14,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-21",
+    "soil_moisture": 21.81,
+    "temp_c": 23.64,
+    "rainfall_mm": 0.35,
+    "humidity_pct": 53.25,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-22",
+    "soil_moisture": 20.52,
+    "temp_c": 25.39,
+    "rainfall_mm": 1.32,
+    "humidity_pct": 52.96,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-23",
+    "soil_moisture": 21.97,
+    "temp_c": 23.16,
+    "rainfall_mm": 3.52,
+    "humidity_pct": 49.91,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-24",
+    "soil_moisture": 22.63,
+    "temp_c": 21.46,
+    "rainfall_mm": 2.7,
+    "humidity_pct": 62.31,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-25",
+    "soil_moisture": 21.08,
+    "temp_c": 22.39,
+    "rainfall_mm": 3.58,
+    "humidity_pct": 53.85,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-26",
+    "soil_moisture": 22.43,
+    "temp_c": 24.08,
+    "rainfall_mm": 3.92,
+    "humidity_pct": 58.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-27",
+    "soil_moisture": 22.62,
+    "temp_c": 22.91,
+    "rainfall_mm": 4.1,
+    "humidity_pct": 63.13,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-28",
+    "soil_moisture": 22.27,
+    "temp_c": 21.74,
+    "rainfall_mm": 5.07,
+    "humidity_pct": 53.37,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-29",
+    "soil_moisture": 20.57,
+    "temp_c": 24.41,
+    "rainfall_mm": 1.89,
+    "humidity_pct": 53.86,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-30",
+    "soil_moisture": 22.96,
+    "temp_c": 23.35,
+    "rainfall_mm": 4.48,
+    "humidity_pct": 52.48,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2025-12-31",
+    "soil_moisture": 23.26,
+    "temp_c": 22.61,
+    "rainfall_mm": 4.64,
+    "humidity_pct": 58.08,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-01",
+    "soil_moisture": 22.1,
+    "temp_c": 24.56,
+    "rainfall_mm": 2.2,
+    "humidity_pct": 59.38,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-02",
+    "soil_moisture": 23.41,
+    "temp_c": 25.62,
+    "rainfall_mm": 2.93,
+    "humidity_pct": 53.94,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-03",
+    "soil_moisture": 23.19,
+    "temp_c": 22.34,
+    "rainfall_mm": 5.08,
+    "humidity_pct": 47.95,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-04",
+    "soil_moisture": 22.4,
+    "temp_c": 21.12,
+    "rainfall_mm": 5.48,
+    "humidity_pct": 64.93,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-05",
+    "soil_moisture": 23.39,
+    "temp_c": 22.4,
+    "rainfall_mm": 3.82,
+    "humidity_pct": 62.52,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-06",
+    "soil_moisture": 22.79,
+    "temp_c": 22.95,
+    "rainfall_mm": 5.73,
+    "humidity_pct": 59.56,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-07",
+    "soil_moisture": 23.93,
+    "temp_c": 24.02,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 60.78,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-08",
+    "soil_moisture": 23.3,
+    "temp_c": 19.71,
+    "rainfall_mm": 5.0,
+    "humidity_pct": 64.59,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-09",
+    "soil_moisture": 23.9,
+    "temp_c": 23.82,
+    "rainfall_mm": 7.31,
+    "humidity_pct": 64.62,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-10",
+    "soil_moisture": 25.63,
+    "temp_c": 23.44,
+    "rainfall_mm": 4.33,
+    "humidity_pct": 50.37,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-11",
+    "soil_moisture": 24.06,
+    "temp_c": 21.0,
+    "rainfall_mm": 8.62,
+    "humidity_pct": 57.82,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-12",
+    "soil_moisture": 24.52,
+    "temp_c": 23.02,
+    "rainfall_mm": 4.46,
+    "humidity_pct": 67.49,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-13",
+    "soil_moisture": 23.97,
+    "temp_c": 22.43,
+    "rainfall_mm": 2.98,
+    "humidity_pct": 52.73,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-14",
+    "soil_moisture": 24.1,
+    "temp_c": 22.02,
+    "rainfall_mm": 3.7,
+    "humidity_pct": 56.17,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-15",
+    "soil_moisture": 23.51,
+    "temp_c": 21.89,
+    "rainfall_mm": 1.64,
+    "humidity_pct": 63.74,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-16",
+    "soil_moisture": 24.97,
+    "temp_c": 19.77,
+    "rainfall_mm": 4.12,
+    "humidity_pct": 56.47,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-17",
+    "soil_moisture": 25.3,
+    "temp_c": 23.91,
+    "rainfall_mm": 1.07,
+    "humidity_pct": 61.1,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-18",
+    "soil_moisture": 24.98,
+    "temp_c": 22.85,
+    "rainfall_mm": 5.34,
+    "humidity_pct": 57.05,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-19",
+    "soil_moisture": 24.95,
+    "temp_c": 20.59,
+    "rainfall_mm": 7.14,
+    "humidity_pct": 61.19,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-20",
+    "soil_moisture": 27.05,
+    "temp_c": 21.64,
+    "rainfall_mm": 3.66,
+    "humidity_pct": 53.79,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-21",
+    "soil_moisture": 23.82,
+    "temp_c": 19.3,
+    "rainfall_mm": 5.69,
+    "humidity_pct": 64.16,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-22",
+    "soil_moisture": 24.13,
+    "temp_c": 22.97,
+    "rainfall_mm": 4.26,
+    "humidity_pct": 62.6,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-23",
+    "soil_moisture": 27.1,
+    "temp_c": 22.92,
+    "rainfall_mm": 4.76,
+    "humidity_pct": 57.66,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-24",
+    "soil_moisture": 23.81,
+    "temp_c": 20.45,
+    "rainfall_mm": 4.95,
+    "humidity_pct": 57.42,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-25",
+    "soil_moisture": 25.72,
+    "temp_c": 21.6,
+    "rainfall_mm": 4.99,
+    "humidity_pct": 59.33,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-26",
+    "soil_moisture": 26.07,
+    "temp_c": 22.1,
+    "rainfall_mm": 3.33,
+    "humidity_pct": 69.86,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-27",
+    "soil_moisture": 25.92,
+    "temp_c": 21.43,
+    "rainfall_mm": 6.99,
+    "humidity_pct": 64.18,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-28",
+    "soil_moisture": 26.94,
+    "temp_c": 21.79,
+    "rainfall_mm": 4.41,
+    "humidity_pct": 65.02,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-29",
+    "soil_moisture": 25.13,
+    "temp_c": 21.48,
+    "rainfall_mm": 5.62,
+    "humidity_pct": 62.37,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-30",
+    "soil_moisture": 26.12,
+    "temp_c": 18.46,
+    "rainfall_mm": 4.65,
+    "humidity_pct": 64.05,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-01-31",
+    "soil_moisture": 26.45,
+    "temp_c": 19.71,
+    "rainfall_mm": 8.33,
+    "humidity_pct": 59.43,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-01",
+    "soil_moisture": 27.24,
+    "temp_c": 21.86,
+    "rainfall_mm": 4.55,
+    "humidity_pct": 72.8,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-02",
+    "soil_moisture": 25.35,
+    "temp_c": 22.56,
+    "rainfall_mm": 7.89,
+    "humidity_pct": 60.72,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-03",
+    "soil_moisture": 27.74,
+    "temp_c": 20.78,
+    "rainfall_mm": 6.51,
+    "humidity_pct": 65.51,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-04",
+    "soil_moisture": 26.41,
+    "temp_c": 22.35,
+    "rainfall_mm": 7.56,
+    "humidity_pct": 55.6,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-05",
+    "soil_moisture": 27.76,
+    "temp_c": 18.62,
+    "rainfall_mm": 8.07,
+    "humidity_pct": 70.09,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-06",
+    "soil_moisture": 25.64,
+    "temp_c": 20.47,
+    "rainfall_mm": 3.82,
+    "humidity_pct": 63.49,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-07",
+    "soil_moisture": 26.39,
+    "temp_c": 22.24,
+    "rainfall_mm": 8.68,
+    "humidity_pct": 71.64,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-08",
+    "soil_moisture": 26.19,
+    "temp_c": 20.74,
+    "rainfall_mm": 2.72,
+    "humidity_pct": 60.71,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-09",
+    "soil_moisture": 27.59,
+    "temp_c": 23.46,
+    "rainfall_mm": 3.64,
+    "humidity_pct": 61.85,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-10",
+    "soil_moisture": 26.73,
+    "temp_c": 21.45,
+    "rainfall_mm": 4.51,
+    "humidity_pct": 66.99,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-11",
+    "soil_moisture": 26.34,
+    "temp_c": 20.99,
+    "rainfall_mm": 7.24,
+    "humidity_pct": 64.95,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-12",
+    "soil_moisture": 26.39,
+    "temp_c": 20.84,
+    "rainfall_mm": 5.98,
+    "humidity_pct": 63.11,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-13",
+    "soil_moisture": 26.56,
+    "temp_c": 23.4,
+    "rainfall_mm": 7.28,
+    "humidity_pct": 63.51,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-14",
+    "soil_moisture": 27.43,
+    "temp_c": 20.5,
+    "rainfall_mm": 8.51,
+    "humidity_pct": 66.85,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-15",
+    "soil_moisture": 26.7,
+    "temp_c": 21.67,
+    "rainfall_mm": 3.02,
+    "humidity_pct": 59.37,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-16",
+    "soil_moisture": 25.72,
+    "temp_c": 21.22,
+    "rainfall_mm": 9.63,
+    "humidity_pct": 76.15,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-17",
+    "soil_moisture": 27.36,
+    "temp_c": 21.76,
+    "rainfall_mm": 2.55,
+    "humidity_pct": 62.25,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-18",
+    "soil_moisture": 26.06,
+    "temp_c": 20.08,
+    "rainfall_mm": 5.81,
+    "humidity_pct": 62.57,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-19",
+    "soil_moisture": 24.97,
+    "temp_c": 22.14,
+    "rainfall_mm": 3.99,
+    "humidity_pct": 66.08,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-20",
+    "soil_moisture": 28.6,
+    "temp_c": 19.66,
+    "rainfall_mm": 1.05,
+    "humidity_pct": 63.4,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-21",
+    "soil_moisture": 27.69,
+    "temp_c": 23.99,
+    "rainfall_mm": 3.64,
+    "humidity_pct": 67.24,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-22",
+    "soil_moisture": 26.25,
+    "temp_c": 20.91,
+    "rainfall_mm": 11.36,
+    "humidity_pct": 57.16,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-23",
+    "soil_moisture": 26.86,
+    "temp_c": 21.78,
+    "rainfall_mm": 8.21,
+    "humidity_pct": 65.08,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-24",
+    "soil_moisture": 26.87,
+    "temp_c": 20.52,
+    "rainfall_mm": 6.55,
+    "humidity_pct": 62.77,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-25",
+    "soil_moisture": 27.11,
+    "temp_c": 20.57,
+    "rainfall_mm": 6.73,
+    "humidity_pct": 64.22,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-26",
+    "soil_moisture": 27.51,
+    "temp_c": 21.07,
+    "rainfall_mm": 2.39,
+    "humidity_pct": 70.55,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-27",
+    "soil_moisture": 25.63,
+    "temp_c": 20.2,
+    "rainfall_mm": 4.71,
+    "humidity_pct": 70.98,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-02-28",
+    "soil_moisture": 24.46,
+    "temp_c": 25.91,
+    "rainfall_mm": 7.97,
+    "humidity_pct": 65.07,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-01",
+    "soil_moisture": 26.27,
+    "temp_c": 21.67,
+    "rainfall_mm": 6.85,
+    "humidity_pct": 67.03,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-02",
+    "soil_moisture": 26.75,
+    "temp_c": 21.41,
+    "rainfall_mm": 5.36,
+    "humidity_pct": 62.88,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-03",
+    "soil_moisture": 26.01,
+    "temp_c": 23.01,
+    "rainfall_mm": 6.89,
+    "humidity_pct": 48.75,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-04",
+    "soil_moisture": 26.7,
+    "temp_c": 21.64,
+    "rainfall_mm": 5.61,
+    "humidity_pct": 61.32,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-05",
+    "soil_moisture": 27.04,
+    "temp_c": 22.81,
+    "rainfall_mm": 4.04,
+    "humidity_pct": 65.1,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-06",
+    "soil_moisture": 25.07,
+    "temp_c": 19.36,
+    "rainfall_mm": 4.27,
+    "humidity_pct": 67.17,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-07",
+    "soil_moisture": 26.71,
+    "temp_c": 22.24,
+    "rainfall_mm": 6.91,
+    "humidity_pct": 65.22,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-08",
+    "soil_moisture": 25.19,
+    "temp_c": 22.17,
+    "rainfall_mm": 6.99,
+    "humidity_pct": 66.18,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-09",
+    "soil_moisture": 26.74,
+    "temp_c": 22.63,
+    "rainfall_mm": 6.02,
+    "humidity_pct": 67.53,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-10",
+    "soil_moisture": 25.55,
+    "temp_c": 20.29,
+    "rainfall_mm": 4.92,
+    "humidity_pct": 58.21,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-11",
+    "soil_moisture": 24.86,
+    "temp_c": 21.45,
+    "rainfall_mm": 3.59,
+    "humidity_pct": 60.14,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-12",
+    "soil_moisture": 23.66,
+    "temp_c": 22.04,
+    "rainfall_mm": 5.1,
+    "humidity_pct": 57.34,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-13",
+    "soil_moisture": 25.85,
+    "temp_c": 23.18,
+    "rainfall_mm": 1.8,
+    "humidity_pct": 57.34,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-14",
+    "soil_moisture": 24.46,
+    "temp_c": 20.41,
+    "rainfall_mm": 6.59,
+    "humidity_pct": 59.91,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-15",
+    "soil_moisture": 24.8,
+    "temp_c": 18.88,
+    "rainfall_mm": 6.12,
+    "humidity_pct": 54.4,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-16",
+    "soil_moisture": 24.98,
+    "temp_c": 22.35,
+    "rainfall_mm": 7.48,
+    "humidity_pct": 53.76,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-17",
+    "soil_moisture": 22.09,
+    "temp_c": 22.27,
+    "rainfall_mm": 8.27,
+    "humidity_pct": 66.21,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-18",
+    "soil_moisture": 24.87,
+    "temp_c": 21.32,
+    "rainfall_mm": 6.19,
+    "humidity_pct": 54.84,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-19",
+    "soil_moisture": 24.99,
+    "temp_c": 22.88,
+    "rainfall_mm": 6.61,
+    "humidity_pct": 73.2,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-20",
+    "soil_moisture": 24.79,
+    "temp_c": 21.42,
+    "rainfall_mm": 4.34,
+    "humidity_pct": 50.25,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-21",
+    "soil_moisture": 23.69,
+    "temp_c": 21.63,
+    "rainfall_mm": 3.25,
+    "humidity_pct": 59.54,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-22",
+    "soil_moisture": 23.44,
+    "temp_c": 23.99,
+    "rainfall_mm": 4.2,
+    "humidity_pct": 58.41,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-23",
+    "soil_moisture": 23.76,
+    "temp_c": 22.61,
+    "rainfall_mm": 5.76,
+    "humidity_pct": 53.8,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-24",
+    "soil_moisture": 23.33,
+    "temp_c": 21.98,
+    "rainfall_mm": 1.32,
+    "humidity_pct": 53.71,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-25",
+    "soil_moisture": 23.36,
+    "temp_c": 23.82,
+    "rainfall_mm": 4.43,
+    "humidity_pct": 58.44,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-26",
+    "soil_moisture": 24.42,
+    "temp_c": 22.37,
+    "rainfall_mm": 4.59,
+    "humidity_pct": 56.62,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-27",
+    "soil_moisture": 23.76,
+    "temp_c": 21.77,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 56.13,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-28",
+    "soil_moisture": 24.66,
+    "temp_c": 24.1,
+    "rainfall_mm": 5.53,
+    "humidity_pct": 62.64,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-29",
+    "soil_moisture": 23.33,
+    "temp_c": 23.07,
+    "rainfall_mm": 2.27,
+    "humidity_pct": 54.54,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-30",
+    "soil_moisture": 23.66,
+    "temp_c": 24.65,
+    "rainfall_mm": 3.12,
+    "humidity_pct": 53.52,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-03-31",
+    "soil_moisture": 22.97,
+    "temp_c": 23.82,
+    "rainfall_mm": 0.41,
+    "humidity_pct": 43.95,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-01",
+    "soil_moisture": 22.34,
+    "temp_c": 21.15,
+    "rainfall_mm": 2.18,
+    "humidity_pct": 54.35,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-02",
+    "soil_moisture": 22.29,
+    "temp_c": 25.23,
+    "rainfall_mm": 3.74,
+    "humidity_pct": 56.24,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-03",
+    "soil_moisture": 23.12,
+    "temp_c": 21.41,
+    "rainfall_mm": 5.06,
+    "humidity_pct": 54.02,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-04",
+    "soil_moisture": 23.03,
+    "temp_c": 21.58,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 58.14,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-05",
+    "soil_moisture": 22.62,
+    "temp_c": 21.9,
+    "rainfall_mm": 1.04,
+    "humidity_pct": 59.34,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-06",
+    "soil_moisture": 21.08,
+    "temp_c": 25.79,
+    "rainfall_mm": 0.88,
+    "humidity_pct": 56.56,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-07",
+    "soil_moisture": 21.72,
+    "temp_c": 24.3,
+    "rainfall_mm": 1.49,
+    "humidity_pct": 52.22,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-08",
+    "soil_moisture": 21.92,
+    "temp_c": 21.96,
+    "rainfall_mm": 3.96,
+    "humidity_pct": 50.13,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-09",
+    "soil_moisture": 21.54,
+    "temp_c": 22.04,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 51.41,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-10",
+    "soil_moisture": 23.78,
+    "temp_c": 24.77,
+    "rainfall_mm": 2.24,
+    "humidity_pct": 50.72,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-11",
+    "soil_moisture": 21.5,
+    "temp_c": 24.48,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 57.28,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-12",
+    "soil_moisture": 22.0,
+    "temp_c": 24.8,
+    "rainfall_mm": 2.96,
+    "humidity_pct": 51.48,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-13",
+    "soil_moisture": 21.83,
+    "temp_c": 24.67,
+    "rainfall_mm": 1.28,
+    "humidity_pct": 48.2,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-14",
+    "soil_moisture": 21.19,
+    "temp_c": 26.17,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 43.41,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-15",
+    "soil_moisture": 21.12,
+    "temp_c": 23.99,
+    "rainfall_mm": 2.15,
+    "humidity_pct": 51.66,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-16",
+    "soil_moisture": 20.65,
+    "temp_c": 26.21,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 45.99,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-17",
+    "soil_moisture": 20.64,
+    "temp_c": 21.57,
+    "rainfall_mm": 1.27,
+    "humidity_pct": 58.15,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-18",
+    "soil_moisture": 20.64,
+    "temp_c": 24.44,
+    "rainfall_mm": 0.0,
+    "humidity_pct": 46.47,
+    "discipline": 0.7
+  },
+  {
+    "farm_id": "UG-MBR-0003",
+    "crop": "beans",
+    "date": "2026-04-19",
+    "soil_moisture": 20.17,
+    "temp_c": 23.67,
+    "rainfall_mm": 4.01,
+    "humidity_pct": 52.05,
+    "discipline": 0.7
+  }
+]

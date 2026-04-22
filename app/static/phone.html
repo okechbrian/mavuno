@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Mavuno — USSD Simulator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root {
+    --ink: #1a1f16;
+    --muted: #6b7566;
+    --paper: #f7f5ec;
+    --card: #ffffff;
+    --border: #e6e3d4;
+    --accent: #2d5016;
+    --accent-soft: #4a7a2a;
+    --screen: #a7c957;
+    --screen-ink: #0c1f10;
+    --phone: #1f2937;
+    --phone-edge: #111827;
+    --key: #2d3748;
+    --key-hi: #4a5568;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f0eee3;
+    --muted: #8d9387;
+    --paper: #0f1410;
+    --card: #191f1a;
+    --border: #262b24;
+    --accent: #9ac961;
+    --accent-soft: #7cb342;
+    --screen: #88b54a;
+    --screen-ink: #0a1a08;
+    --phone: #0f1419;
+    --phone-edge: #06090c;
+    --key: #1f2731;
+    --key-hi: #323a46;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 16px;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--border) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    transition: background 200ms, color 200ms;
+  }
+  .topbar {
+    width: 100%; max-width: 980px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+    display: grid; place-items: center; color: white; font-size: 18px; font-weight: 700;
+  }
+  .brand h1 { margin: 0; font-size: 18px; }
+  .brand .sub { font-size: 11px; color: var(--muted); }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--border); color: var(--ink);
+    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 16px;
+    display: grid; place-items: center;
+  }
+  .theme-toggle:hover { background: var(--card); }
+  a.back-link {
+    color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 600;
+    padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+  }
+  a.back-link:hover { background: var(--card); }
+  header.lede { text-align: center; max-width: 720px; }
+  header.lede h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: -0.01em; }
+  header.lede p { margin: 0; color: var(--muted); font-size: 13px; }
+  .stage {
+    display: grid; grid-template-columns: auto 1fr; gap: 40px;
+    align-items: start; max-width: 980px; width: 100%;
+  }
+  @media (max-width: 760px) { .stage { grid-template-columns: 1fr; } }
+  .phone {
+    width: 280px;
+    background: var(--phone);
+    border: 6px solid var(--phone-edge);
+    border-radius: 36px;
+    padding: 18px 18px 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.22), inset 0 2px 0 rgba(255,255,255,0.06);
+  }
+  .phone-brand {
+    text-align: center; color: #cbd5e1; font-size: 11px; letter-spacing: 3px;
+    margin-bottom: 10px;
+  }
+  .screen {
+    background: var(--screen);
+    color: var(--screen-ink);
+    border: 3px solid #0c1f10;
+    border-radius: 8px;
+    height: 230px;
+    padding: 10px 12px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.35;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    position: relative;
+  }
+  .screen .signal { position: absolute; top: 4px; right: 8px; font-size: 10px; }
+  .screen .title { font-weight: 700; margin-bottom: 4px; }
+  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .key {
+    background: var(--key);
+    color: #e5e7eb;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 2px 0 #0b0f19;
+    transition: transform 60ms ease, background 100ms;
+  }
+  .key small { font-size: 9px; color: #9ca3af; font-weight: 400; letter-spacing: 1px; }
+  .key:hover { background: var(--key-hi); }
+  .key:active { transform: translateY(1px); box-shadow: 0 1px 0 #0b0f19; }
+  .key.hot { background: var(--accent); color: white; }
+  .key.hot:hover { background: var(--accent-soft); }
+  .key.pulse { animation: keypulse 300ms ease-out; }
+  @keyframes keypulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.94); background: var(--accent-soft); }
+    100% { transform: scale(1); }
+  }
+  .soft { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .soft .key { padding: 9px 0; font-size: 13px; }
+  .side {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px; box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+  }
+  .side h3 { margin: 0 0 8px; font-size: 15px; }
+  .side p { margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+  .numbers { display: flex; flex-direction: column; gap: 6px; }
+  .numbers button {
+    text-align: left; background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; cursor: pointer; font-size: 13px;
+    color: var(--ink);
+    transition: all 120ms;
+  }
+  .numbers button:hover { border-color: var(--accent-soft); background: var(--card); }
+  .numbers button.active { border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .numbers .who { font-weight: 600; color: var(--ink); display: block; }
+  .numbers .meta { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .menu-map {
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); line-height: 1.6;
+  }
+  .menu-map strong { color: var(--ink); }
+  .footer { font-size: 12px; color: var(--muted); max-width: 980px; text-align: center; line-height: 1.5; }
+  .footer code { background: var(--card); padding: 1px 5px; border-radius: 4px; font-size: 11px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <h1>Mavuno</h1>
+      <div class="sub">Where soil becomes credit.</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">🌙</button>
+    <a class="back-link" href="/">← Dashboard</a>
+  </div>
+</div>
+
+<header class="lede">
+  <h2>USSD Simulator</h2>
+  <p>Select a farmer SIM, press <b>CALL</b>, then tap a menu digit. Syncs live with the dashboard ledger.</p>
+</header>
+
+<div class="stage">
+  <div class="phone">
+    <div class="phone-brand">MAVUNO · GSM</div>
+    <div class="screen" id="screen"><div class="signal">📶 ▮▮▮▮</div><div class="title">Mavuno</div>Select a farmer, then press the green CALL key to dial *165*ACP#.</div>
+    <div class="keypad">
+      <button class="key" data-k="1">1<small>_</small></button>
+      <button class="key" data-k="2">2<small>ABC</small></button>
+      <button class="key" data-k="3">3<small>DEF</small></button>
+      <button class="key" data-k="4">4<small>GHI</small></button>
+      <button class="key" data-k="5">5<small>JKL</small></button>
+      <button class="key" data-k="6">6<small>MNO</small></button>
+      <button class="key" data-k="7">7<small>PQRS</small></button>
+      <button class="key" data-k="8">8<small>TUV</small></button>
+      <button class="key" data-k="9">9<small>WXYZ</small></button>
+      <button class="key" data-k="*">*</button>
+      <button class="key" data-k="0">0<small>+</small></button>
+      <button class="key" data-k="#">#<small>SEND</small></button>
+    </div>
+    <div class="soft">
+      <button class="key hot" id="call">📞 CALL</button>
+      <button class="key" id="end">✕ END</button>
+    </div>
+  </div>
+
+  <div class="side">
+    <h3>Registered farmers</h3>
+    <p>Each SIM has 180 days of soil sensor history powering their YPS score.</p>
+    <div class="numbers" id="numbers">Loading…</div>
+    <div class="menu-map">
+      <strong>Menu map:</strong><br/>
+      <strong>1</strong> — Check YPS score<br/>
+      <strong>2</strong> — Request Energy Credit Token<br/>
+      <strong>3</strong> — Check balance<br/>
+      <strong>4</strong> — Today's market price<br/>
+      <strong>5</strong> — Sell produce (auto-match buyers)<br/>
+      <strong>6</strong> — Ask Mavuno (AI advisor)<br/>
+      <strong>7</strong> — Exit<br/>
+      <span style="font-size:11px;">Tip: press a digit and it auto-sends in 0.8s. Or press <code>#</code> to send immediately.</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Offline-capable. <code>/ussd/local</code> mirrors the Africa's Talking callback shape;
+  the same state machine handles <code>/ussd/at</code> from the live sandbox.
+</div>
+
+<script>
+const THEME_KEY = "mavuno-theme";
+const themeBtn = document.getElementById("theme-toggle");
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
+themeBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+};
+
+const screen = document.getElementById("screen");
+const numbers = document.getElementById("numbers");
+let currentPhone = null;
+let currentBtn = null;
+let sessionActive = false;
+let sessionText = "";
+let pendingInput = "";
+let autoSendTimer = null;
+
+function renderScreen(lines, opts = {}) {
+  const title = opts.title ?? "Mavuno";
+  screen.innerHTML =
+    '<div class="signal">📶 ▮▮▮▮</div>' +
+    '<div class="title">' + title + '</div>' +
+    lines;
+}
+
+async function loadFarms() {
+  const res = await fetch("/farms");
+  const farms = await res.json();
+  numbers.innerHTML = "";
+  for (const id in farms) {
+    const f = farms[id];
+    const btn = document.createElement("button");
+    btn.innerHTML =
+      '<span class="who">' + f.farmer_name + '</span>' +
+      '<span class="meta">' + f.phone + ' · ' + f.district + ' · ' + f.crop + '</span>';
+    btn.addEventListener("click", () => {
+      if (currentBtn) currentBtn.classList.remove("active");
+      btn.classList.add("active");
+      currentBtn = btn;
+      currentPhone = f.phone;
+      renderScreen(
+        "SIM selected:\n" + f.farmer_name + "\n" + f.phone +
+        "\n\nPress 📞 CALL to dial *165*ACP#"
+      );
+    });
+    numbers.appendChild(btn);
+  }
+}
+
+async function sendUssd() {
+  if (!currentPhone) return;
+  clearTimeout(autoSendTimer);
+  const res = await fetch("/ussd/local", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({phone: currentPhone, text: sessionText})
+  });
+  const data = await res.json();
+  renderScreen(data.body, {title: "*165*ACP#"});
+  if (data.kind === "END") {
+    sessionActive = false;
+    sessionText = "";
+    pendingInput = "";
+  } else {
+    screen.innerHTML += "\n\n> " + pendingInput;
+  }
+}
+
+function startCall() {
+  if (!currentPhone) {
+    renderScreen("No SIM selected.\nTap a farmer on the right first.");
+    return;
+  }
+  sessionActive = true;
+  sessionText = "";
+  pendingInput = "";
+  sendUssd();
+}
+
+function endCall() {
+  sessionActive = false;
+  sessionText = "";
+  pendingInput = "";
+  clearTimeout(autoSendTimer);
+  renderScreen("Call ended.\nSelect a SIM and press CALL to dial again.");
+}
+
+function submitInput() {
+  if (pendingInput === "") return;
+  sessionText = sessionText === "" ? pendingInput : sessionText + "*" + pendingInput;
+  pendingInput = "";
+  sendUssd();
+}
+
+function pressKey(k) {
+  if (!sessionActive) return;
+  const btn = document.querySelector(`.keypad .key[data-k="${k}"]`);
+  if (btn) { btn.classList.remove("pulse"); void btn.offsetWidth; btn.classList.add("pulse"); }
+
+  clearTimeout(autoSendTimer);
+
+  if (k === "#") {
+    submitInput();
+    return;
+  }
+  if (k === "*") {
+    pendingInput = "";
+    const cur = screen.innerHTML.split("\n\n> ")[0];
+    screen.innerHTML = cur + "\n\n> ";
+    return;
+  }
+  pendingInput += k;
+  const cur = screen.innerHTML.split("\n\n> ")[0];
+  screen.innerHTML = cur + "\n\n> " + pendingInput;
+
+  // auto-send single-digit menu selections after short pause
+  if (pendingInput.length === 1 && /[1-9]/.test(k)) {
+    autoSendTimer = setTimeout(() => submitInput(), 800);
+  }
+}
+
+document.querySelectorAll(".keypad .key").forEach(btn => {
+  btn.addEventListener("click", () => pressKey(btn.dataset.k));
+});
+document.getElementById("call").addEventListener("click", startCall);
+document.getElementById("end").addEventListener("click", endCall);
+
+document.addEventListener("keydown", (e) => {
+  if (/^[0-9*#]$/.test(e.key)) pressKey(e.key);
+  else if (e.key === "Enter") startCall();
+  else if (e.key === "Escape") endCall();
+});
+
+loadFarms();
+</script>
+</body>
+</html>

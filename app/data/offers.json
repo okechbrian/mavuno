@@ -1,0 +1,16 @@
+{
+  "offers": [
+    {
+      "offer_id": "OF-AK50C1",
+      "farm_id": "UG-MBL-0001",
+      "farmer_name": "Akello Sarah",
+      "crop": "coffee",
+      "kg": 50,
+      "floor_ugx_per_kg": 7500,
+      "region": "Eastern",
+      "gps": {"lat": 1.0754, "lng": 34.1754},
+      "status": "open",
+      "created_ts": 1777593600
+    }
+  ]
+}

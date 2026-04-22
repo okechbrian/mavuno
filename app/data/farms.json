@@ -1,0 +1,59 @@
+{
+  "UG-MBL-0001": {
+    "farm_id": "UG-MBL-0001",
+    "farmer_name": "Akello Sarah",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.0754,
+      "lng": 34.1754
+    },
+    "acres": 2.0,
+    "phone": "+256700000001",
+    "pump": {
+      "lat": 1.098,
+      "lng": 34.182,
+      "name": "EASP-Mbale-07"
+    },
+    "discipline": 0.9,
+    "drought_factor": 1.0
+  },
+  "UG-GUL-0002": {
+    "farm_id": "UG-GUL-0002",
+    "farmer_name": "Okello John",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.7747,
+      "lng": 32.299
+    },
+    "acres": 3.5,
+    "phone": "+256700000002",
+    "pump": {
+      "lat": 2.752,
+      "lng": 32.314,
+      "name": "EASP-Gulu-02"
+    },
+    "discipline": 0.45,
+    "drought_factor": 0.35
+  },
+  "UG-MBR-0003": {
+    "farm_id": "UG-MBR-0003",
+    "farmer_name": "Namazzi Grace",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.61,
+      "lng": 30.654
+    },
+    "acres": 1.2,
+    "phone": "+256700000003",
+    "pump": {
+      "lat": -0.631,
+      "lng": 30.67,
+      "name": "EASP-Mbarara-11"
+    },
+    "discipline": 0.7,
+    "drought_factor": 0.95
+  }
+}

@@ -11,15 +11,15 @@ Challenge: *Powering Uganda to a $500B Economy.*
 
 Mavuno ("harvest" in Swahili) is a soilbacked energycredit system for Ugandan smallholders, delivered over USSD on 2G. It turns **soilsensor data into a working irrigation pump, a live market price, and an AI agronomist**  on any feature phone, without a smartphone, bank account, or internet connection at the farm.
 
-The thesis is that Uganda's path to a $500B economy runs through smallholder productivity (~70% of employment, ~24% of GDP), and that smallholder productivity is currently blocked by four simultaneous walls: no collateral, no reliable grid, no weather signal, and no market signal. Mavuno collapses all four into one USSD call and one audit ledger, built on rails Uganda already owns  the **Parish Development Model (PDM)**, **UEDCL's Electricity Access Scaleup Project (EASP)**, and mobile money.
+The thesis is that Uganda's path to a $500B economy runs through smallholder productivity (70% of employment, 24% of GDP), and that smallholder productivity is currently blocked by four simultaneous walls: no collateral, no reliable grid, no weather signal, and no market signal. Mavuno collapses all four into one USSD call and one audit ledger, built on rails Uganda already owns  the **Parish Development Model (PDM)**, **UEDCL's Electricity Access Scaleup Project (EASP)**, and mobile money.
 
 A working prototype is live today. It has a trained ML model (90.5% test accuracy), a working USSD state machine (Africa's Talking callback compatible), a hashchained audit ledger (verified intact on every call to /ledger/verify), and a browserhosted dashboard + Nokiastyle phone simulator for onstage demos.
 
 ## 2. Problem context  Uganda, 2024–2026
 
  **Unbanked smallholders.** An estimated 7 in 10 Ugandan smallholders have no formal banking relationship. Without collateral or salary, SACCOs and commercial banks cannot price the risk of lending for inputs or irrigation.
- **Rural electrification gap.** Only ~19% of rural Uganda has reliable grid access. REA was merged into UEDCL in 2024; the current ruralelectrification vehicle is the **UEDCL Electricity Access Scaleup Project (EASP)**, backed by World Bank ~US$638M (2023). EASP is rolling out solar pump nodes faster than demand can monetise them.
- **Yield volatility.** Rainfall variability wipes out ~20% of yields yearonyear; insurance penetration among smallholders is near zero.
+ **Rural electrification gap.** Only 19% of rural Uganda has reliable grid access. REA was merged into UEDCL in 2024; the current ruralelectrification vehicle is the **UEDCL Electricity Access Scaleup Project (EASP)**, backed by World Bank US$638M (2023). EASP is rolling out solar pump nodes faster than demand can monetise them.
+ **Yield volatility.** Rainfall variability wipes out 20% of yields yearonyear; insurance penetration among smallholders is near zero.
  **Marketsignal blindness.** Regional farmgate prices move daily but reach the farmer weekly, if at all. Farmers sell low even when prices are high.
  **Flagship programs are already in motion.** The **Parish Development Model (PDM)** disburses UGX 100M per parish per year via SACCOs. It needs creditrisk signal and productiveuse enforcement to scale without diversion  which is exactly what Mavuno supplies.
 
@@ -28,7 +28,7 @@ A working prototype is live today. It has a trained ML model (90.5% test accurac
 Uganda has been here before. Two landmark programs failed publicly:
 
  **Oxfam Novib × ALIN  *Internet Now!* (2012).** 100 WiFienabled ICT kiosks across Northern Uganda, with crop prices, agronomy content, and market links. Killed by power cuts, tech stack mismatch (desktop PCs in a 2Gphone market), stale content, and the absence of a business model.
- **Grameen Foundation  *Community Knowledge Worker* (Uganda 2009–2014).** 1,200 trained agents, ~62,000 farmers reached, US$4.7M launch investment. By 2014 the network had collapsed to ~300 agents  classic donordependency + agentchurn failure.
+ **Grameen Foundation  *Community Knowledge Worker* (Uganda 2009–2014).** 1,200 trained agents, 62,000 farmers reached, US$4.7M launch investment. By 2014 the network had collapsed to 300 agents  classic donordependency + agentchurn failure.
 
 The diagnosis is identical across both: no revenue attribution, no agents that could sustain themselves, no tech stack that survived rural conditions. Mavuno's architecture is designed specifically to eliminate each failure mode:
 
@@ -36,7 +36,7 @@ The diagnosis is identical across both: no revenue attribution, no agents that c
 |||
 | Kiosk power cuts | No kiosk. The farmer's own feature phone. |
 | WiFi coverage gaps | USSD over 2G. Works where there is no internet. |
-| Agent payroll ($4.7M) | No agents. AI advisor over USSD (Groq Llama 3.3, ~$0 per query at freetier scale, deterministic rulebased fallback when API is down). |
+| Agent payroll ($4.7M) | No agents. AI advisor over USSD (Groq Llama 3.3, $0 per query at freetier scale, deterministic rulebased fallback when API is down). |
 | Content staleness | Live feeds. Prices refresh daily; agronomy advice is conditioned on each farm's live soil reading. |
 | No business model | Fee per ECT redemption + match fee + data licensing. Every interaction attributes revenue to the platform. |
 | Dropout under API outage | 2second hard timeout → deterministic prewritten fallback keyed to question + crop. Farmer is never met with silence. |
@@ -134,7 +134,7 @@ Our singlesentence differentiator: *"The only credit product that is gated by li
 ## 7. Business model
 
  **Transaction fee**  2–3% on every ECT redemption at the pump, paid by the SACCO out of its interest spread.
- **Match fee**  ~1% on buyermatch completions through menu item 5.
+ **Match fee**  1% on buyermatch completions through menu item 5.
  **Data licensing**  at scale, aggregated YPS timeseries become a droughtrisk signal that agricultural insurers and export buyers will pay for.
  **Zero fee to the farmer.** The farmer's incentive is the pump credit, the price, and the advice  never a line item.
 
@@ -143,7 +143,7 @@ Our singlesentence differentiator: *"The only credit product that is gated by li
 | Phase | Scope | Success metric |
 ||||
 | **Pilot** (90 days) | 50 farms · Mbale coffee belt · 3–5 EASP pump nodes · 1 SACCO underwriter | ≥ 80% ontime pump utilisation; < 5% loanequivalent default rate (gated by YPS tier). |
-| **Year1 expansion** | 5,000 farms · 3 districts · ~UGX 1.2B ECT volume | Replication of pilot metrics at 100× scale; insurer partnership signed. |
+| **Year1 expansion** | 5,000 farms · 3 districts · UGX 1.2B ECT volume | Replication of pilot metrics at 100× scale; insurer partnership signed. |
 | **Year3** | National footprint via PDM integration | YPS becomes a nationally recognised prequalification signal; datalicensing revenue pays for the platform. |
 
 ## 9. Data protection posture

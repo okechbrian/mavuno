@@ -2,7 +2,7 @@
 
 > *Where soil becomes credit.*
 
-Soilbacked energy credit for smallholder farms — a prototype showing how soilsensor data can replace collateral as the signal that underwrites irrigation financing.
+Soilbacked energy credit for smallholder farms a prototype showing how soilsensor data can replace collateral as the signal that underwrites irrigation financing.
 
 
 

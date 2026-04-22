@@ -14,21 +14,21 @@ Soilbacked energy credit for smallholder farms a prototype showing how soilsenso
 
 ## What's inside
 
- **YPS (Yield Probability Score)** — a gradientboosted classifier turns 7 soil features into a 0–1000 credit signal
- **ECT (Energy Credit Token)** — HMACsigned, GPSlocked, 72hour, noncashable kWh voucher redeemable at one specific solar pump
- **USSD** — menudriven interface matching Africa's Talking callback shape; runs on any feature phone
- **Ledger** — appendonly SHA256 hash chain; every issue / redeem / reject / expire is auditable
- **Dashboard** — live operations view with Uganda map + perfarm cards + streaming ledger + dark mode
- **Phone simulator** — Nokiastyle browser phone that mirrors the USSD state machine
+ **YPS (Yield Probability Score)**  a gradientboosted classifier turns 7 soil features into a 0–1000 credit signal
+ **ECT (Energy Credit Token)**  HMACsigned, GPSlocked, 72hour, noncashable kWh voucher redeemable at one specific solar pump
+ **USSD**  menudriven interface matching Africa's Talking callback shape; runs on any feature phone
+ **Ledger**  appendonly SHA256 hash chain; every issue / redeem / reject / expire is auditable
+ **Dashboard**  live operations view with Uganda map + perfarm cards + streaming ledger + dark mode
+ **Phone simulator**  Nokiastyle browser phone that mirrors the USSD state machine
 
 
 ## Documentation
 
- [`docs/conceptnote.md`](docs/conceptnote.md) — 1page concept note (Future Makers 2026 submission)
- [`docs/writtensummary.md`](docs/writtensummary.md) — longform written summary (Future Makers 2026 submission)
- [`docs/pitchdeck.md`](docs/pitchdeck.md) — 9slide, 5minute pitch script with speaker notes and 8 Q&A cards
- [`docs/usermanual.md`](docs/usermanual.md) — farmer, pump operator, and partner guides
- [`docs/submissionemail.md`](docs/submissionemail.md) — committeefacing email draft
+ [`docs/conceptnote.md`](docs/conceptnote.md)  1page concept note (Future Makers 2026 submission)
+ [`docs/writtensummary.md`](docs/writtensummary.md)  longform written summary (Future Makers 2026 submission)
+ [`docs/pitchdeck.md`](docs/pitchdeck.md)  9slide, 5minute pitch script with speaker notes and 8 Q&A cards
+ [`docs/usermanual.md`](docs/usermanual.md)  farmer, pump operator, and partner guides
+ [`docs/submissionemail.md`](docs/submissionemail.md)  committeefacing email draft
 
 ## Stack
 

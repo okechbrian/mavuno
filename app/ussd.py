@@ -1,187 +1,84 @@
-"""USSD session state machine.
+"""USSD State Machine for Prototype (Multi-language & Marketplace)."""
+from .database import get_db
+from . import scorer, ect, crp
 
-Matches Africa's Talking request shape:
-  POST /ussd/at  (form-encoded)
-  sessionId, serviceCode, phoneNumber, text
-Response: plain text starting with 'CON ' (continue) or 'END ' (terminate).
+def route(phone: str, text: str):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM farms WHERE phone = ?", (phone,))
+    farm = cur.fetchone()
+    conn.close()
+    if not farm: return "END Number not registered."
 
-Local browser simulator posts to /ussd/local with JSON {phone, text}.
+    parts = [p for p in text.split("*") if p]
+    if not parts: return "CON Mavuno\n1. English\n2. Luganda"
+    
+    lang = "en" if parts[0] == "1" else "lg"
+    S = {
+        "en": {
+            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Ask Mavuno\n7. Exit",
+            "res": "YPS: {y}\nTier: {t}",
+            "ask": "Enter question:",
+            "sell": "Enter kg to sell:",
+            "price": "Enter floor price (UGX/kg):"
+        },
+        "lg": {
+            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Buuza Mavuno\n7. Fuluma",
+            "res": "YPS: {y}\nTier: {t}",
+            "ask": "Wandiika ekibuuzo kyo:",
+            "sell": "Oyingize kilo:",
+            "price": "Omuwendo gwa wansi (UGX/kg):"
+        }
+    }[lang]
 
-Menu (post-CRP integration):
-  1. YPS score
-  2. Energy credit
-  3. Balance
-  4. Market price
-  5. Sell produce   (two prompts: kg, floor UGX/kg)
-  6. Ask Mavuno     (one prompt: question text)
-  7. Exit
-"""
-from __future__ import annotations
-
-import json
-
-from . import crp, ect, scorer
-from .config import DATA_DIR
-
-_DISTRICT_REGION = {
-    "Mbale": "Eastern", "Gulu": "Northern", "Mbarara": "Western",
-    "Kampala": "Central", "Jinja": "Eastern", "Lira": "Northern",
-    "Fort Portal": "Western",
-}
-
-
-def _farms() -> dict:
-    return json.loads((DATA_DIR / "farms.json").read_text(encoding="utf-8"))
-
-
-def _farm_by_phone(phone: str) -> dict | None:
-    for f in _farms().values():
-        if f["phone"] == phone:
-            return f
-    return None
-
-
-def _fmt_ugx(n: int) -> str:
-    return f"UGX {n:,}"
-
-
-def _region(farm: dict) -> str:
-    return _DISTRICT_REGION.get(farm.get("district", ""), "Central")
-
-
-def _cap(s: str, n: int = 160) -> str:
-    """Hard-cap USSD screen length for AT compatibility."""
-    return s if len(s) <= n else s[: n - 1] + "\u2026"
-
-
-def route(phone: str, text: str) -> str:
-    """Return a full USSD response string including the 'CON '/'END ' prefix."""
-    farm = _farm_by_phone(phone)
-    parts = [p for p in text.split("*") if p != ""] if text else []
-
-    if farm is None:
-        return "END Number not registered.\nDial *165*ACP# after registration."
-
-    name_short = farm["farmer_name"].split()[0]
-    fid = farm["farm_id"]
-
-    # Root menu
-    if len(parts) == 0:
-        return _cap(
-            f"CON Mavuno\n"
-            f"Welcome {name_short} ({farm['crop']})\n"
-            f"1. YPS score\n"
-            f"2. Energy credit\n"
-            f"3. Balance\n"
-            f"4. Market price\n"
-            f"5. Sell produce\n"
-            f"6. Ask Mavuno\n"
-            f"7. Exit"
-        )
-
-    root = parts[0]
-
-    # 1. Check YPS
-    if root == "1":
-        s = scorer.score_farm(fid)
-        if "error" in s:
-            return f"END Error: {s['error']}"
-        return _cap(
-            f"END Your YPS: {s['yps']} / 1000\n"
-            f"Tier: {s['tier_label'].upper()}\n"
-            f"Credit ceiling: {_fmt_ugx(s['credit_ceiling_ugx'])}\n"
-            f"kWh eligible: {s['kwh_allocated']}"
-        )
-
-    # 2. Request ECT
-    if root == "2":
-        if len(parts) == 1:
-            return "CON Request Energy Credit\n1. Confirm & issue\n2. Cancel"
-        if parts[1] == "1":
-            s = scorer.score_farm(fid)
-            if "error" in s:
-                return f"END Error: {s['error']}"
-            token = ect.issue(fid, s["yps"], s["kwh_allocated"])
-            if "error" in token:
-                return f"END Unable to issue: {token['error']}"
-            return _cap(
-                f"END Token issued!\n"
-                f"ID: {token['token_id']}\n"
-                f"kWh: {token['kwh_allocated']}\n"
-                f"Pump: {token['pump_node']}\n"
-                f"Expires: 72h\n"
-                f"GPS-locked 5km"
-            )
-        return "END Cancelled."
-
-    # 3. Balance
-    if root == "3":
-        bal = ect.farm_balance(fid)
-        if not bal["tokens"]:
-            return "END No active Energy Credits.\nDial *165# menu 2 to request one."
-        lines = [f"END Active: {bal['active_tokens']} token(s), {bal['kwh_remaining']} kWh"]
-        for t in bal["tokens"][:2]:
-            lines.append(f"{t['token_id']}: {t['kwh_remaining']}kWh")
-        return _cap("\n".join(lines))
-
-    # 4. Market price (auto uses farm's crop + region)
-    if root == "4":
-        region = _region(farm)
-        p = crp.market_prices(farm["crop"], region)
+    if len(parts) == 1: return "CON " + S["wel"].format(n=farm['farmer_name'].split()[0])
+    
+    cmd = parts[1]
+    
+    if cmd == "1":
+        s = scorer.score_farm(farm['id'])
+        return f"END " + S["res"].format(y=s['yps'], t=s['tier_label'].upper())
+        
+    if cmd == "2":
+        s = scorer.score_farm(farm['id'])
+        t = ect.issue(farm['id'], s['yps'], s['kwh_allocated'])
+        if "error" in t:
+            return f"END Issue failed: {t['error']}"
+        return f"END Token: {t.get('token_id')}\nkWh: {t.get('kwh')}\nPump: {t.get('pump')}"
+        
+    if cmd == "3":
+        b = ect.farm_balance(farm['id'])
+        return f"END Bal: {b['kwh_remaining']} kWh\nTokens: {b['active_tokens']}"
+        
+    if cmd == "4":
+        p = crp.market_prices(farm['crop'], farm['district'])
         if "error" in p:
-            return f"END Price unknown for {farm['crop']}"
-        arrow = {"up": "\u2191", "down": "\u2193", "flat": "="}[p["trend"]]
-        return _cap(
-            f"END {farm['crop'].capitalize()} {region}\n"
-            f"Today: UGX {p['today']['ugx']:,}/{p['unit']}\n"
-            f"7d avg: UGX {p['last7_avg']:,} {arrow}\n"
-            f"Range: {p['last7_min']:,}-{p['last7_max']:,}"
-        )
-
-    # 5. Sell produce (two prompts: kg, floor UGX/kg)
-    if root == "5":
-        if len(parts) == 1:
-            return "CON Sell produce\nEnter kg:"
+            return f"END Price unknown for {farm['crop']}."
+        return f"END {farm['crop'].upper()} Prices\nToday: UGX {p['today']['ugx']}/kg\n7d Avg: UGX {p['last7_avg']}/kg"
+        
+    if cmd == "5":
         if len(parts) == 2:
+            return "CON " + S["sell"]
+        if len(parts) == 3:
+            return "CON " + S["price"]
+        if len(parts) == 4:
             try:
-                int(parts[1])
+                kg = int(parts[2])
+                floor = int(parts[3])
+                o = crp.list_offer(farm['id'], farm['crop'], kg, floor)
+                m = crp.match_buyers(o['offer_id'])
+                matches = len(m.get('matches', []))
+                return f"END Offer {o['offer_id']} listed.\nMatches found: {matches}\nBuyers will contact you."
             except ValueError:
-                return "END Invalid kg."
-            return f"CON {parts[1]} kg {farm['crop']}\nFloor UGX/kg:"
-        if len(parts) >= 3:
-            try:
-                kg = int(parts[1])
-                floor = int(parts[2])
-            except ValueError:
-                return "END Invalid number."
-            result = crp.list_offer(fid, farm["crop"], kg, floor)
-            if "error" in result:
-                return f"END Error: {result['error']}"
-            m = crp.match_buyers(result["offer_id"])
-            if not m.get("matches"):
-                return _cap(
-                    f"END Offer posted: {result['offer_id']}\n"
-                    f"{kg}kg @ {_fmt_ugx(floor)}\n"
-                    "No buyers match yet.\nMavuno will SMS when matched."
-                )
-            header = f"END Offer {result['offer_id']}\n{kg}kg @ {floor:,}/kg"
-            rows = [f"{b['name'][:14]} {b['price_offered']:,}"
-                    for b in m["matches"][:3]]
-            return _cap(header + "\n" + "\n".join(rows))
-
-    # 6. Ask Mavuno (AI advisor)
-    if root == "6":
-        if len(parts) == 1:
-            return "CON Ask Mavuno\nType question (e.g. pest on coffee):"
-        question = "*".join(parts[1:])  # in case user typed * in their text
-        ans = crp.advisor(fid, question)
-        if "error" in ans:
-            return f"END Error: {ans['error']}"
-        tag = "" if ans["source"] == "groq" else " (offline)"
-        return _cap(f"END Mavuno{tag}:\n{ans['answer']}")
-
-    # 7. Exit
-    if root == "7":
-        return "END Webale. Grow strong."
-
-    return "END Invalid option."
+                return "END Invalid numbers."
+                
+    if cmd == "6":
+        if len(parts) == 2:
+            return "CON " + S["ask"]
+        question = " ".join(parts[2:])
+        a = crp.advisor(farm['id'], question)
+        # Cap length to 140 chars for USSD safety
+        ans = a['answer'] if len(a['answer']) <= 140 else a['answer'][:137] + "..."
+        return f"END Mavuno:\n{ans}"
+    
+    return "END Webale. Grow strong."

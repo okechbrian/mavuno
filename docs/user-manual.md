@@ -1,11 +1,11 @@
-# Mavuno  User Manual
+# Mavuno — User Manual
 
 > *Where soil becomes credit.*
 
 This manual covers three audiences:
-1. **Farmer**  the person dialling `*165*ACP#` on a feature phone
-2. **Pump operator**  the EASP kiosk or co-operative that redeems tokens
-3. **Partner**  MoSTI / UEDCL / SACCO staff who use the dashboard to audit the system
+1. **Farmer** — the person dialling `*165*ACP#` on a feature phone
+2. **Pump operator** — the EASP kiosk or co-operative that redeems tokens
+3. **Partner** — MoSTI / UEDCL / SACCO staff who use the dashboard to audit the system
 
 ---
 
@@ -13,7 +13,7 @@ This manual covers three audiences:
 
 ### 1.1 What Mavuno does for you
 
-Mavuno reads your soil data and decides how much **energy credit** you can borrow. Energy credit is not money  it is a voucher that only runs your irrigation pump. If the soil says your crop will grow, Mavuno approves credit. If the soil says the season will fail, Mavuno protects you from taking on debt you can't repay.
+Mavuno reads your soil data and decides how much **energy credit** you can borrow. Energy credit is not money — it is a voucher that only runs your irrigation pump. If the soil says your crop will grow, Mavuno approves credit. If the soil says the season will fail, Mavuno protects you from taking on debt you can't repay.
 
 ### 1.2 Dialling Mavuno
 
@@ -46,11 +46,11 @@ Press **1** then **send**. The reply shows:
 |---|---|---|---|
 | Full | 700 – 1000 | 60 kWh | UGX 200,000 |
 | Partial | 400 – 699 | 25 kWh | UGX 75,000 |
-| Denied | below 400 | 0 |  |
+| Denied | below 400 | 0 | — |
 
 ### 1.4 Requesting an Energy Credit Token (menu 2)
 
-1. Press **2**  *Energy credit*.
+1. Press **2** — *Energy credit*.
 2. Press **1** to confirm.
 3. The reply shows your token ID, the kWh allocated, your pump, and the 72-hour expiry.
 
@@ -67,7 +67,7 @@ Press **3**. The reply lists your active tokens and remaining kWh.
 
 A "denied" result means your recent soil readings suggest the crop will struggle this season. This is not a punishment. Mavuno is protecting you from taking a loan you may not be able to repay. Options:
 
-- Improve soil moisture (mulching, drip irrigation) and re-check in 7 days  the score refreshes on a rolling 7-day window.
+- Improve soil moisture (mulching, drip irrigation) and re-check in 7 days — the score refreshes on a rolling 7-day window.
 - Speak to your PDM extension officer.
 - Ask the SACCO about a smaller group-liability loan outside Mavuno.
 
@@ -79,7 +79,7 @@ Press **4**. The reply shows, for your crop and region:
 - The 7-day average with a trend arrow (↑ rising · ↓ falling · = flat)
 - The 7-day price range (low – high)
 
-No inputs needed  Mavuno picks the crop from your registered profile and the region from your district.
+No inputs needed — Mavuno picks the crop from your registered profile and the region from your district.
 
 ### 1.8 Posting an offer to sell produce (menu 5)
 
@@ -93,10 +93,10 @@ Your offer goes into the shared ledger; you can always ask the SACCO to verify t
 ### 1.9 Asking Mavuno for advice (menu 6)
 
 1. Press **6**.
-2. Type a short question  e.g. *"coffee berry borer what do I do"*, *"how much water for maize"*, *"best time to plant beans"*  then **send**.
+2. Type a short question — e.g. *"coffee berry borer what do I do"*, *"how much water for maize"*, *"best time to plant beans"* — then **send**.
 3. Mavuno replies in one or two SMS-length lines, conditioned on your live soil reading.
 
-If the AI service is temporarily unavailable, the reply is tagged *(offline)* and comes from a rule-based fallback  you still get an answer, never silence.
+If the AI service is temporarily unavailable, the reply is tagged *(offline)* and comes from a rule-based fallback — you still get an answer, never silence.
 
 ### 1.10 Exiting (menu 7)
 
@@ -113,15 +113,15 @@ When a farmer arrives with a valid token:
 1. Scan or enter the **token ID** (format `ECT-XXXXXXXXXXXX`).
 2. The pump terminal POSTs to `/ect/redeem` with `{token_id, lat, lng, kwh}`.
 3. Three checks run automatically:
-   - **Signature**  HMAC must match the issuer's key
-   - **GPS**  your pump must be within 5 km of the farm's GPS
-   - **Expiry**  the token must not be more than 72h old
+   - **Signature** — HMAC must match the issuer's key
+   - **GPS** — your pump must be within 5 km of the farm's GPS
+   - **Expiry** — the token must not be more than 72h old
 4. If all three pass, the pump releases the requested kWh and the ledger records the event.
 
 ### 2.2 Offline mode
 
 If your kiosk has no internet:
-- The token carries its own HMAC signature  you can verify it offline using the shared operator key (ask your SACCO for the key).
+- The token carries its own HMAC signature — you can verify it offline using the shared operator key (ask your SACCO for the key).
 - Record each redemption locally (CSV or paper).
 - Sync to the ledger next time you have connectivity. The Mavuno API accepts backdated redeem events up to 24 hours after the fact.
 
@@ -145,15 +145,15 @@ If your kiosk has no internet:
 Browse to `https://<your-mavuno-url>/`.
 
 You see:
-- **Left column**  Uganda map with operational-zone markers. Click a marker to jump to that farm.
-- **Right column**  one card per registered farmer: name, district, crop, YPS, tier, kWh allocation, credit ceiling in UGX, pump, and current ECT balance.
-- **Bottom panel**  live audit ledger, refreshing every 2 seconds.
+- **Left column** — Uganda map with operational-zone markers. Click a marker to jump to that farm.
+- **Right column** — one card per registered farmer: name, district, crop, YPS, tier, kWh allocation, credit ceiling in UGX, pump, and current ECT balance.
+- **Bottom panel** — live audit ledger, refreshing every 2 seconds.
 
 ### 3.2 Controls
 
 | Control | What it does |
 |---|---|
-| **Run full cycle** (left toolbar) | Runs sensor → YPS → ECT issue → partial redeem for all farms in one click  useful for demos and regression checks |
+| **Run full cycle** (left toolbar) | Runs sensor → YPS → ECT issue → partial redeem for all farms in one click — useful for demos and regression checks |
 | **Refresh** | Re-pulls all farm scores and balances |
 | **Verify ledger** | Recomputes the full SHA-256 hash chain and reports any tamper |
 | **Run cycle** (per-farm) | Single-farm end-to-end cycle |
@@ -163,14 +163,14 @@ You see:
 ### 3.3 Understanding the ledger
 
 Every state change in Mavuno writes to an append-only ledger. Each row shows:
-- **Timestamp**  when the event happened (browser local time)
-- **Event type** 
-  - `ISSUE`  a new ECT was issued (green)
-  - `REDEEM`  a farmer redeemed kWh at a pump (gold)
-  - `REJECT`  a redemption was blocked (out of range, bad signature) (red)
-  - `EXPIRE`  a token passed its 72-hour TTL (grey)
-- **Payload**  the JSON body of the event
-- **Hash**  first 10 characters of the SHA-256 hash tying this row to the previous row
+- **Timestamp** — when the event happened (browser local time)
+- **Event type** —
+  - `ISSUE` — a new ECT was issued (green)
+  - `REDEEM` — a farmer redeemed kWh at a pump (gold)
+  - `REJECT` — a redemption was blocked (out of range, bad signature) (red)
+  - `EXPIRE` — a token passed its 72-hour TTL (grey)
+- **Payload** — the JSON body of the event
+- **Hash** — first 10 characters of the SHA-256 hash tying this row to the previous row
 
 A tampered ledger shows up as a red toast when you click **Verify ledger**, naming the first bad line.
 
@@ -179,7 +179,7 @@ A tampered ledger shows up as a red toast when you click **Verify ledger**, nami
 Browse to `/phone`. This is a browser-based Nokia-style phone for testing the USSD flow without an Africa's Talking account:
 1. Click a farmer SIM on the right.
 2. Press **CALL**.
-3. Tap menu digits  they auto-send after 0.8 seconds, or press `#` to send immediately.
+3. Tap menu digits — they auto-send after 0.8 seconds, or press `#` to send immediately.
 4. Press **END** to hang up.
 
 Every USSD action hits the same state machine as the real AT callback. The dashboard ledger reflects it live.

@@ -206,13 +206,14 @@
     <p>Each SIM has 180 days of soil sensor history powering their YPS score.</p>
     <div class="numbers" id="numbers">Loading…</div>
     <div class="menu-map">
+      <strong>Step 1:</strong> Select Language (1. En, 2. Lg)<br/>
       <strong>Menu map:</strong><br/>
-      <strong>1</strong> — Check YPS score<br/>
-      <strong>2</strong> — Request Energy Credit Token<br/>
-      <strong>3</strong> — Check balance<br/>
-      <strong>4</strong> — Today's market price<br/>
-      <strong>5</strong> — Sell produce (auto-match buyers)<br/>
-      <strong>6</strong> — Ask Mavuno (AI advisor)<br/>
+      <strong>1</strong> — Check YPS Score<br/>
+      <strong>2</strong> — Request Energy Credit<br/>
+      <strong>3</strong> — Check Balance<br/>
+      <strong>4</strong> — Live Market Price<br/>
+      <strong>5</strong> — Sell Produce<br/>
+      <strong>6</strong> — Ask Mavuno (AI)<br/>
       <strong>7</strong> — Exit<br/>
       <span style="font-size:11px;">Tip: press a digit and it auto-sends in 0.8s. Or press <code>#</code> to send immediately.</span>
     </div>
@@ -265,15 +266,15 @@ async function loadFarms() {
     const btn = document.createElement("button");
     btn.innerHTML =
       '<span class="who">' + f.farmer_name + '</span>' +
-      '<span class="meta">' + f.phone + ' · ' + f.district + ' · ' + f.crop + '</span>';
+      '<span class="meta">' + f.phone + ' · ' + f.district + '</span>';
     btn.addEventListener("click", () => {
       if (currentBtn) currentBtn.classList.remove("active");
       btn.classList.add("active");
       currentBtn = btn;
       currentPhone = f.phone;
       renderScreen(
-        "SIM selected:\n" + f.farmer_name + "\n" + f.phone +
-        "\n\nPress 📞 CALL to dial *165*ACP#"
+        "SIM: " + f.farmer_name + "\n" + f.phone +
+        "\n\nPress 📞 CALL to dial Mavuno."
       );
     });
     numbers.appendChild(btn);
@@ -289,13 +290,15 @@ async function sendUssd() {
     body: JSON.stringify({phone: currentPhone, text: sessionText})
   });
   const data = await res.json();
-  renderScreen(data.body, {title: "*165*ACP#"});
+  renderScreen(data.body, {title: "MAVUNO *165#"});
   if (data.kind === "END") {
     sessionActive = false;
     sessionText = "";
     pendingInput = "";
   } else {
-    screen.innerHTML += "\n\n> " + pendingInput;
+    // Show what they just dialed
+    const preview = pendingInput ? "\n\n> " + pendingInput : "";
+    screen.innerHTML += preview;
   }
 }
 

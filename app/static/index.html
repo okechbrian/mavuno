@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Mavuno — Where soil becomes credit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
+    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --line-soft: #e6dfc9;
+    --accent: #2e4d1f; --accent-soft: #4a6b37; --gold: #a17b2c; --clay: #a0542c; --bad: #8a2f24;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
+    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --line-soft: #242219;
+    --accent: #c4d19c; --accent-soft: #a7b87a; --gold: #d4a656; --clay: #c87a52; --bad: #d07668;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    transition: background 250ms ease, color 250ms ease;
+  }
+  .display { font-family: "Fraunces", Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
+  
+  header.masthead { border-bottom: 1px solid var(--line); background: var(--paper); }
+  .masthead-inner {
+    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 14px; }
+  .brand .mark { font-family: "Fraunces", serif; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; color: var(--ink); }
+  .brand .wordmark-sub {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; padding-left: 14px; border-left: 1px solid var(--line);
+  }
+  nav.primary { display: flex; align-items: center; gap: 28px; }
+  nav.primary a { font-size: 13px; font-weight: 500; text-decoration: none; color: var(--ink-soft); letter-spacing: 0.02em; }
+  nav.primary a:hover { color: var(--accent); }
+  .theme-toggle {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 7px 12px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    font-family: "Inter", sans-serif; font-weight: 500; cursor: pointer;
+    border-radius: 2px; transition: all 160ms;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+  .hero {
+    max-width: 1180px; margin: 0 auto; padding: 88px 40px 56px;
+    display: grid; grid-template-columns: 1fr 400px; gap: 80px; align-items: center;
+  }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 40px; padding: 56px 28px 40px; } }
+  .hero .lede .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--muted); margin-bottom: 22px; display: block; }
+  .hero h1 {
+    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 24px; color: var(--ink);
+  }
+  .hero h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
+  .hero p.standfirst {
+    font-family: "Fraunces", serif; font-weight: 300; font-size: 19px;
+    line-height: 1.55; color: var(--ink-soft); max-width: 58ch; margin: 0;
+  }
+
+  .login-card {
+    background: var(--paper); border: 1px solid var(--line); padding: 40px; border-radius: 2px;
+    display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .login-card h2 { font-family: "Fraunces", serif; font-size: 24px; font-weight: 400; margin: 0; color: var(--ink); }
+  .login-card p { font-size: 13px; color: var(--muted); margin: 0 0 10px; line-height: 1.6; }
+  .login-card select, .login-card input {
+    width: 100%; padding: 12px 16px; border: 1px solid var(--line); background: var(--bg);
+    font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink); border-radius: 2px;
+  }
+  .login-card select:focus, .login-card input:focus { outline: 1px solid var(--accent); }
+  
+  .btn {
+    font-family: "Inter", sans-serif; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 16px;
+    border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    cursor: pointer; border-radius: 2px; transition: background 150ms; width: 100%;
+  }
+  .btn:hover { background: var(--accent); border-color: var(--accent); }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--bad); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .toast.show { opacity: 1; }
+  
+  /* Footer */
+  footer.colophon {
+    border-top: 1px solid var(--line); margin-top: 48px; background: var(--paper);
+  }
+  .colophon-inner {
+    max-width: 1180px; margin: 0 auto; padding: 48px 40px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+  }
+  @media (max-width: 720px) { .colophon-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 28px; } }
+  .colophon h4 {
+    font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px;
+  }
+  .colophon .mission {
+    font-family: "Fraunces", serif; font-size: 22px; font-weight: 300;
+    line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); max-width: 34ch;
+  }
+  .colophon ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--muted); line-height: 2; }
+  .colophon .fineprint {
+    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+    border-top: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <span class="mark">Mavuno</span>
+      <span class="wordmark-sub">Soil · Credit · Solar</span>
+    </div>
+    <nav class="primary">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" style="font-size: 16px; border: none;">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="lede">
+    <span class="eyebrow">Operations · Uganda</span>
+    <h1 class="display">Where soil <em>becomes</em> credit.</h1>
+    <p class="standfirst">
+      Mavuno is a unified agricultural operating system. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the exact same USSD session, the <strong>Community Resource Platform (CRP)</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
+    </p>
+  </div>
+  
+  <aside>
+    <div class="login-card">
+      <h2 class="display">System Login</h2>
+      <p>Select your role to access your personalized dashboard.</p>
+      <form onsubmit="handleLogin(event)">
+        <select id="login-role" required onchange="updatePlaceholders()">
+          <option value="farmer" selected>Farmer</option>
+          <option value="buyer">Institutional Buyer</option>
+          <option value="agent">SACCO Agent</option>
+        </select>
+        <input type="text" id="login-id" placeholder="Phone or ID (e.g. UG-MBL-0001)" required>
+        <input type="password" id="login-pin" placeholder="PIN or Password" required>
+        <button type="submit" class="btn">Authenticate</button>
+      </form>
+    </div>
+  </aside>
+</div>
+
+<footer class="colophon">
+  <div class="colophon-inner">
+    <div>
+      <h4>Mavuno</h4>
+      <p class="mission">Replacing collateral with soil data, and connecting smallholder farms to guaranteed markets and energy.</p>
+    </div>
+    <div>
+      <h4>Protocol & CRP</h4>
+      <ul>
+        <li>Yield Probability Score</li>
+        <li>Energy Credit Token</li>
+        <li>Live Marketplace & Matching</li>
+        <li>AI Agronomist via USSD</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Field</h4>
+      <ul>
+        <li>Mbale · Coffee</li>
+        <li>Mbarara · Beans</li>
+        <li>Gulu · Maize</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fineprint">
+    <span>Mavuno Protocol · Uganda</span>
+    <span id="fineprint-time">—</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const THEME_KEY = "mavuno-theme";
+const themeBtn = document.getElementById("theme-toggle");
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
+themeBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+};
+
+function tick() {
+  document.getElementById("fineprint-time").textContent = new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+}
+tick(); setInterval(tick, 30000);
+
+function updatePlaceholders() {
+  const role = document.getElementById("login-role").value;
+  const idInput = document.getElementById("login-id");
+  const pinInput = document.getElementById("login-pin");
+  
+  if (role === "farmer") {
+    idInput.placeholder = "Phone or Farm ID (e.g. UG-MBL-0001)";
+    idInput.value = "";
+    idInput.disabled = false;
+    pinInput.placeholder = "PIN (Default: 1234)";
+  } else if (role === "buyer") {
+    idInput.placeholder = "Phone or Buyer ID (e.g. BY-001)";
+    idInput.value = "";
+    idInput.disabled = false;
+    pinInput.placeholder = "PIN (Default: 1234)";
+  } else if (role === "agent") {
+    idInput.value = "Admin";
+    idInput.disabled = true;
+    pinInput.placeholder = "Password (mavuno2026)";
+  }
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const role = document.getElementById("login-role").value;
+  let id_or_phone = document.getElementById("login-id").value;
+  let pin_or_password = document.getElementById("login-pin").value;
+  
+  if (role === "agent") {
+    id_or_phone = "admin";
+  }
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role, id_or_phone, pin_or_password })
+  });
+  
+  const data = await res.json();
+  if (data.ok) {
+    window.location.href = data.redirect;
+  } else {
+    toast(data.error);
+  }
+}
+</script>
+</body>
+</html>

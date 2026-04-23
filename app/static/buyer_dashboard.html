@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Mavuno Buyer Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
+    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --line-soft: #e6dfc9;
+    --accent: #2e4d1f; --accent-soft: #4a6b37; --gold: #a17b2c; --clay: #a0542c; --bad: #8a2f24;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
+    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --line-soft: #242219;
+    --accent: #c4d19c; --accent-soft: #a7b87a; --gold: #d4a656; --clay: #c87a52; --bad: #d07668;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Inter", sans-serif; font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased; display: flex;
+  }
+  .display { font-family: "Fraunces", serif; }
+  
+  .sidebar {
+    width: 280px; background: var(--paper); border-right: 1px solid var(--line);
+    padding: 32px; display: flex; flex-direction: column; gap: 32px; overflow-y: auto;
+  }
+  .main { flex: 1; overflow-y: auto; padding: 48px; }
+  
+  .radar-card { background: var(--bg-alt); padding: 20px; border: 1px solid var(--line); border-radius: 4px; }
+  .radar-card .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; display: block; }
+  .radar-card .value { font-family: "Fraunces", serif; font-size: 28px; line-height: 1.1; }
+  
+  .offer-card { background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: 4px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+  .o-head { display: flex; justify-content: space-between; align-items: start; }
+  .o-head h3 { font-family: "Fraunces", serif; font-size: 20px; margin: 0; }
+  
+  .btn { padding: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+  .btn:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div>
+    <div class="display" style="font-size: 24px; font-weight: 600;">Mavuno</div>
+    <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted);">Buyer Dashboard</div>
+  </div>
+
+  <div class="radar-card">
+    <span class="label">Buyer Name</span>
+    <div class="value" id="disp-buyer-name" style="font-size: 18px;">—</div>
+  </div>
+
+  <div class="radar-card">
+    <span class="label">Region & Floor Price</span>
+    <div class="value" id="disp-region" style="font-size: 16px;">—</div>
+  </div>
+
+  <div class="radar-card" style="background:var(--paper);">
+    <span class="label">Market Trends</span>
+    <div id="disp-trends" style="margin-top:8px;">Loading trends...</div>
+  </div>
+
+  <div style="margin-top:auto;">
+    <a href="/phone" style="text-decoration:none; color:var(--accent); font-weight:600; display:block; margin-bottom:12px;">📱 Field Simulator</a>
+    <a href="/" style="text-decoration:none; color:var(--bad); font-weight:600; display:block;">← Logout</a>
+  </div>
+</div>
+
+<div class="main">
+  <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:40px; border-bottom: 1px solid var(--line); padding-bottom:20px;">
+    <h1 class="display" style="font-size: 32px; margin:0;">Live Marketplace</h1>
+    <button class="btn" id="theme-toggle" style="border:none; font-size:16px; background:transparent;">🌙</button>
+  </div>
+
+  <div id="offers-content">Loading live offers...</div>
+</div>
+
+<script>
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.textContent = t === "dark" ? "☀️" : "🌙";
+  localStorage.setItem("mavuno-theme", t);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyTheme(localStorage.getItem("mavuno-theme") || "light");
+  const btn = document.getElementById("theme-toggle");
+  if (btn) {
+    btn.onclick = () => {
+      const cur = document.documentElement.getAttribute("data-theme");
+      applyTheme(cur === "dark" ? "light" : "dark");
+    };
+  }
+  loadData();
+});
+
+const pathParts = window.location.pathname.split("/");
+const buyerId = pathParts[pathParts.length - 1];
+
+async function jget(url) { 
+  try {
+    const r = await fetch(url);
+    if(!r.ok) return {error: "server_error"};
+    return await r.json();
+  } catch(e) { return {error: "network_error"}; }
+}
+
+async function jpost(url, body) {
+  try {
+    const res = await fetch(url, {
+      method: "POST", 
+      headers: {"Content-Type":"application/json"}, 
+      body: JSON.stringify(body || {})
+    });
+    return await res.json();
+  } catch(e) { return {error: "network_error"}; }
+}
+
+let currentBuyer = null;
+
+async function loadData() {
+  const buyers = await jget("/buyers");
+  if (!buyers || buyers.error) { document.getElementById("offers-content").innerHTML = "Error loading buyers."; return; }
+  currentBuyer = buyers.find(b => b.id === buyerId);
+  
+  if (!currentBuyer) {
+    document.getElementById("offers-content").innerHTML = "Buyer not found.";
+    return;
+  }
+
+  document.getElementById("disp-buyer-name").textContent = currentBuyer.name;
+  document.getElementById("disp-region").innerHTML = `${currentBuyer.region}<br><span style="font-size:12px; color:var(--muted);">UGX ${currentBuyer.floor_ugx} / kg</span>`;
+
+  const trendsDiv = document.getElementById("disp-trends");
+  if(trendsDiv) {
+    let trendsHtml = '';
+    for(let c of currentBuyer.crops) {
+      const p = await jget(`/crp/prices?crop=${c}&region=${currentBuyer.region}`);
+      if(!p.error) {
+        const arrow = p.trend === "up" ? "↑" : p.trend === "down" ? "↓" : "=";
+        const color = p.trend === "up" ? "var(--accent)" : p.trend === "down" ? "var(--bad)" : "var(--muted)";
+        trendsHtml += `
+          <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--line-soft);">
+            <div style="font-size:11px; text-transform:uppercase; color:var(--ink); font-weight:600;">${c}</div>
+            <div style="font-family:'Fraunces', serif; font-size:20px;">UGX ${p.today.ugx.toLocaleString()}</div>
+            <div style="font-size:10px; color:var(--muted); font-family:'JetBrains Mono', monospace;">
+              7d Avg: UGX ${p.last7_avg.toLocaleString()} <strong style="color:${color}; font-size:12px;">${arrow}</strong>
+            </div>
+          </div>
+        `;
+      }
+    }
+    trendsDiv.innerHTML = trendsHtml || "No data available";
+  }
+
+  loadOffers();
+}
+
+async function loadOffers() {
+  if (!currentBuyer) return;
+  const res = await jget("/crp/offers?limit=50");
+  const offers = res.offers || [];
+  
+  // Filter offers matching the buyer's region and crops
+  const relevantOffers = offers.filter(o => 
+    o.region === currentBuyer.region && 
+    currentBuyer.crops.includes(o.crop.toLowerCase()) &&
+    o.floor_ugx <= currentBuyer.floor_ugx
+  );
+
+  const container = document.getElementById("offers-content");
+  if (relevantOffers.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted); font-style:italic;">No matching open offers currently in your region.</div>';
+    return;
+  }
+
+  container.innerHTML = relevantOffers.map(o => `
+    <div class="offer-card">
+      <div class="o-head">
+        <div>
+          <h3>${o.kg} kg of ${o.crop.toUpperCase()}</h3>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);">${o.id} · ${o.farmer_name}</span>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Fraunces',serif; font-size:24px; color:var(--accent);">UGX ${o.floor_ugx.toLocaleString()}</div>
+          <span style="font-size:10px; color:var(--muted); text-transform:uppercase;">per kg</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn" style="background:var(--accent); border-color:var(--accent);" onclick="alert('Offer Accepted! Farmer will be notified.')">Accept Offer</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+setInterval(loadOffers, 5000);
+</script>
+</body>
+</html>

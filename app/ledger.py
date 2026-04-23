@@ -1,85 +1,41 @@
-"""Append-only SHA-256 hash-chained JSONL ledger.
-
-Each line is a JSON object with an 'entry' payload plus:
-  prev_hash:  hex digest of the prior line's hash, or GENESIS for line 1
-  hash:       sha256(prev_hash + canonical_json(entry))
-
-Tampering with any prior entry invalidates every subsequent hash.
-"""
-from __future__ import annotations
-
-import hashlib
+"""SQLite Audit Ledger for Prototype."""
 import json
-import threading
 import time
-from pathlib import Path
+from .database import get_db
+from .security import hash_payload, chain_hash
 
-from .config import DATA_DIR
+def write(entry_type: str, payload: dict):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT curr_hash FROM ledger ORDER BY id DESC LIMIT 1')
+    row = cur.fetchone()
+    prev_hash = row['curr_hash'] if row else "0" * 64
+    
+    ts = int(time.time())
+    entry = {"type": entry_type, "payload": payload, "ts": ts}
+    p_hash = hash_payload(entry)
+    c_hash = chain_hash(prev_hash, p_hash)
+    
+    cur.execute('INSERT INTO ledger (prev_hash, curr_hash, type, payload, timestamp) VALUES (?,?,?,?,?)',
+               (prev_hash, c_hash, entry_type, json.dumps(entry), ts))
+    conn.commit()
+    conn.close()
+    return c_hash
 
-LEDGER_PATH = DATA_DIR / "ledger.jsonl"
-GENESIS = "0" * 64
-_lock = threading.Lock()
+def read_all():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT payload, curr_hash as hash FROM ledger ORDER BY id ASC')
+    rows = cur.fetchall()
+    conn.close()
+    return [{"entry": json.loads(r['payload']), "hash": r['hash']} for r in rows]
 
-
-def _canon(obj: dict) -> str:
-    return json.dumps(obj, sort_keys=True, separators=(",", ":"))
-
-
-def _hash(prev: str, entry: dict) -> str:
-    return hashlib.sha256((prev + _canon(entry)).encode()).hexdigest()
-
-
-def _last_hash() -> str:
-    if not LEDGER_PATH.exists():
-        return GENESIS
-    try:
-        with LEDGER_PATH.open("r", encoding="utf-8") as f:
-            last = None
-            for line in f:
-                line = line.strip()
-                if line:
-                    last = line
-            if last is None:
-                return GENESIS
-            return json.loads(last)["hash"]
-    except Exception:
-        return GENESIS
-
-
-def append(event_type: str, payload: dict) -> dict:
-    """Append a new event. Returns the stored record."""
-    with _lock:
-        prev = _last_hash()
-        entry = {"ts": int(time.time()), "type": event_type, "payload": payload}
-        h = _hash(prev, entry)
-        record = {"prev_hash": prev, "entry": entry, "hash": h}
-        LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with LEDGER_PATH.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(record) + "\n")
-        return record
-
-
-def read_all() -> list[dict]:
-    if not LEDGER_PATH.exists():
-        return []
-    rows: list[dict] = []
-    with LEDGER_PATH.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                rows.append(json.loads(line))
-    return rows
-
-
-def verify() -> dict:
-    """Re-hash the chain. Returns {ok, length, first_bad_line}."""
-    prev = GENESIS
+def verify():
     rows = read_all()
-    for i, row in enumerate(rows, start=1):
-        if row["prev_hash"] != prev:
-            return {"ok": False, "length": i, "first_bad_line": i, "reason": "prev_hash_mismatch"}
-        expected = _hash(prev, row["entry"])
-        if row["hash"] != expected:
-            return {"ok": False, "length": i, "first_bad_line": i, "reason": "hash_mismatch"}
-        prev = row["hash"]
+    if not rows: return {"ok": True, "length": 0}
+    prev = "0" * 64
+    for i, r in enumerate(rows):
+        p_hash = hash_payload(r['entry'])
+        if r['hash'] != chain_hash(prev, p_hash): return {"ok": False, "bad_line": i+1}
+        prev = r['hash']
     return {"ok": True, "length": len(rows)}

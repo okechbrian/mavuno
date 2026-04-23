@@ -1,90 +1,71 @@
-"""Load YPS model and score a farm from its recent sensor history."""
-from __future__ import annotations
-
-import json
-from functools import lru_cache
-from pathlib import Path
-
+"""Yield Probability Scorer for Prototype."""
 import joblib
 import numpy as np
-
-from .config import DATA_DIR
-
-CROP_PROFILE = {
-    "coffee": {"sm_ideal": 28.0, "rain_ideal": 140.0},
-    "maize":  {"sm_ideal": 22.0, "rain_ideal": 110.0},
-    "beans":  {"sm_ideal": 24.0, "rain_ideal": 100.0},
-}
-
+from functools import lru_cache
+from .database import get_db
 
 @lru_cache(maxsize=1)
 def _load_model():
-    bundle = joblib.load(DATA_DIR / "yps_model.pkl")
-    return bundle
+    from .database import DATA_DIR
+    return joblib.load(DATA_DIR / "yps_model.pkl")
 
+def score_farm(farm_id: str):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT crop FROM farms WHERE id = ?", (farm_id,))
+    row = cur.fetchone()
+    if not row: return {"error": "unknown_farm"}
+    crop = row['crop']
+    
+    cur.execute("SELECT soil_moisture, temp_c, rainfall_mm, humidity_pct, n_mg_kg, p_mg_kg, k_mg_kg FROM sensor_history WHERE farm_id = ? ORDER BY timestamp DESC LIMIT 7", (farm_id,))
+    window = cur.fetchall()
+    conn.close()
+    if len(window) < 7: return {"error": "insufficient_data"}
 
-@lru_cache(maxsize=1)
-def _load_sensor_history() -> list[dict]:
-    return json.loads((DATA_DIR / "sensor_history.json").read_text(encoding="utf-8"))
+    # NPK Trends for Dashboard
+    nutrients = {
+        "n": [r['n_mg_kg'] for r in reversed(window)],
+        "p": [r['p_mg_kg'] for r in reversed(window)],
+        "k": [r['k_mg_kg'] for r in reversed(window)]
+    }
 
-
-@lru_cache(maxsize=1)
-def _load_farms() -> dict:
-    return json.loads((DATA_DIR / "farms.json").read_text(encoding="utf-8"))
-
-
-def _recent_window(farm_id: str, days: int = 7) -> list[dict]:
-    hist = [r for r in _load_sensor_history() if r["farm_id"] == farm_id]
-    return hist[-days:]
-
-
-def score_farm(farm_id: str) -> dict:
-    """Return {farm_id, yps, tier, kwh_allocated, credit_ceiling_ugx, reason}."""
-    farms = _load_farms()
-    if farm_id not in farms:
-        return {"error": "unknown_farm", "farm_id": farm_id}
-
-    window = _recent_window(farm_id)
-    if len(window) < 7:
-        return {"error": "insufficient_data", "farm_id": farm_id}
-
-    crop = farms[farm_id]["crop"]
-    profile = CROP_PROFILE[crop]
-
-    sm_avg = float(np.mean([r["soil_moisture"] for r in window]))
-    rain_sum = float(np.sum([r["rainfall_mm"] for r in window]))
-    temp_var = float(np.var([r["temp_c"] for r in window]))
-    humidity_avg = float(np.mean([r["humidity_pct"] for r in window]))
-    sm_dev = abs(sm_avg - profile["sm_ideal"])
-    rain_dev = abs(rain_sum - profile["rain_ideal"] * 7 / 30)
+    sm_avg = float(np.mean([r['soil_moisture'] for r in window]))
+    rain_sum = float(np.sum([r['rainfall_mm'] for r in window]))
+    temp_var = float(np.var([r['temp_c'] for r in window]))
+    hum_avg = float(np.mean([r['humidity_pct'] for r in window]))
 
     bundle = _load_model()
-    model = bundle["model"]
-    crop_enc = bundle["crop_encoding"][crop]
-
-    X = np.array([[sm_avg, rain_sum, temp_var, humidity_avg, sm_dev, rain_dev, crop_enc]])
-    proba = model.predict_proba(X)[0]
-    tier = int(np.argmax(proba))
-    # Compose YPS 0-1000: weighted expected tier probability
-    expected = proba[0] * 200 + proba[1] * 600 + proba[2] * 900
-    yps = int(round(float(expected)))
-    yps = max(0, min(1000, yps))
-
-    from .config import TIER_KWH, TIER_CEILING_UGX
+    # Simple YPS Logic
+    expected = (sm_avg * 10) + (rain_sum * 2) - (temp_var * 5)
+    yps = int(max(0, min(1000, 500 + expected)))
+    
+    # Generate actionable diagnostics based on the 7 crucial signals
+    n_avg = np.mean(nutrients["n"]) if nutrients["n"] else 0
+    p_avg = np.mean(nutrients["p"]) if nutrients["p"] else 0
+    k_avg = np.mean(nutrients["k"]) if nutrients["k"] else 0
+    
+    diagnostics = []
+    if sm_avg < 20:
+        diagnostics.append("💧 Moisture deficit. Immediate irrigation required to stabilize YPS.")
+    elif sm_avg > 35:
+        diagnostics.append("⚠️ Waterlogging risk. Suspend irrigation to prevent root rot.")
+        
+    if n_avg < 25:
+        diagnostics.append("🌱 Severe Nitrogen depletion. Apply Urea/NPK to restore vegetative growth.")
+    if p_avg < 12:
+        diagnostics.append("🌱 Phosphorus low. Root development is currently stunted.")
+    if k_avg < 150:
+        diagnostics.append("🛡️ Potassium deficit. Crop drought-resilience is compromised.")
+        
+    if not diagnostics:
+        diagnostics.append("✅ All 7 biological signals are nominal. Maintain current regimen.")
+    
+    tier = 2 if yps > 700 else 1 if yps > 400 else 0
+    health = "Excellent" if yps > 750 else "Good" if yps > 500 else "Fair" if yps > 300 else "Poor"
+    
     return {
-        "farm_id": farm_id,
-        "crop": crop,
-        "yps": yps,
-        "tier": tier,
-        "tier_label": ["denied", "partial", "full"][tier],
-        "kwh_allocated": TIER_KWH[tier],
-        "credit_ceiling_ugx": TIER_CEILING_UGX[tier],
-        "features": {
-            "sm_avg_7d": round(sm_avg, 2),
-            "rain_sum_7d": round(rain_sum, 2),
-            "temp_var_7d": round(temp_var, 2),
-            "humidity_avg_7d": round(humidity_avg, 2),
-            "sm_deviation": round(sm_dev, 2),
-            "rain_deviation": round(rain_dev, 2),
-        },
+        "farm_id": farm_id, "yps": yps, "tier": tier, "credit_health": health,
+        "kwh_allocated": [0, 25, 60][tier], "credit_ceiling_ugx": [0, 75000, 200000][tier],
+        "nutrients": nutrients,
+        "diagnostics": diagnostics
     }

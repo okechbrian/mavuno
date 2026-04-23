@@ -62,10 +62,6 @@ Mavuno is not just software; it is an IoT-integrated protocol. Real physical har
 **How to deploy this practically and affordably?**
 Please read the [Hardware & Practical Deployment Strategy](docs/HARDWARE_DEPLOYMENT.md) document to see how we use **Sentinel Nodes** to drop the hardware cost to **~$4.00 per farmer**, and how we use shared solar hubs to distribute water without putting farmers in asset debt.
 
-**How to demo this to judges:**
-- Click the golden **"Ping Sensor"** button on any farm card in the dashboard.
-- This simulates the physical hardware waking up and transmitting a payload of these 7 signals over 2G/GSM to the `/sensor/telemetry` endpoint.
-- Watch as the Nitrogen, Phosphorus, and Potassium **Sparklines instantly update** on the dashboard, the Yield Probability Score (YPS) dynamically recalculates, and the ledger securely logs the "SENSOR_PING" hash.
 
 ### 5. Cryptographic Security & Offline Verification
 Tokens are signed using HMAC-SHA256. To demonstrate that remote solar pumps can verify these tokens *without* an internet connection, run the offline verification script:

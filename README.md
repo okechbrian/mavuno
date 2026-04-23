@@ -1,4 +1,4 @@
-# Mavuno - Future Makers Prototype v2
+# Mavuno - Prototype v2
 
 **Live Prototype:** [https://mavuno-prototype.vercel.app](https://mavuno-prototype.vercel.app)
 

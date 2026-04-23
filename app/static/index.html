@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <title>Mavuno — Where soil becomes credit</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Mavuno: soil-backed energy credit and agricultural marketplace for Ugandan smallholder farms." />
+<meta property="og:title" content="Mavuno — Where soil becomes credit" />
+<meta property="og:description" content="Soil data replaces collateral. USSD-first credit, market matching, and AI agronomy." />
+<meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -30,7 +34,7 @@
     transition: background 250ms ease, color 250ms ease;
   }
   .display { font-family: "Fraunces", Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
-  
+
   header.masthead { border-bottom: 1px solid var(--line); background: var(--paper); }
   .masthead-inner {
     max-width: 1180px; margin: 0 auto; padding: 20px 40px;
@@ -43,13 +47,12 @@
     color: var(--muted); font-weight: 500; padding-left: 14px; border-left: 1px solid var(--line);
   }
   nav.primary { display: flex; align-items: center; gap: 28px; }
-  nav.primary a { font-size: 13px; font-weight: 500; text-decoration: none; color: var(--ink-soft); letter-spacing: 0.02em; }
-  nav.primary a:hover { color: var(--accent); }
   .theme-toggle {
     background: transparent; border: 1px solid var(--line); color: var(--muted);
-    padding: 7px 12px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    width: 44px; height: 44px; font-size: 18px;
     font-family: "Inter", sans-serif; font-weight: 500; cursor: pointer;
-    border-radius: 2px; transition: all 160ms;
+    border-radius: 50%; transition: all 160ms;
+    display: inline-flex; align-items: center; justify-content: center;
   }
   .theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
 
@@ -57,11 +60,10 @@
     max-width: 1180px; margin: 0 auto; padding: 88px 40px 56px;
     display: grid; grid-template-columns: 1fr 400px; gap: 80px; align-items: center;
   }
-  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 40px; padding: 56px 28px 40px; } }
   .hero .lede .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--muted); margin-bottom: 22px; display: block; }
   .hero h1 {
-    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(40px, 6vw, 72px);
-    line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 24px; color: var(--ink);
+    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(36px, 6vw, 72px);
+    line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 24px; color: var(--ink);
   }
   .hero h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
   .hero p.standfirst {
@@ -70,37 +72,55 @@
   }
 
   .login-card {
-    background: var(--paper); border: 1px solid var(--line); padding: 40px; border-radius: 2px;
-    display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    background: var(--paper); border: 1px solid var(--line); padding: 32px; border-radius: 4px;
+    display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   }
   .login-card h2 { font-family: "Fraunces", serif; font-size: 24px; font-weight: 400; margin: 0; color: var(--ink); }
-  .login-card p { font-size: 13px; color: var(--muted); margin: 0 0 10px; line-height: 1.6; }
-  .login-card select, .login-card input {
-    width: 100%; padding: 12px 16px; border: 1px solid var(--line); background: var(--bg);
-    font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink); border-radius: 2px;
+  .login-card .sub { font-size: 14px; color: var(--muted); margin: 0 0 8px; line-height: 1.5; }
+  .login-card form { display: flex; flex-direction: column; gap: 12px; }
+  .login-card label.fld {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; margin: 0 0 -4px;
   }
-  .login-card select:focus, .login-card input:focus { outline: 1px solid var(--accent); }
-  
+  .login-card select, .login-card input[type="text"], .login-card input[type="password"] {
+    width: 100%; padding: 14px 16px; border: 1px solid var(--line); background: var(--bg);
+    font-family: "Inter", sans-serif; font-size: 16px; color: var(--ink); border-radius: 3px;
+    min-height: 48px;
+  }
+  .login-card select:focus, .login-card input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
   .btn {
-    font-family: "Inter", sans-serif; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 16px;
+    font-family: "Inter", sans-serif; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 16px;
     border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
-    cursor: pointer; border-radius: 2px; transition: background 150ms; width: 100%;
+    cursor: pointer; border-radius: 3px; transition: background 150ms; width: 100%;
+    min-height: 48px;
   }
   .btn:hover { background: var(--accent); border-color: var(--accent); }
+  .btn:disabled { opacity: 0.6; cursor: wait; }
 
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--bad); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .toast.show { opacity: 1; }
-  
-  /* Footer */
-  footer.colophon {
-    border-top: 1px solid var(--line); margin-top: 48px; background: var(--paper);
+  .consent {
+    font-size: 12px; color: var(--muted); text-align: center;
+    line-height: 1.5; margin: 4px 0 0;
   }
+  .consent a { color: var(--accent); text-decoration: underline; }
+  .consent a:hover { color: var(--ink); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--bad); color: var(--paper); padding: 14px 28px;
+    border-radius: 4px; opacity: 0; transition: opacity 300ms;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18); pointer-events: none;
+    max-width: calc(100vw - 32px); text-align: center;
+  }
+  .toast.show { opacity: 1; }
+
+  footer.colophon { border-top: 1px solid var(--line); margin-top: 48px; background: var(--paper); }
   .colophon-inner {
     max-width: 1180px; margin: 0 auto; padding: 48px 40px;
     display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
   }
-  @media (max-width: 720px) { .colophon-inner { grid-template-columns: 1fr; gap: 32px; padding: 40px 28px; } }
   .colophon h4 {
     font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.22em;
     text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px;
@@ -110,11 +130,30 @@
     line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); max-width: 34ch;
   }
   .colophon ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--muted); line-height: 2; }
+  .colophon a.legal-link { color: var(--muted); text-decoration: none; font-size: 13px; }
+  .colophon a.legal-link:hover { color: var(--accent); }
   .colophon .fineprint {
     max-width: 1180px; margin: 0 auto; padding: 20px 40px;
     border-top: 1px solid var(--line-soft);
-    display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-soft);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    font-size: 11px; color: var(--muted-soft);
     letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* ======================== MOBILE ======================== */
+  @media (max-width: 900px) {
+    .masthead-inner { padding: 16px 20px; }
+    .hero {
+      grid-template-columns: 1fr; gap: 32px;
+      padding: 32px 20px 24px;
+    }
+    /* Login card first on mobile so the call-to-action is above the fold */
+    .hero > aside { order: -1; }
+    .hero h1 { font-size: clamp(32px, 8vw, 44px); }
+    .hero p.standfirst { font-size: 16px; }
+    .login-card { padding: 24px; }
+    .colophon-inner { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; }
+    .colophon .fineprint { padding: 16px 20px; flex-direction: column; gap: 8px; }
   }
 </style>
 </head>
@@ -127,7 +166,7 @@
       <span class="wordmark-sub">Soil · Credit · Solar</span>
     </div>
     <nav class="primary">
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" style="font-size: 16px; border: none;">🌙</button>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
     </nav>
   </div>
 </header>
@@ -137,28 +176,37 @@
     <span class="eyebrow">Operations · Uganda</span>
     <h1 class="display">Where soil <em>becomes</em> credit.</h1>
     <p class="standfirst">
-      Mavuno is a unified agricultural operating system. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the exact same USSD session, the <strong>Community Resource Platform (CRP)</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
+      Mavuno is a unified agricultural operating system. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the same USSD session, the <strong>Community Resource Platform</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
     </p>
   </div>
-  
+
   <aside>
     <div class="login-card">
-      <h2 class="display">System Login</h2>
-      <p>Select your role to access your personalized dashboard.</p>
-      <form onsubmit="handleLogin(event)">
-        <select id="login-role" required onchange="updatePlaceholders()">
+      <h2 class="display">Sign in</h2>
+      <p class="sub">Choose your role to access your dashboard.</p>
+      <form id="login-form" onsubmit="handleLogin(event)" autocomplete="off">
+        <label class="fld" for="login-role">Role</label>
+        <select id="login-role" required onchange="updateRole()" autocomplete="off">
           <option value="farmer" selected>Farmer</option>
           <option value="buyer">Institutional Buyer</option>
           <option value="agent">SACCO Agent</option>
         </select>
-        <input type="text" id="login-id" placeholder="Phone or ID (e.g. UG-MBL-0001)" required>
-        <input type="password" id="login-pin" placeholder="PIN or Password" required>
-        <label style="display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted);">
-          <input type="checkbox" required>
-          <span>I accept the <a href="/terms" target="_blank" style="color: var(--accent);">Terms & Conditions</a></span>
-        </label>
-        <button type="submit" class="btn">Authenticate</button>
+
+        <div id="id-field-wrap">
+          <label class="fld" for="login-id">Phone or ID</label>
+          <input type="text" id="login-id" placeholder="e.g. UG-MBL-0001" required autocomplete="username" inputmode="text">
+        </div>
+
+        <label class="fld" for="login-pin">PIN or password</label>
+        <input type="password" id="login-pin" placeholder="Enter PIN or password" required autocomplete="current-password" inputmode="text">
+
+        <button type="submit" class="btn" id="submit-btn">Sign in</button>
       </form>
+      <p class="consent">
+        By signing in you agree to our
+        <a href="/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a>
+        and acknowledge our data practices.
+      </p>
     </div>
   </aside>
 </div>
@@ -170,30 +218,30 @@
       <p class="mission">Replacing collateral with soil data, and connecting smallholder farms to guaranteed markets and energy.</p>
     </div>
     <div>
-      <h4>Protocol & CRP</h4>
+      <h4>Protocol &amp; CRP</h4>
       <ul>
         <li>Yield Probability Score</li>
         <li>Energy Credit Token</li>
-        <li>Live Marketplace & Matching</li>
+        <li>Live Marketplace &amp; Matching</li>
         <li>AI Agronomist via USSD</li>
       </ul>
     </div>
     <div>
-      <h4>Field</h4>
+      <h4>Information</h4>
       <ul>
-        <li>Mbale · Coffee</li>
-        <li>Mbarara · Beans</li>
-        <li>Gulu · Maize</li>
+        <li><a class="legal-link" href="/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a></li>
+        <li><a class="legal-link" href="/phone">USSD Field Simulator</a></li>
+        <li><a class="legal-link" href="https://github.com/okechbrian/mavuno" target="_blank" rel="noopener">Source on GitHub</a></li>
       </ul>
     </div>
   </div>
   <div class="fineprint">
-    <span>Mavuno Protocol · Uganda</span>
+    <span>Mavuno Protocol · Uganda · Future Makers Hackathon 2026</span>
     <span id="fineprint-time">—</span>
   </div>
 </footer>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const THEME_KEY = "mavuno-theme";
@@ -201,69 +249,79 @@ const themeBtn = document.getElementById("theme-toggle");
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+  themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "light");
 themeBtn.onclick = () => {
-  const cur = document.documentElement.getAttribute("data-theme");
-  const next = cur === "dark" ? "light" : "dark";
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   localStorage.setItem(THEME_KEY, next);
   applyTheme(next);
 };
 
 function tick() {
-  document.getElementById("fineprint-time").textContent = new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+  document.getElementById("fineprint-time").textContent =
+    new Date().toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
 }
 tick(); setInterval(tick, 30000);
 
-function updatePlaceholders() {
+function updateRole() {
   const role = document.getElementById("login-role").value;
+  const idWrap = document.getElementById("id-field-wrap");
   const idInput = document.getElementById("login-id");
   const pinInput = document.getElementById("login-pin");
-  
-  if (role === "farmer") {
-    idInput.placeholder = "Phone or Farm ID (e.g. UG-MBL-0001)";
+
+  if (role === "agent") {
+    idWrap.style.display = "none";
+    idInput.required = false;
     idInput.value = "";
-    idInput.disabled = false;
-    pinInput.placeholder = "PIN (Default: 1234)";
-  } else if (role === "buyer") {
-    idInput.placeholder = "Phone or Buyer ID (e.g. BY-001)";
-    idInput.value = "";
-    idInput.disabled = false;
-    pinInput.placeholder = "PIN (Default: 1234)";
-  } else if (role === "agent") {
-    idInput.value = "Admin";
-    idInput.disabled = true;
-    pinInput.placeholder = "Password (mavuno2026)";
+    pinInput.placeholder = "Agent password";
+  } else if (role === "farmer") {
+    idWrap.style.display = "";
+    idInput.required = true;
+    idInput.placeholder = "e.g. UG-MBL-0001 or +256...";
+    pinInput.placeholder = "PIN";
+  } else {
+    idWrap.style.display = "";
+    idInput.required = true;
+    idInput.placeholder = "e.g. BY-001 or +256...";
+    pinInput.placeholder = "PIN";
   }
 }
 
 function toast(msg) {
   const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 3200);
 }
 
 async function handleLogin(e) {
   e.preventDefault();
   const role = document.getElementById("login-role").value;
-  let id_or_phone = document.getElementById("login-id").value;
-  let pin_or_password = document.getElementById("login-pin").value;
-  
-  if (role === "agent") {
-    id_or_phone = "admin";
-  }
-
-  const res = await fetch("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ role, id_or_phone, pin_or_password })
-  });
-  
-  const data = await res.json();
-  if (data.ok) {
-    window.location.href = data.redirect;
-  } else {
-    toast(data.error);
+  const id_or_phone = role === "agent" ? "admin" : document.getElementById("login-id").value.trim();
+  const pin_or_password = document.getElementById("login-pin").value;
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  btn.textContent = "Signing in…";
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ role, id_or_phone, pin_or_password })
+    });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      window.location.href = data.redirect;
+      return;
+    }
+    toast(data.error || "Sign-in failed");
+  } catch (err) {
+    toast("Network error — please retry");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Sign in";
   }
 }
 </script>

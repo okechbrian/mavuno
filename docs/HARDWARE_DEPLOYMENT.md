@@ -1,6 +1,6 @@
 # Mavuno Hardware & Practical Deployment Strategy
 
-To achieve national scale in Uganda and prove to the Future Makers Hackathon that Mavuno is economically viable, the physical IoT and irrigation infrastructure must be affordable, durable, and highly optimized for rural conditions.
+To achieve national scale in Uganda and prove to the Mavuno that Mavuno is economically viable, the physical IoT and irrigation infrastructure must be affordable, durable, and highly optimized for rural conditions.
 
 Mavuno is built on two hardware pillars:
 1. **The "Sentinel Node" IoT Soil Sensors** (The brain of the Yield Probability Score).

@@ -1,5 +1,5 @@
 """
-Mavuno - Offline Solar Pump Verification Demo (Future Makers 2026)
+Mavuno - Offline Solar Pump Verification Demo (Mavuno)
 
 This script proves that a remote solar pump can mathematically verify an 
 Energy Credit without needing an internet connection to the central database.

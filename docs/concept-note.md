@@ -1,6 +1,6 @@
 # Mavuno — Concept Note
 
-**Future Makers Hackathon 2026 · National Science Week 2026**
+**Mavuno · National Science Week 2026**
 **Challenge:** Powering Uganda to a $500B Economy.
 
 > *Where soil becomes credit. And the same phone call becomes a market, an advisor, and a pump.*
@@ -90,6 +90,6 @@ All three use rails that **already exist** — Parish Development Model (PDM, UG
 ## 11. Contact
 
 - **Email:** okechbrian@gmail.com
-- **Subject-line reference:** FUTURE MAKERS HACKATHON 2026
+- **Subject-line reference:** Mavuno
 - **Repo:** https://github.com/okechbrian/mavuno
 - **Live demo:** https://mavuno-prototype.vercel.app

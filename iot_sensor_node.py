@@ -1,5 +1,5 @@
 """
-Mavuno - IoT Sensor Node Telemetry Simulator (Future Makers 2026)
+Mavuno - IoT Sensor Node Telemetry Simulator (Mavuno)
 
 This script simulates a physical soil sensor deployed in a Ugandan farm.
 It captures the 7 crucial biological signals and transmits them over a 

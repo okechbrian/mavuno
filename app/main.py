@@ -240,3 +240,6 @@ def buyer_dash(buyer_id: str): return FileResponse(database.ROOT / "app" / "stat
 
 @app.get("/phone", response_class=HTMLResponse)
 def phone(): return FileResponse(database.ROOT / "app" / "static" / "phone.html")
+
+@app.get("/terms", response_class=HTMLResponse)
+def terms(): return FileResponse(database.ROOT / "app" / "static" / "terms.html")

@@ -2,7 +2,7 @@
 
 **Live Prototype:** [https://mavuno-prototype.vercel.app](https://mavuno-prototype.vercel.app)
 
-This is the interactive prototype for the **Future Makers Hackathon 2026**. It demonstrates how soil data, when linked to an immutable SQLite ledger and cryptographically secured tokens, can power Uganda to a $500B economy by unlocking smallholder agricultural finance.
+This is the interactive prototype for the **Mavuno**. It demonstrates how soil data, when linked to an immutable SQLite ledger and cryptographically secured tokens, can power Uganda to a $500B economy by unlocking smallholder agricultural finance.
 
 ## Getting Started
 

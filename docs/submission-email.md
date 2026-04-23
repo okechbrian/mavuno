@@ -1,19 +1,19 @@
-# Future Makers Hackathon 2026 — Submission email
+# Mavuno — Submission email
 
-This is a mirror of the Gmail draft that will be sent to the Future Makers Hackathon 2026 review committee. The Gmail draft lives in the applicant's Drafts folder; the only edit required before sending is to fill the `TEAM` block with 2–5 named members.
+This is a mirror of the Gmail draft that will be sent to the Mavuno review committee. The Gmail draft lives in the applicant's Drafts folder; the only edit required before sending is to fill the `TEAM` block with 2–5 named members.
 
 ---
 
 **To:** `info@sti.go.ug`
-**Subject:** `FUTURE MAKERS HACKATHON 2026` (exact match to the ad)
+**Subject:** `Mavuno` (exact match to the ad)
 
 ---
 
 ## Email body
 
-Dear Members of the Future Makers Hackathon 2026 Review Committee,
+Dear Members of the Mavuno Review Committee,
 
-I am writing to submit Mavuno — a soil-backed energy-credit system for Ugandan smallholders, delivered over USSD on 2G so that it works on any feature phone — to the Future Makers Hackathon 2026.
+I am writing to submit Mavuno — a soil-backed energy-credit system for Ugandan smallholders, delivered over USSD on 2G so that it works on any feature phone — to the Mavuno.
 
 Mavuno turns a farm's seven-feature soil reading into a 0–1,000 Yield Probability Score, then issues an HMAC-signed, GPS-locked, 72-hour Energy Credit Token (ECT) that is redeemable only at a specific UEDCL EASP solar pump node — with a diversion rate of zero by construction. The same USSD session bundles live market prices, buyer matching, and an AI agronomist (Groq Llama 3.3 with a deterministic rule-based fallback when offline). Every state change is appended to a SHA-256 hash-chained audit ledger that the Ministry, UEDCL, and an underwriting SACCO can each verify in real time.
 
@@ -96,7 +96,7 @@ On behalf of the Mavuno team
 - [ ] Team roster filled — three or more named members, each with role, email, and a one-line bio.
 - [ ] Live prototype URL responds (`curl -s https://mavuno-prototype.vercel.app/health` → `{"ok": true}`).
 - [ ] Repository is public and all five `docs/` files render anonymously on GitHub.
-- [ ] Subject line matches the ad exactly: `FUTURE MAKERS HACKATHON 2026`.
+- [ ] Subject line matches the ad exactly: `Mavuno`.
 - [ ] QR-code application form (on the poster) scanned in parallel — if the form asks for fields beyond what is in this email, copy-paste from the repo docs.
 - [ ] Copy saved to the applicant's *Sent* folder as the definitive submission record.
 

@@ -198,7 +198,15 @@ Every USSD action hits the same state machine as the real AT callback. The dashb
 
 ---
 
-## 5. Data privacy
+## 5. Security & Terms of Service
+
+### 5.1 Terms and Conditions
+To protect both the platform and its users legally, Mavuno requires all users (Farmers, Buyers, and Agents) to accept the **Terms & Conditions** upon logging into the platform via the web dashboard. This ensures data compliance and sets clear liability boundaries.
+
+### 5.2 Mobile-Friendly Dashboards
+The entire web platform, including the dashboards and the USSD Simulator (`/phone`), is fully responsive. It automatically scales to fit mobile devices perfectly, allowing field agents and farmers with smartphones to access the UI seamlessly without horizontal scrolling or broken layouts.
+
+### 5.3 Data Privacy
 
 Mavuno complies with Uganda's Personal Data Protection Act 2019:
 - Farmer soil readings and GPS are stored as hashed entries in the audit ledger, not raw values

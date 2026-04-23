@@ -1,6 +1,6 @@
 # Mavuno — Written Summary
 
-**Future Makers Hackathon 2026 — National Science Week 2026**
+**Mavuno — National Science Week 2026**
 **Ministry of Science, Technology & Innovation (MoSTI), Uganda**
 
 Challenge: *Powering Uganda to a $500B Economy.*
@@ -9,7 +9,7 @@ Challenge: *Powering Uganda to a $500B Economy.*
 
 ## 1. Executive summary
 
-Mavuno ("harvest" in Swahili) is a soil-backed energy-credit system for Ugandan smallholders, delivered over USSD on 2G. Designed specifically for the **Future Makers 2026 Challenge**, it turns **soil-sensor data into a working irrigation pump, a live market price, and an AI agronomist** — on any feature phone, without a smartphone, bank account, or internet connection at the farm.
+Mavuno ("harvest" in Swahili) is a soil-backed energy-credit system for Ugandan smallholders, delivered over USSD on 2G. Designed specifically for the **Mavuno Challenge**, it turns **soil-sensor data into a working irrigation pump, a live market price, and an AI agronomist** — on any feature phone, without a smartphone, bank account, or internet connection at the farm.
 
 The thesis is that Uganda's path to a **$500B economy** runs directly through smallholder productivity (~70% of employment, ~24% of GDP). Currently, this productivity is blocked by four simultaneous walls: no collateral, no reliable grid, no weather signal, and no market signal. Mavuno collapses all four into one USSD call and one audit ledger, built on rails Uganda already owns — the **Parish Development Model (PDM)**, **UEDCL's Electricity Access Scale-up Project (EASP)**, and mobile money.
 
@@ -206,4 +206,4 @@ As of submission:
 - **Public source:** https://github.com/okechbrian/mavuno
 - **Pitch script (5:00, 9 slides, 8 Q&A cards):** `docs/pitch-deck.md` in the repo
 - **User manual:** `docs/user-manual.md` in the repo
-- **Applicant contact:** okechbrian@gmail.com · subject `FUTURE MAKERS HACKATHON 2026`
+- **Applicant contact:** okechbrian@gmail.com · subject `Mavuno`

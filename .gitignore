@@ -1,1 +1,11 @@
 .vercel
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+.env.*.local
+*.db
+app/data/mavuno.db
+server.log
+.DS_Store

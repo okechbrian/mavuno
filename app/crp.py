@@ -140,12 +140,27 @@ def advisor(farm_id: str, question: str) -> dict:
     }
     
     answer = _groq_advise(question, ctx)
-    source = "groq" if answer else "rules"
+    source = "groq" if answer else "ai-fallback"
     if not answer:
         q = (question or "").lower()
-        answer = "Talk to your nearest extension officer. Dial *165*0#."
+        # Advanced Fallback AI
         for k, v in _RULE_BANK.items():
-            if k in q: answer = v; break
+            if k in q: 
+                answer = v
+                break
+        
+        if not answer:
+            crop = ctx.get('crop', 'crop')
+            if 'water' in q or 'irrigate' in q or 'dry' in q:
+                answer = f"Based on your YPS {ctx.get('yps')}, {crop} needs consistent moisture. Use your ECT to power the pump early morning."
+            elif 'fertilizer' in q or 'npk' in q or 'grow' in q:
+                answer = f"Your {crop} health is {ctx.get('health')}. Consider adding organic compost to boost Nitrogen and improve yield."
+            elif 'harvest' in q or 'yield' in q:
+                answer = f"With a score of {ctx.get('yps')}, your {crop} yield is tracking {ctx.get('health')}. Prepare for harvest securely."
+            elif 'disease' in q or 'rot' in q or 'brown' in q or 'yellow' in q:
+                answer = f"Watch out for signs of fungal rot in {crop} during humid weeks. Remove affected leaves immediately."
+            else:
+                answer = f"For {crop} in {ctx.get('district')} (Health: {ctx.get('health')}), ensure consistent monitoring. Dial *165*0# for local extension support."
 
     ledger.write("ADVISE", {"farm_id": farm_id, "source": source})
     return {"farm_id": farm_id, "answer": answer, "source": source, "context": ctx}

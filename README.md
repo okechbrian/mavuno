@@ -28,10 +28,12 @@ Open your browser and visit: **http://localhost:8001**
 ## Features Overview
 
 ### 1. Multi-User Login Portal
-The root address (`http://localhost:8001`) now features a secure, multi-role landing page where:
-- **Agents** can log into the main operations cockpit (Password: `mavuno2026`).
-- **Farmers** can log in using their Farm ID (e.g. `UG-MBL-0001`) or phone number and PIN (`1234`) to access their personalized dashboard, YPS score, and the AI agronomist.
-- **Buyers** can log in using their Buyer ID (e.g. `BY-001`) or phone number and PIN (`1234`) to view a live, filtered marketplace of crops matching their pre-verified floor prices.
+The root address (`http://localhost:8001`) features a secure, multi-role landing page where:
+- **Agents** sign in with the agent password configured server-side (see `.env.example`).
+- **Farmers** sign in with their Farm ID (or phone number) and PIN to access their personalized dashboard, YPS score, and the AI agronomist.
+- **Buyers** sign in with their Buyer ID (or phone number) and PIN to view a live, filtered marketplace of crops matching their pre-verified floor prices.
+
+All sessions use HMAC-signed, HttpOnly cookies (24h TTL). Dashboard, sensor, ECT, ledger, and CRP routes require an authenticated session; resource routes are owner-scoped (a farmer can only see their own farm; agents see all). Per-IP login throttling is applied on the sign-in endpoint. Default credentials are not displayed in the UI.
 
 ### 2. The Agent Cockpit (Decision Support System)
 The main dashboard serves as an operations center for SACCOs and Co-ops. It features:
@@ -69,3 +71,20 @@ Tokens are signed using HMAC-SHA256. To demonstrate that remote solar pumps can 
 python3 offline_pump_demo.py
 ```
 This script proves that the system remains resilient to rural infrastructure failures.
+
+### 6. AI Agronomist (Groq)
+The `Ask Mavuno` feature uses Groq's `llama-3.3-70b-versatile` for one- or two-line, context-aware advice. The API key is read from `GROQ_API_KEY` server-side; it never reaches the browser. All farmer questions are PII-redacted (phone numbers, farm IDs, and other long numeric IDs are stripped) and length-capped before egress. If the key is absent or the upstream call fails, a deterministic on-device rule bank answers — the farmer always gets a reply.
+
+### 7. Mobile-First UI
+Every dashboard (Agent, Farmer, Buyer) collapses into a single column at ≤768px with a slide-in nav drawer, a backdrop overlay, and 44px touch targets. The login screen reorders for thumb reach. The USSD simulator at `/phone` renders cleanly on a feature-phone-sized viewport.
+
+## Environment Variables
+See `.env.example`. Never commit a real `.env` file. The `.gitignore` excludes `.env`, `.env.local`, `.env.*.local`, the SQLite database, and the virtual environment by default.
+
+| Variable | Purpose |
+|---|---|
+| `HMAC_SECRET` | Signs ECT tokens, sessions, and the ledger hash chain. Rotate to invalidate all sessions. |
+| `AGENT_PASSWORD` | Override the default agent sign-in password. Set this in production. |
+| `GROQ_API_KEY` | Optional. Enables LLM-backed agronomy advice. Falls back to rule bank when absent. |
+| `PUBLIC_BASE_URL` | Used for cookie `Secure` flag detection and absolute links. |
+| `AT_USERNAME` / `AT_API_KEY` | Africa's Talking USSD credentials (production only). |

@@ -78,6 +78,8 @@ All three use rails that **already exist** — Parish Development Model (PDM, UG
 - **Stack:** Python 3.12 · FastAPI · scikit-learn · uvicorn · SQLite · USSD (Africa's Talking callback shape) · SHA-256 ledger.
 - **Ledger state:** chain verified intact — `/ledger/verify` returns `{"ok": true}`.
 - **Hardware Integration:** API-ready for GSM-enabled 7-in-1 soil sensor telemetry.
+- **Security posture:** HMAC-signed HttpOnly session cookies, role-based + owner-scoped authorisation on every dashboard and resource route, per-IP login throttling, server-side-only LLM key with PII redaction on the egress prompt. Secrets live in environment variables; no credentials are committed to the repository.
+- **Mobile UX:** All three dashboards collapse to a single column with a slide-in drawer at ≤768px; touch targets are 44px or larger.
 
 ## 9. Team
 

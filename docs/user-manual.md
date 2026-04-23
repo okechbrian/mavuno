@@ -200,14 +200,28 @@ Every USSD action hits the same state machine as the real AT callback. The dashb
 
 ## 5. Security & Terms of Service
 
-### 5.1 Terms and Conditions
-To protect both the platform and its users legally, Mavuno requires all users (Farmers, Buyers, and Agents) to accept the **Terms & Conditions** upon logging into the platform via the web dashboard. This ensures data compliance and sets clear liability boundaries.
+### 5.1 Sign-in & sessions
+Sign-in is role-based (Farmer, Buyer, Agent). On success the server sets an HMAC-signed, HttpOnly, SameSite=Lax cookie that expires after 24 hours; the cookie is also flagged `Secure` whenever the site is served over HTTPS. The cookie carries no PII — only the role, the subject ID, and an expiry — so a stolen cookie cannot be replayed beyond its window and the server can re-derive trust on every request without a database lookup.
 
-### 5.2 Mobile-Friendly Dashboards
-The entire web platform, including the dashboards and the USSD Simulator (`/phone`), is fully responsive. It automatically scales to fit mobile devices perfectly, allowing field agents and farmers with smartphones to access the UI seamlessly without horizontal scrolling or broken layouts.
+Failed sign-in attempts are throttled per IP (a small burst, then a short cool-off). The sign-in form does not display default credentials; field placeholders no longer hint at PIN values.
 
-### 5.3 Data Privacy
+### 5.2 Authorisation model
+- **Public:** the landing page, the Terms page, the USSD simulator at `/phone`, and the static market-price feed.
+- **Signed-in only:** every dashboard route, sensor telemetry, ECT issue/redeem, ledger views, the buyer marketplace, and the AI agronomist.
+- **Owner-scoped:** Farmers can only see their own farm; Buyers only their own marketplace view. Agents see everything.
 
+If a session expires while a dashboard is open, the next API call returns 401 and the page redirects back to sign-in automatically — there is no broken state.
+
+### 5.3 Terms and Conditions
+All users implicitly accept the **Terms & Conditions** by signing in (the link sits below the sign-in button). The full text lives at `/terms`.
+
+### 5.4 Mobile-friendly dashboards
+The Agent, Farmer, and Buyer dashboards collapse into a single-column layout at ≤768px with a slide-in nav drawer, a tap-anywhere backdrop, and 44px touch targets. The USSD simulator at `/phone` is feature-phone-sized by default. No horizontal scrolling on any supported viewport.
+
+### 5.5 AI agronomist privacy
+"Ask Mavuno" is powered by an LLM when `GROQ_API_KEY` is configured server-side. The key is never sent to the browser. Before each question leaves the server, phone numbers, farm IDs, and other long numeric IDs are stripped from the question; the prompt is also length-capped. If the LLM is unreachable or no key is set, a deterministic rule bank answers from the same `(crop, district, YPS, health)` context.
+
+### 5.6 Data privacy
 Mavuno complies with Uganda's Personal Data Protection Act 2019:
 - Farmer soil readings and GPS are stored as hashed entries in the audit ledger, not raw values
 - Each farmer opts in and can revoke consent at any time

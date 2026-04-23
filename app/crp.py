@@ -3,10 +3,27 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import secrets
 import time
 import httpx
 from . import ledger, scorer, database
+
+_PII_PATTERNS = (
+    re.compile(r"\+?256\s?\d{9}"),
+    re.compile(r"\b0\d{9}\b"),
+    re.compile(r"\b\d{10,}\b"),
+    re.compile(r"\bUG-[A-Z]{3}-\d{3,}\b", re.IGNORECASE),
+    re.compile(r"\bCM[A-Z0-9]{8,}\b"),
+)
+
+def _redact_pii(text: str) -> str:
+    if not text:
+        return text
+    redacted = text
+    for pat in _PII_PATTERNS:
+        redacted = pat.sub("[redacted]", redacted)
+    return redacted
 
 def _haversine_km(lat1, lng1, lat2, lng2) -> float:
     R = 6371.0
@@ -106,6 +123,7 @@ _RULE_BANK = {
 def _groq_advise(question: str, ctx: dict) -> str | None:
     key = os.getenv("GROQ_API_KEY")
     if not key: return None
+    safe_q = _redact_pii(question or "")[:500]
     system = (
         "You are Mavuno, a Ugandan smallholder farm advisor. "
         "Answer in 1-2 short sentences, max 140 characters. "
@@ -118,12 +136,13 @@ def _groq_advise(question: str, ctx: dict) -> str | None:
                 headers={"Authorization": f"Bearer {key}"},
                 json={
                     "model": "llama-3.3-70b-versatile",
-                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": question}],
+                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": safe_q}],
                     "max_tokens": 60, "temperature": 0.2
                 }
             )
             return r.json()["choices"][0]["message"]["content"].strip()[:140]
-    except: return None
+    except Exception:
+        return None
 
 def advisor(farm_id: str, question: str) -> dict:
     conn = database.get_db()

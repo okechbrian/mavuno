@@ -43,6 +43,28 @@
   
   .btn { padding: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
   .btn:hover { opacity: 0.8; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .chip { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: 11px; cursor: pointer; color: var(--ink); user-select: none; }
+  .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .badge { display: inline-block; padding: 2px 8px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+  .badge-match { background: var(--accent); color: var(--paper); }
+  .badge-partial { background: var(--gold); color: var(--paper); }
+  .badge-pending { background: var(--clay); color: var(--paper); }
+  .badge-settled { background: var(--accent-soft); color: var(--paper); }
+
+  .pay-panel { background: var(--bg-alt); padding: 16px; border: 1px solid var(--line); border-radius: 4px; margin-top: 12px; }
+  .pay-panel label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+  .pay-panel input { width: 100%; padding: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); -webkit-text-fill-color: var(--ink); caret-color: var(--ink); border-radius: 2px; font-size: 14px; font-family: inherit; }
+  .pay-status { font-size: 12px; color: var(--muted); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); padding: 12px 20px; border-radius: 4px;
+    font-size: 13px; opacity: 0; transition: opacity 0.2s; z-index: 200; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
 
   .nav-toggle { display: none; }
   .backdrop { display: none; }
@@ -107,13 +129,19 @@
 
 <div class="main">
   <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">☰</button>
-  <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:40px; border-bottom: 1px solid var(--line); padding-bottom:20px; gap:12px; flex-wrap:wrap;">
-    <h1 class="display" style="font-size: 32px; margin:0;">Live Marketplace</h1>
+  <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:24px; border-bottom: 1px solid var(--line); padding-bottom:20px; gap:12px; flex-wrap:wrap;">
+    <div>
+      <h1 class="display" style="font-size: 32px; margin:0;">Live Marketplace</h1>
+      <div id="market-summary" style="font-size:11px; color:var(--muted); margin-top:4px;">Loading...</div>
+    </div>
     <button class="btn" id="theme-toggle" style="border:none; font-size:16px; background:transparent;">🌙</button>
   </div>
 
+  <div class="chips" id="filter-chips"></div>
+
   <div id="offers-content">Loading live offers...</div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
 function applyTheme(t) {
@@ -191,6 +219,7 @@ async function loadData() {
 
   document.getElementById("disp-buyer-name").textContent = currentBuyer.name;
   document.getElementById("disp-region").innerHTML = `${currentBuyer.region}<br><span style="font-size:12px; color:var(--muted);">UGX ${currentBuyer.floor_ugx} / kg</span>`;
+  renderChips();
 
   const trendsDiv = document.getElementById("disp-trends");
   if(trendsDiv) {
@@ -217,43 +246,184 @@ async function loadData() {
   loadOffers();
 }
 
+// Filter state, persisted in URL so views are shareable.
+const filterState = {
+  region: false,    // limit to buyer's region
+  crops: false,     // limit to buyer's crops
+  budget: false,    // floor_ugx <= buyer's floor
+};
+
+function readFiltersFromUrl() {
+  const u = new URLSearchParams(window.location.search);
+  filterState.region = u.get("region") === "1";
+  filterState.crops  = u.get("crops")  === "1";
+  filterState.budget = u.get("budget") === "1";
+}
+function writeFiltersToUrl() {
+  const u = new URLSearchParams();
+  if (filterState.region) u.set("region", "1");
+  if (filterState.crops)  u.set("crops",  "1");
+  if (filterState.budget) u.set("budget", "1");
+  const q = u.toString();
+  history.replaceState(null, "", window.location.pathname + (q ? "?" + q : ""));
+}
+function toggleChip(name) {
+  filterState[name] = !filterState[name];
+  writeFiltersToUrl();
+  renderChips();
+  renderOffers(_lastOffers);
+}
+function renderChips() {
+  const c = document.getElementById("filter-chips");
+  c.innerHTML = `
+    <span class="chip ${filterState.region ? 'on' : ''}" onclick="toggleChip('region')">My region (${currentBuyer.region})</span>
+    <span class="chip ${filterState.crops  ? 'on' : ''}" onclick="toggleChip('crops')">My crops</span>
+    <span class="chip ${filterState.budget ? 'on' : ''}" onclick="toggleChip('budget')">Within budget (≤ UGX ${currentBuyer.floor_ugx.toLocaleString()})</span>
+  `;
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 3200);
+}
+
+let _lastOffers = [];
+
 async function loadOffers() {
   if (!currentBuyer) return;
-  const res = await jget("/crp/offers?limit=50");
+  const res = await jget("/crp/offers?limit=100");
   const offers = res.offers || [];
-  
-  // Filter offers matching the buyer's region and crops
-  const relevantOffers = offers.filter(o => 
-    o.region === currentBuyer.region && 
-    currentBuyer.crops.includes(o.crop.toLowerCase()) &&
-    o.floor_ugx <= currentBuyer.floor_ugx
-  );
+  _lastOffers = offers;
+  renderOffers(offers);
+}
 
+function scoreOffer(o) {
+  // Higher score = better match. Used for sort.
+  const regionMatch = o.region === currentBuyer.region;
+  const cropMatch   = currentBuyer.crops.includes((o.crop || "").toLowerCase());
+  const priceMatch  = o.floor_ugx <= currentBuyer.floor_ugx;
+  const matches = (regionMatch ? 1 : 0) + (cropMatch ? 1 : 0) + (priceMatch ? 1 : 0);
+  return { regionMatch, cropMatch, priceMatch, matches };
+}
+
+function renderOffers(offers) {
+  if (!currentBuyer) return;
   const container = document.getElementById("offers-content");
-  if (relevantOffers.length === 0) {
-    container.innerHTML = '<div style="color:var(--muted); font-style:italic;">No matching open offers currently in your region.</div>';
+  const summary = document.getElementById("market-summary");
+
+  let filtered = offers.slice();
+  if (filterState.region) filtered = filtered.filter(o => o.region === currentBuyer.region);
+  if (filterState.crops)  filtered = filtered.filter(o => currentBuyer.crops.includes((o.crop || "").toLowerCase()));
+  if (filterState.budget) filtered = filtered.filter(o => o.floor_ugx <= currentBuyer.floor_ugx);
+
+  // Sort: full match > partial > none; then newest first.
+  filtered.sort((a, b) => {
+    const sa = scoreOffer(a).matches;
+    const sb = scoreOffer(b).matches;
+    if (sb !== sa) return sb - sa;
+    return (b.created_at || 0) - (a.created_at || 0);
+  });
+
+  const matchCount = offers.filter(o => scoreOffer(o).matches === 3).length;
+  summary.textContent = `${offers.length} listing${offers.length !== 1 ? 's' : ''} live · ${matchCount} full match${matchCount !== 1 ? 'es' : ''} for you`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted); font-style:italic; padding:24px 0;">No listings match your current filters. Clear a chip to see more.</div>';
     return;
   }
 
-  container.innerHTML = relevantOffers.map(o => `
-    <div class="offer-card">
+  container.innerHTML = filtered.map(renderCard).join("");
+}
+
+function badgeFor(o) {
+  if (o.payment_status === "settled") return '<span class="badge badge-settled">paid</span>';
+  if (o.payment_status === "pending") return '<span class="badge badge-pending">payment pending</span>';
+  const s = scoreOffer(o);
+  if (s.matches === 3) return '<span class="badge badge-match">★ match</span>';
+  if (s.matches === 2) return '<span class="badge badge-partial">~ partial</span>';
+  return '';
+}
+
+function renderCard(o) {
+  const s = scoreOffer(o);
+  const total = o.kg * o.floor_ugx;
+  const canPay = s.matches >= 2 && !o.payment_status;
+  const payBtn = canPay
+    ? `<button class="btn" style="background:var(--accent); border-color:var(--accent);" onclick="openPayPanel('${o.id}')">Pay UGX ${total.toLocaleString()}</button>`
+    : (o.payment_status
+        ? `<span style="font-size:11px; color:var(--muted);">Status: ${o.payment_status}</span>`
+        : `<button class="btn" style="background:transparent; color:var(--ink);" disabled title="Mismatch on region/crop/price — adjust filters">View only</button>`);
+  return `
+    <div class="offer-card" id="card-${o.id}">
       <div class="o-head">
         <div>
-          <h3>${o.kg} kg of ${o.crop.toUpperCase()}</h3>
-          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);">${o.id} · ${o.farmer_name}</span>
+          <h3>${o.kg} kg of ${(o.crop || '').toUpperCase()} ${badgeFor(o)}</h3>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);">${o.id} · ${o.farmer_name} · ${o.region}</span>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'Fraunces',serif; font-size:24px; color:var(--accent);">UGX ${o.floor_ugx.toLocaleString()}</div>
-          <span style="font-size:10px; color:var(--muted); text-transform:uppercase;">per kg</span>
+          <span style="font-size:10px; color:var(--muted); text-transform:uppercase;">per kg · total ${total.toLocaleString()}</span>
         </div>
       </div>
-      <div>
-        <button class="btn" style="background:var(--accent); border-color:var(--accent);" onclick="alert('Offer Accepted! Farmer will be notified.')">Accept Offer</button>
-      </div>
+      <div id="card-actions-${o.id}">${payBtn}</div>
     </div>
-  `).join("");
+  `;
 }
 
+function openPayPanel(offerId) {
+  const actions = document.getElementById("card-actions-" + offerId);
+  if (!actions) return;
+  const default_msisdn = currentBuyer.contact || "+256";
+  actions.innerHTML = `
+    <div class="pay-panel">
+      <label>Pay from your mobile-money number</label>
+      <input id="msisdn-${offerId}" type="tel" value="${default_msisdn}" placeholder="+256..." />
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="btn" style="background:var(--accent); border-color:var(--accent);" onclick="submitPayment('${offerId}')">Confirm payment</button>
+        <button class="btn" style="background:transparent; color:var(--ink);" onclick="loadOffers()">Cancel</button>
+      </div>
+      <div class="pay-status" id="pay-status-${offerId}"></div>
+    </div>
+  `;
+  document.getElementById("msisdn-" + offerId).focus();
+}
+
+async function submitPayment(offerId) {
+  const input = document.getElementById("msisdn-" + offerId);
+  const status = document.getElementById("pay-status-" + offerId);
+  const msisdn = (input?.value || "").trim();
+  if (!msisdn || msisdn.length < 6) { status.textContent = "Enter a valid mobile-money number."; return; }
+  status.textContent = "Initiating Mavuno Pay…";
+  const res = await jpost("/payments/initiate", {offer_id: offerId, msisdn, method: "mavuno-pay"});
+  if (res.error) { status.textContent = "Failed: " + res.error; return; }
+  status.textContent = `Payment ${res.payment_id} pending… awaiting mobile-money confirmation.`;
+  pollPayment(res.payment_id, offerId, status);
+}
+
+async function pollPayment(paymentId, offerId, statusEl) {
+  for (let i = 0; i < 20; i++) {
+    await new Promise(r => setTimeout(r, 1500));
+    const s = await jget("/payments/status/" + paymentId);
+    if (s.error) { statusEl.textContent = "Status check failed: " + s.error; return; }
+    if (s.status === "settled") {
+      statusEl.innerHTML = `<strong style="color:var(--accent);">✓ Settled.</strong> UGX ${s.amount_ugx.toLocaleString()} sent. <a href="/payments/receipt/${paymentId}" target="_blank" style="color:var(--accent);">View signed receipt</a>`;
+      toast("Payment settled — farmer notified.");
+      setTimeout(loadOffers, 1200);
+      return;
+    }
+    if (s.status === "failed") {
+      statusEl.textContent = "✗ Payment failed. You can retry.";
+      return;
+    }
+    statusEl.textContent = `Payment ${paymentId} pending… (check ${i+1}/20)`;
+  }
+  statusEl.innerHTML = `Still pending. <a href="javascript:void(0)" onclick="pollPayment('${paymentId}','${offerId}',this.parentElement)" style="color:var(--accent);">Retry status</a>`;
+}
+
+readFiltersFromUrl();
 setInterval(loadOffers, 5000);
 </script>
 </body>

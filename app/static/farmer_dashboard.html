@@ -51,6 +51,37 @@
 
   .btn { padding: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
   .btn:hover { opacity: 0.8; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Form inputs need explicit color — browsers don't always inherit `color` on form controls,
+     so dark-mode text was rendering black-on-black. */
+  textarea, input[type="text"], input[type="number"], input[type="tel"], select {
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  textarea::placeholder, input::placeholder { color: var(--muted); opacity: 0.7; }
+
+  .list-form-row { display: grid; grid-template-columns: 1.2fr 1fr 1.4fr; gap: 10px; margin: 12px 0; }
+  .list-form-row > div > label { display:block; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:4px; }
+  .list-form-row input, .list-form-row select { width: 100%; }
+  .listing-row { display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:10px; padding:10px 0; border-bottom:1px solid var(--line-soft); align-items:center; font-size:12px; }
+  .listing-row:last-child { border-bottom: 0; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9px; text-transform:uppercase; letter-spacing:0.08em; }
+  .pill-open { background: rgba(46,77,31,0.12); color: var(--accent); }
+  .pill-pending { background: rgba(160,84,44,0.15); color: var(--clay); }
+  .pill-settled { background: var(--accent); color: var(--paper); }
+  .pill-failed { background: rgba(138,47,36,0.15); color: var(--bad); }
+  @media (max-width: 768px) {
+    .list-form-row { grid-template-columns: 1fr; }
+    .listing-row { grid-template-columns: 1fr 1fr; }
+  }
   
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index:9999; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500;}
   .toast.show { opacity: 1; }
@@ -139,6 +170,40 @@
   <div id="farm-content">Loading your farm data...</div>
 
   <div style="margin-top:40px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+    <!-- List Produce for Sale -->
+    <div class="radar-card" style="background:var(--paper);">
+      <span class="label">List Produce for Sale</span>
+      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer. Buyers within range and budget see it instantly.</p>
+      <form id="list-form" onsubmit="return postOffer(event)">
+        <div class="list-form-row">
+          <div>
+            <label for="of-crop">Crop</label>
+            <select id="of-crop" required></select>
+          </div>
+          <div>
+            <label for="of-kg">Quantity (kg)</label>
+            <input id="of-kg" type="number" min="1" max="50000" step="1" required placeholder="e.g. 200" />
+          </div>
+          <div>
+            <label for="of-price">Floor price (UGX / kg)</label>
+            <input id="of-price" type="number" min="100" max="10000000" step="50" required placeholder="e.g. 8000" />
+          </div>
+        </div>
+        <button class="btn" type="submit" style="width:100%;">Post listing</button>
+      </form>
+      <div style="margin-top:20px; border-top:1px solid var(--line); padding-top:16px;">
+        <span class="label">My active listings</span>
+        <div id="my-listings" style="margin-top:8px; font-size:12px; color:var(--muted);">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Payments Received -->
+    <div class="radar-card" style="background:var(--paper);">
+      <span class="label">Payments Received</span>
+      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Direct buyer → farmer settlements. HMAC-signed receipts.</p>
+      <div id="payments-feed" style="margin-top:16px; font-size:12px;">Loading…</div>
+    </div>
+
     <!-- Market Insights -->
     <div class="radar-card" style="background:var(--paper);">
       <span class="label">Live Market Price</span>
@@ -154,7 +219,7 @@
     <!-- AI Agronomist -->
     <div class="radar-card" style="background:var(--paper); grid-column: 1 / -1;">
       <span class="label">AI Agronomist Query</span>
-      <textarea id="ask-q" style="width:100%; height:80px; margin:12px 0; padding:12px; border:1px solid var(--line); background:var(--bg); font-family:inherit;" placeholder="Ask Mavuno an agronomy question..."></textarea>
+      <textarea id="ask-q" style="width:100%; height:80px; margin:12px 0;" placeholder="Ask Mavuno an agronomy question..."></textarea>
       <button class="btn" style="width:200px;" onclick="askMavuno()">Ask AI</button>
       <div id="ask-answer" style="margin-top:16px; font-style:italic; border-left:2px solid var(--accent); padding-left:12px;">Waiting for query...</div>
     </div>
@@ -166,6 +231,8 @@
 <script>
 const pathParts = window.location.pathname.split("/");
 const farmId = pathParts[pathParts.length - 1];
+const CROP_OPTIONS = ["coffee","maize","beans","cassava","groundnut","sorghum","rice","banana","matooke","millet","sweet_potato","soybean"];
+let currentFarm = null;
 
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
@@ -239,11 +306,106 @@ async function pingSensor() {
   loadData();
 }
 
+function populateCropDropdown(farmCrop) {
+  const sel = document.getElementById("of-crop");
+  if (!sel) return;
+  const seen = new Set();
+  const opts = [];
+  if (farmCrop) { opts.push(farmCrop.toLowerCase()); seen.add(farmCrop.toLowerCase()); }
+  for (const c of CROP_OPTIONS) { if (!seen.has(c)) { opts.push(c); seen.add(c); } }
+  sel.innerHTML = opts.map(c => `<option value="${c}">${c[0].toUpperCase()+c.slice(1)}</option>`).join("");
+}
+
+function fmtUGX(n) { return "UGX " + Number(n || 0).toLocaleString(); }
+function fmtDate(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts * 1000);
+  return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}) + " " +
+         d.toLocaleTimeString(undefined, {hour:"2-digit", minute:"2-digit"});
+}
+
+function renderMyListings(rows) {
+  const el = document.getElementById("my-listings");
+  if (!el) return;
+  if (!rows || !rows.length) {
+    el.innerHTML = '<div style="color:var(--muted); padding:8px 0;">No listings yet. Post one above.</div>';
+    return;
+  }
+  el.innerHTML = rows.map(r => {
+    const ps = r.payment_status;
+    const status = r.status === "accepted" && ps === "settled" ? "settled"
+                 : ps === "pending" ? "pending"
+                 : ps === "failed" ? "failed"
+                 : "open";
+    return `<div class="listing-row">
+      <div><strong>${r.crop}</strong><br><span style="color:var(--muted); font-size:10px;">${fmtDate(r.created_at)}</span></div>
+      <div>${Number(r.kg).toLocaleString()} kg</div>
+      <div>${fmtUGX(r.floor_ugx)}/kg</div>
+      <div><span class="pill pill-${status}">${status}</span></div>
+    </div>`;
+  }).join("");
+}
+
+function renderPayments(rows) {
+  const el = document.getElementById("payments-feed");
+  if (!el) return;
+  if (!rows || !rows.length) {
+    el.innerHTML = '<div style="color:var(--muted); padding:8px 0;">No payments received yet.</div>';
+    return;
+  }
+  el.innerHTML = rows.slice(0, 5).map(p => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line-soft);">
+      <div>
+        <div style="font-weight:600; color:var(--accent);">+${fmtUGX(p.amount_ugx)}</div>
+        <div style="color:var(--muted); font-size:10px;">${p.method} · ${fmtDate(p.settled_at || p.created_at)}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="pill pill-${p.status}">${p.status}</span>
+        ${p.status === "settled"
+          ? `<a href="/payments/receipt/${p.id}" target="_blank" style="font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">receipt</a>`
+          : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+async function loadMyListings() {
+  const res = await jget(`/crp/offers?farm_id=${encodeURIComponent(farmId)}&include_closed=true&limit=10`);
+  if (res && !res.error) renderMyListings(res.offers || []);
+}
+
+async function loadPayments() {
+  const res = await jget(`/payments/farmer/${encodeURIComponent(farmId)}`);
+  if (res && !res.error) renderPayments(res.payments || []);
+}
+
+async function postOffer(ev) {
+  ev.preventDefault();
+  const crop = document.getElementById("of-crop").value.trim().toLowerCase();
+  const kg = parseInt(document.getElementById("of-kg").value, 10);
+  const floor = parseInt(document.getElementById("of-price").value, 10);
+  if (!crop || !(kg > 0) || !(floor > 0)) { toast("Fill in all listing fields."); return false; }
+  const btn = ev.target.querySelector("button[type=submit]");
+  if (btn) btn.disabled = true;
+  const res = await jpost("/crp/offers", { farm_id: farmId, crop, kg, floor_ugx: floor });
+  if (btn) btn.disabled = false;
+  if (res && res.error) { toast("Listing failed: " + res.error); return false; }
+  toast("Listing posted — " + (res.offer_id || "ok"));
+  document.getElementById("of-kg").value = "";
+  document.getElementById("of-price").value = "";
+  loadMyListings();
+  return false;
+}
+
 async function loadData() {
   document.getElementById("disp-farm-id").textContent = farmId;
   const farms = await jget("/farms");
   const farm = farms[farmId];
   if (!farm || farm.error) { document.getElementById("farm-content").innerHTML = "Farm data unavailable."; return; }
+  currentFarm = farm;
+  populateCropDropdown(farm.crop);
+  loadMyListings();
+  loadPayments();
 
   document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
 

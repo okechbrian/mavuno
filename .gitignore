@@ -9,3 +9,5 @@ __pycache__/
 app/data/mavuno.db
 server.log
 .DS_Store
+
+.vercel

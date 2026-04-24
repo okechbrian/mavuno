@@ -92,3 +92,31 @@ The mocked PSP lives in a single async function — `app/payments.py::_psp_initi
 
 ### 10.6 Rate limiting
 `/payments/initiate` reuses the per-IP throttle bucket that protects sign-in (`_check_login_throttle` in `app/main.py`). This is an in-memory best-effort limit; move to Redis or an equivalent distributed bucket when scaling past a single instance.
+
+## 11. Chat & social integrity
+
+Mavuno Chat (buyer ↔ farmer, offer-scoped) and Mavuno Social (public farmer feed) reuse the session, ledger, and PII-redaction primitives above. The defences specific to this layer:
+
+### 11.1 PII redaction on write
+Every chat message body and feed post body is passed through `crp._redact_pii` **before** insert. Phone numbers, farm IDs, and other long numeric IDs are replaced with `[redacted]`. The regex is best-effort — it catches obvious patterns but not free-form workarounds like "call me at zero seven…". The product-level mitigation is the sealed Mavuno Pay msisdn channel; we deliberately do not expose raw contact fields through the chat surface.
+
+### 11.2 Party check + owner scoping
+Every chat read/write routes through `_chat_party_check` in `app/main.py`: the caller must be the buyer on the thread, the farmer on the thread, or an auditing agent. Thread IDs are unguessable hex, not incrementing integers. Feed posts are writable only by the authenticated farmer (subject == farm_id); reactions and flags require any signed-in role.
+
+### 11.3 Ledger without body
+`CHAT_OPEN`, `CHAT_MSG`, `POST_CREATED`, `POST_REACTED`, and `POST_FLAGGED` all write structural identifiers only — thread_id, sender_role, sender_id, msg_id, post_id. **The ledger never carries the body text.** This means the hash chain proves *when and between whom* a conversation happened, without storing the content in a tamper-evident log that an auditor could read offline.
+
+### 11.4 Rate limiting on chat send
+`/chat/{thread_id}/messages` enforces 1 message / 2 s per `sender_id` (not per IP, so multi-tab browsing does not double-fire). Keyed by `{role}:{subject}` in an in-memory bucket (`_check_chat_throttle` in `app/main.py`). Move to Redis on horizontal scale.
+
+### 11.5 Flag-and-hide moderation
+Any signed-in user may flag a feed post. The first flag flips `posts.hidden = 1` immediately and writes `POST_FLAGGED` to the ledger — the post disappears from `/feed` list responses within one request cycle. This is **auto-moderation without a human reviewer** for the demo window. Before opening the feed to real users, a cockpit review UI (agent-only) and per-user flag budgets are both required.
+
+### 11.6 Banned-word allowlist
+`app/data/banned_words.json` is loaded once at process start. `social.create_post` rejects any post whose body contains a substring match (case-insensitive) with 400 `banned_word`. The list is minimal by design — a real deployment needs a maintained blocklist and tiered human review, not a static JSON.
+
+### 11.7 Known gaps
+- **No end-to-end encryption.** Chat bodies are stored server-side in plaintext (post-redaction). Fine for a market-closing conversation; insufficient for medical or legal content.
+- **No human moderator on Tier 2.** The flag-and-hide flow is the whole defence. Production needs a review queue.
+- **SQLite ephemerality on Vercel.** Chat history and feed posts are wiped on cold start until the Neon/Postgres migration — same caveat as offers and payments.
+- **Photo uploads deferred.** `posts.photo_url` is reserved but Tier 2 ships text-only. A production rollout pre-signs uploads directly to Vercel Blob from the browser; raw bytes never flow through the FastAPI process.

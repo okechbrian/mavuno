@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import crp, ect, ledger, scorer, ussd, database, payments
+from . import crp, ect, ledger, scorer, ussd, database, payments, chat, social
 from .config import HMAC_SECRET
 
 # Idempotent — ensures any newly added tables (e.g. payments) exist on disk.
@@ -65,6 +65,19 @@ def _check_login_throttle(ip: str) -> None:
     if len(bucket) >= _LOGIN_MAX_ATTEMPTS:
         raise HTTPException(status_code=429, detail="too_many_attempts")
     bucket.append(now)
+
+
+# --- Chat send rate limit (per sender_id, in-memory) ------------------------
+_CHAT_MIN_GAP_SECONDS = 2.0
+_chat_last_send: dict[str, float] = {}
+
+
+def _check_chat_throttle(sender_key: str) -> None:
+    now = time.time()
+    last = _chat_last_send.get(sender_key, 0.0)
+    if now - last < _CHAT_MIN_GAP_SECONDS:
+        raise HTTPException(status_code=429, detail="too_many_messages")
+    _chat_last_send[sender_key] = now
 
 
 # ============================================================================
@@ -455,6 +468,171 @@ def payments_receipt(payment_id: str, user: dict = Depends(require_user())):
         raise HTTPException(status_code=404, detail="payment_not_found")
     _payment_party_check(p, user)
     return payments.receipt(payment_id)
+
+
+# ============================================================================
+# CHAT — offer-scoped buyer <-> farmer messaging (long-poll transport)
+# ============================================================================
+
+import asyncio  # noqa: E402  -- local import keeps the top clean for readers
+
+
+class ChatThreadReq(BaseModel):
+    farm_id: str = Field(..., max_length=64)
+    offer_id: str | None = Field(default=None, max_length=64)
+
+
+class ChatMessageReq(BaseModel):
+    body: str = Field(..., min_length=1, max_length=500)
+
+
+def _chat_party_check(thread: dict, user: dict) -> None:
+    if user["role"] == "agent":
+        return
+    if user["role"] == "buyer" and user["subject"] == thread["buyer_id"]:
+        return
+    if user["role"] == "farmer" and user["subject"] == thread["farm_id"]:
+        return
+    raise HTTPException(status_code=403, detail="not_chat_party")
+
+
+@app.post("/chat/threads")
+def chat_open_thread(req: ChatThreadReq, user: dict = Depends(require_user("buyer", "agent"))):
+    """Idempotent open-or-fetch. Buyers open threads against a farm (optionally
+    pinned to an offer). Agents may open on behalf of any buyer for audit."""
+    if user["role"] == "buyer":
+        buyer_id = user["subject"]
+    else:
+        # Agent-mode requires an explicit buyer hint in the offer; keep narrow.
+        raise HTTPException(status_code=400, detail="agent_open_not_supported")
+    res = chat.open_thread(buyer_id, req.farm_id, req.offer_id)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.get("/chat/threads")
+def chat_list_threads(user: dict = Depends(require_user())):
+    if user["role"] == "farmer":
+        return {"threads": chat.threads_for_farm(user["subject"])}
+    if user["role"] == "buyer":
+        return {"threads": chat.threads_for_buyer(user["subject"])}
+    return {"threads": chat.threads_for_agent()}
+
+
+@app.get("/chat/{thread_id}/messages")
+async def chat_get_messages(
+    thread_id: str,
+    request: Request,
+    since: int = 0,
+    wait: int = 25,
+    user: dict = Depends(require_user()),
+):
+    """Long-poll read. If `since` is given and no new messages exist yet,
+    hold the request up to `wait` seconds (capped at 25 s) before returning.
+
+    The handler breaks out early if the client disconnects, so a closed drawer
+    doesn't keep the function warm longer than needed."""
+    thread = chat.get_thread(thread_id)
+    if not thread:
+        raise HTTPException(status_code=404, detail="thread_not_found")
+    _chat_party_check(thread, user)
+
+    wait = max(0, min(int(wait), 25))
+    deadline = time.time() + wait
+    msgs = chat.messages(thread_id, since_ts=since)
+    while not msgs and time.time() < deadline:
+        if await request.is_disconnected():
+            break
+        await asyncio.sleep(1.0)
+        msgs = chat.messages(thread_id, since_ts=since)
+
+    # Reader has implicitly seen everything up to "now"; advance their cursor
+    # so unread counts settle down without a separate call.
+    chat.mark_read(thread_id, user["role"], user["subject"])
+    return {"thread_id": thread_id, "messages": msgs}
+
+
+@app.post("/chat/{thread_id}/messages")
+def chat_post_message(
+    thread_id: str,
+    req: ChatMessageReq,
+    user: dict = Depends(require_user()),
+):
+    thread = chat.get_thread(thread_id)
+    if not thread:
+        raise HTTPException(status_code=404, detail="thread_not_found")
+    _chat_party_check(thread, user)
+    _check_chat_throttle(f"{user['role']}:{user['subject']}")
+    res = chat.send(thread_id, user["role"], user["subject"], req.body)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.get("/chat/unread/count")
+def chat_unread(user: dict = Depends(require_user())):
+    return {"count": chat.unread_count(user["role"], user["subject"])}
+
+
+# ============================================================================
+# MAVUNO SOCIAL — public feed (Tier 2, text-only for demo)
+# ============================================================================
+
+class PostCreateReq(BaseModel):
+    body: str = Field(..., min_length=1, max_length=300)
+    photo_url: str | None = Field(default=None, max_length=500)
+
+
+class ReactReq(BaseModel):
+    emoji: str = Field(..., min_length=1, max_length=8)
+
+
+class FlagReq(BaseModel):
+    reason: str | None = Field(default=None, max_length=200)
+
+
+@app.get("/feed-page", response_class=HTMLResponse)
+def feed_page(user: dict = Depends(require_user())):
+    return FileResponse(database.ROOT / "app" / "static" / "feed.html")
+
+
+@app.post("/feed")
+def feed_create(req: PostCreateReq, user: dict = Depends(require_user("farmer"))):
+    """Only farmers post to the feed — buyers browse and react."""
+    res = social.create_post(user["subject"], req.body, req.photo_url)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.get("/feed")
+def feed_list(limit: int = 50, user: dict = Depends(require_user())):
+    return {"posts": social.feed(limit=max(1, min(int(limit), 100)))}
+
+
+@app.get("/feed/{post_id}")
+def feed_get(post_id: str, user: dict = Depends(require_user())):
+    p = social.get_post(post_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="post_not_found")
+    return p
+
+
+@app.post("/feed/{post_id}/react")
+def feed_react(post_id: str, req: ReactReq, user: dict = Depends(require_user("farmer", "buyer"))):
+    res = social.react(post_id, user["role"], user["subject"], req.emoji)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.post("/feed/{post_id}/flag")
+def feed_flag(post_id: str, req: FlagReq, user: dict = Depends(require_user())):
+    res = social.flag(post_id, user["role"], user["subject"], req.reason)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
 
 
 @app.post("/demo/cycle")

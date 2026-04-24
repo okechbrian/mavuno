@@ -75,6 +75,65 @@ def init_db():
     cur.execute('CREATE INDEX IF NOT EXISTS idx_payments_farm ON payments(farm_id)')
     cur.execute('CREATE INDEX IF NOT EXISTS idx_payments_buyer ON payments(buyer_id)')
 
+    cur.execute('''CREATE TABLE IF NOT EXISTS chat_threads (
+        id TEXT PRIMARY KEY,
+        farm_id TEXT NOT NULL,
+        buyer_id TEXT NOT NULL,
+        offer_id TEXT,
+        created_at INTEGER NOT NULL,
+        last_msg_at INTEGER NOT NULL,
+        FOREIGN KEY (farm_id)  REFERENCES farms  (id),
+        FOREIGN KEY (buyer_id) REFERENCES buyers (id),
+        FOREIGN KEY (offer_id) REFERENCES offers (id)
+    )''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS chat_messages (
+        id TEXT PRIMARY KEY,
+        thread_id TEXT NOT NULL,
+        sender_role TEXT NOT NULL,
+        sender_id TEXT NOT NULL,
+        body TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (thread_id) REFERENCES chat_threads (id)
+    )''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS chat_read_cursors (
+        thread_id TEXT NOT NULL,
+        role TEXT NOT NULL,
+        subject_id TEXT NOT NULL,
+        last_read_at INTEGER NOT NULL,
+        PRIMARY KEY (thread_id, role, subject_id)
+    )''')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_chat_msgs_thread   ON chat_messages(thread_id, created_at)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_chat_threads_farm  ON chat_threads(farm_id,  last_msg_at DESC)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_chat_threads_buyer ON chat_threads(buyer_id, last_msg_at DESC)')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS posts (
+        id TEXT PRIMARY KEY,
+        farm_id TEXT NOT NULL,
+        body TEXT NOT NULL,
+        photo_url TEXT,
+        created_at INTEGER NOT NULL,
+        hidden INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (farm_id) REFERENCES farms (id)
+    )''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS reactions (
+        post_id TEXT NOT NULL,
+        reactor_role TEXT NOT NULL,
+        reactor_id TEXT NOT NULL,
+        emoji TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY (post_id, reactor_role, reactor_id, emoji)
+    )''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS post_flags (
+        post_id TEXT NOT NULL,
+        flagger_role TEXT NOT NULL,
+        flagger_id TEXT NOT NULL,
+        reason TEXT,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY (post_id, flagger_role, flagger_id)
+    )''')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_reactions_post ON reactions(post_id)')
+
     conn.commit()
     conn.close()
 

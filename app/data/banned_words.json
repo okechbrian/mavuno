@@ -1,0 +1,7 @@
+{
+  "_comment": "Minimal allowlist-blocker for the Mavuno Social demo. Case-insensitive substring match. Real production use should swap in a maintained list + tiered review.",
+  "banned": [
+    "fuck", "shit", "bitch", "asshole", "nigger", "faggot",
+    "mzungu_slur", "idiot_farmer"
+  ]
+}

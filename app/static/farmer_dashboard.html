@@ -86,6 +86,69 @@
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index:9999; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500;}
   .toast.show { opacity: 1; }
 
+  /* Topbar chips */
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    position: relative; padding: 8px 14px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); border-radius: 999px;
+    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .topbar-btn:hover { background: var(--bg-alt); }
+  .unread-dot {
+    display: none; background: var(--bad); color: var(--paper);
+    border-radius: 999px; padding: 1px 7px; font-size: 10px; font-weight: 600;
+    margin-left: 4px; min-width: 16px; text-align: center;
+  }
+  .unread-dot.on { display: inline-block; }
+
+  /* Chat drawer */
+  .chat-drawer {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
+    background: var(--paper); border-left: 1px solid var(--line);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.08);
+    transform: translateX(100%); transition: transform 0.22s ease; z-index: 1100;
+    display: flex; flex-direction: column;
+  }
+  .chat-drawer.open { transform: translateX(0); }
+  .chat-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px; border-bottom: 1px solid var(--line);
+  }
+  .chat-head h3 { margin: 0; font-family: "Fraunces", serif; font-size: 18px; }
+  .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--ink); padding: 4px 8px; }
+  .chat-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .chat-foot { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; }
+  .chat-foot textarea {
+    flex: 1; resize: none; padding: 10px; border: 1px solid var(--line);
+    background: var(--bg-alt); color: var(--ink); -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink); border-radius: 4px; font-family: inherit; font-size: 13px;
+    min-height: 44px; max-height: 100px;
+  }
+  .chat-thread-row { padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-alt); margin-bottom: 10px; cursor: pointer; }
+  .chat-thread-row:hover { background: var(--paper); }
+  .chat-thread-row .ct-name { font-weight: 600; font-size: 13px; }
+  .chat-thread-row .ct-preview { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .chat-thread-row .ct-unread {
+    display: inline-block; background: var(--bad); color: var(--paper);
+    border-radius: 999px; padding: 0 8px; font-size: 10px; font-weight: 600; margin-left: 6px;
+  }
+  .chat-bubble {
+    max-width: 78%; padding: 10px 14px; border-radius: 14px;
+    margin-bottom: 8px; font-size: 13px; line-height: 1.4; word-wrap: break-word;
+  }
+  .chat-bubble-farmer { background: var(--accent); color: var(--paper); align-self: flex-end; margin-left: auto; }
+  .chat-bubble-buyer  { background: var(--gold);   color: var(--paper); align-self: flex-start; }
+  .chat-bubble .b-meta { font-size: 9px; opacity: 0.75; margin-top: 4px; letter-spacing: 0.04em; }
+  .chat-convo-flex { display: flex; flex-direction: column; }
+  .chat-back {
+    background: transparent; border: 1px solid var(--line); padding: 4px 10px;
+    font-size: 11px; color: var(--ink); cursor: pointer; border-radius: 4px; margin-bottom: 12px;
+  }
+  @media (max-width: 768px) {
+    .chat-drawer { width: 100%; max-width: 100%; }
+  }
+
   .nav-toggle {
     display: none;
     width: 44px; height: 44px; border-radius: 8px;
@@ -164,7 +227,11 @@
       <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" onclick="openSidebar()">☰</button>
       <h1 class="display" style="font-size: 32px; margin:0;" id="welcome-msg">Welcome</h1>
     </div>
-    <button class="btn" id="theme-toggle" style="border:none; font-size:16px; background:transparent; padding:8px 12px;" aria-label="Toggle theme">🌙</button>
+    <div class="topbar-actions">
+      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌾 Social</a>
+      <button class="topbar-btn" id="messages-btn" onclick="openChat()" aria-label="Buyer messages">💬 Messages<span class="unread-dot" id="msg-unread">0</span></button>
+      <button class="btn" id="theme-toggle" style="border:none; font-size:16px; background:transparent; padding:8px 12px;" aria-label="Toggle theme">🌙</button>
+    </div>
   </div>
 
   <div id="farm-content">Loading your farm data...</div>
@@ -227,6 +294,19 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Chat drawer -->
+<div class="chat-drawer" id="chat-drawer" aria-hidden="true">
+  <div class="chat-head">
+    <h3 id="chat-title">Buyer Messages</h3>
+    <button class="chat-close" onclick="closeChat()" aria-label="Close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body"><div style="color:var(--muted); font-size:12px;">Loading…</div></div>
+  <div class="chat-foot" id="chat-foot" style="display:none;">
+    <textarea id="chat-input" placeholder="Type a message…" maxlength="500"></textarea>
+    <button class="btn" onclick="sendChat()">Send</button>
+  </div>
+</div>
 
 <script>
 const pathParts = window.location.pathname.split("/");
@@ -490,6 +570,142 @@ async function askMavuno() {
   }
 }
 
+/* ===================== Chat (farmer side) ===================== */
+let _chatOpenThreadId = null;
+let _chatPumpAlive = false;
+let _chatLastTs = 0;
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
+function openChat(threadId) {
+  document.getElementById("chat-drawer").classList.add("open");
+  document.getElementById("chat-drawer").setAttribute("aria-hidden","false");
+  if (threadId) { renderConvo(threadId); }
+  else { renderInbox(); }
+}
+
+function closeChat() {
+  document.getElementById("chat-drawer").classList.remove("open");
+  document.getElementById("chat-drawer").setAttribute("aria-hidden","true");
+  _chatPumpAlive = false;
+  _chatOpenThreadId = null;
+  document.getElementById("chat-foot").style.display = "none";
+  refreshUnread();
+}
+
+async function renderInbox() {
+  _chatPumpAlive = false;
+  _chatOpenThreadId = null;
+  document.getElementById("chat-title").textContent = "Buyer Messages";
+  document.getElementById("chat-foot").style.display = "none";
+  const body = document.getElementById("chat-body");
+  body.innerHTML = '<div style="color:var(--muted); font-size:12px;">Loading threads…</div>';
+  const res = await jget("/chat/threads");
+  if (res.error) { body.innerHTML = '<div style="color:var(--bad);">Could not load messages.</div>'; return; }
+  const threads = res.threads || [];
+  if (!threads.length) {
+    body.innerHTML = '<div style="color:var(--muted); font-size:12px; padding:8px 0;">No buyer messages yet. They\'ll appear here when a buyer opens a chat from one of your listings.</div>';
+    return;
+  }
+  body.innerHTML = threads.map(t => `
+    <div class="chat-thread-row" onclick="renderConvo('${t.id}')">
+      <div class="ct-name">${escapeHtml(t.buyer_name || t.buyer_id)}${t.unread ? `<span class="ct-unread">${t.unread}</span>` : ""}</div>
+      <div class="ct-preview">${escapeHtml((t.last_preview || "No messages yet.").slice(0,120))}</div>
+    </div>
+  `).join("");
+}
+
+function renderBubble(msg) {
+  const mine = msg.sender_role === "farmer" && msg.sender_id === farmId;
+  const cls = mine ? "chat-bubble-farmer" : "chat-bubble-buyer";
+  const when = fmtDate(msg.created_at);
+  return `<div class="chat-bubble ${cls}">${escapeHtml(msg.body)}<div class="b-meta">${when}</div></div>`;
+}
+
+async function renderConvo(threadId) {
+  _chatOpenThreadId = threadId;
+  _chatLastTs = 0;
+  document.getElementById("chat-title").textContent = "Conversation";
+  const body = document.getElementById("chat-body");
+  body.innerHTML = '<button class="chat-back" onclick="renderInbox()">← Inbox</button><div class="chat-convo-flex" id="chat-convo"></div>';
+  document.getElementById("chat-foot").style.display = "flex";
+  // GET /messages auto-advances the read cursor server-side, so no separate /read call.
+  const res = await jget(`/chat/${threadId}/messages?since=0&wait=0`);
+  if (res.error) { body.innerHTML += `<div style="color:var(--bad);">Could not load conversation.</div>`; return; }
+  const msgs = res.messages || [];
+  if (msgs.length) {
+    _chatLastTs = msgs[msgs.length - 1].created_at;
+    document.getElementById("chat-convo").innerHTML = msgs.map(renderBubble).join("");
+    body.scrollTop = body.scrollHeight;
+  }
+  _chatPumpAlive = true;
+  pump(threadId);
+}
+
+async function pump(threadId) {
+  while (_chatPumpAlive && _chatOpenThreadId === threadId) {
+    const res = await jget(`/chat/${threadId}/messages?since=${_chatLastTs}&wait=25`);
+    if (!_chatPumpAlive || _chatOpenThreadId !== threadId) return;
+    if (res && !res.error && (res.messages || []).length) {
+      const convo = document.getElementById("chat-convo");
+      if (!convo) return;
+      for (const m of res.messages) {
+        convo.insertAdjacentHTML("beforeend", renderBubble(m));
+        _chatLastTs = m.created_at;
+      }
+      document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
+      // mark_read already happened inside the long-poll GET above.
+    }
+  }
+}
+
+async function sendChat() {
+  const threadId = _chatOpenThreadId;
+  const input = document.getElementById("chat-input");
+  const body = (input.value || "").trim();
+  if (!body || !threadId) return;
+  input.disabled = true;
+  const res = await jpost(`/chat/${threadId}/messages`, { body });
+  input.disabled = false;
+  if (res.error) {
+    if (res.error === "too_many_messages") toast("Please wait a moment before sending again.");
+    else toast("Message not sent: " + res.error);
+    return;
+  }
+  input.value = "";
+  const convo = document.getElementById("chat-convo");
+  if (convo) {
+    convo.insertAdjacentHTML("beforeend", renderBubble(res));
+    _chatLastTs = res.created_at;
+    document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
+  }
+  input.focus();
+}
+
+async function refreshUnread() {
+  const res = await jget("/chat/unread/count");
+  const dot = document.getElementById("msg-unread");
+  if (!dot) return;
+  const n = (res && !res.error) ? Number(res.count || 0) : 0;
+  if (n > 0) { dot.textContent = n > 99 ? "99+" : n; dot.classList.add("on"); }
+  else { dot.classList.remove("on"); }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeChat();
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const ta = document.getElementById("chat-input");
+  if (ta) {
+    ta.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme(localStorage.getItem("mavuno-theme") || "light");
   const btn = document.getElementById("theme-toggle");
@@ -500,6 +716,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   loadData();
+  refreshUnread();
+  setInterval(refreshUnread, 15000);
 });
 </script>
 </body>

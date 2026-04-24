@@ -2,10 +2,11 @@
 
 > *Where soil becomes credit.*
 
-This manual covers three audiences:
-1. **Farmer** — the person dialling `*165*ACP#` on a feature phone
-2. **Pump operator** — the EASP kiosk or co-operative that redeems tokens
-3. **Partner** — MoSTI / UEDCL / SACCO staff who use the dashboard to audit the system
+This manual covers four audiences:
+1. **Farmer** — the person dialling `*165*ACP#` on a feature phone, or signed into the farmer dashboard in the browser
+2. **Buyer** — a pre-verified SACCO / aggregator browsing the marketplace and paying farmers directly
+3. **Pump operator** — the EASP kiosk or co-operative that redeems tokens
+4. **Partner** — MoSTI / UEDCL / SACCO staff who use the dashboard to audit the system
 
 ---
 
@@ -102,11 +103,67 @@ If the AI service is temporarily unavailable, the reply is tagged *(offline)* an
 
 Press **7**. The reply is *Webale. Grow strong.* and the session ends. No charge is made for ending a call.
 
+### 1.11 Listing produce from the farmer dashboard (browser)
+
+You can also post offers without dialling the USSD code. Sign in at `/` as a farmer and look for the **List Produce for Sale** card:
+
+1. Pick the crop from the dropdown (your registered crop is pre-selected; common alternatives follow).
+2. Type the quantity in kilograms (1 – 50 000).
+3. Type the floor price in UGX per kilogram (100 – 10 000 000).
+4. Press **Post listing**.
+
+A toast confirms the new offer ID (format `OF-XXXXXX`). The **My active listings** table directly below refreshes. Each row shows a status pill:
+
+| Pill | Meaning |
+|---|---|
+| `open` | No buyer has paid yet — still visible to buyers. |
+| `pending` | A buyer tapped **Pay UGX …**; the payment is in flight. |
+| `settled` | Payment confirmed — the offer is closed. |
+| `failed` | The PSP rejected the payment; the offer re-opens for other buyers. |
+
+### 1.12 Payments received
+
+The **Payments Received** card shows your last five buyer settlements: amount, method (`mtn` / `airtel` / `mavuno-pay`), a status pill, and a **receipt** link for settled rows. The receipt is a JSON blob signed with HMAC-SHA256; any SACCO holding the shared operator key can recompute the signature and confirm the amount was not tampered with.
+
 ---
 
-## 2. For the pump operator
+## 2. For the buyer
 
-### 2.1 Redeeming a token
+### 2.1 Finding produce on the marketplace
+
+Sign in at `/` as a buyer. The marketplace lists **every open offer** from every farmer, not just exact region/crop/price matches. Above the list:
+
+- **Filter chips** — `All` · `My region` · `My crops` · `Within budget`. Tap a chip to narrow the view. The chip state is reflected in the URL so you can bookmark or share it.
+- **Match badges** on each card —
+  - `★ MATCH` — region, crop, and price all line up with your buyer profile.
+  - `~ partial` — two of the three match.
+  - No badge — a browse-only card.
+
+Results are smart-sorted: strongest matches first, then newest.
+
+### 2.2 Paying a farmer (Mavuno Pay)
+
+On a match card press **Pay UGX {amount}**. An inline panel asks for:
+
+- **Msisdn** — your mobile-money number. Pre-filled from your buyer profile; editable.
+- **Method** — `mtn` · `airtel` · `mavuno-pay`.
+
+Press **Send payment**. The dashboard shows a `pending` toast and polls status every 1.5 seconds. Within a few seconds the toast flips to `settled` (or `failed`, in which case the offer reopens). A receipt link appears — the same HMAC-signed JSON receipt the farmer sees.
+
+You never enter the amount — Mavuno computes it server-side as `kg × floor_ugx`, so a tampered client can't underpay. The same offer cannot be double-paid; if another buyer has a pending or settled payment the server refuses new initiations with `payment_already_in_progress`.
+
+### 2.3 What happens on the farmer's side
+
+As soon as your payment settles:
+1. The offer's status flips from `open` → `accepted`.
+2. The farmer's **Payments Received** feed shows `+UGX {amount}` with a `settled` pill and a receipt link.
+3. The ledger records `PAYMENT_INITIATED` → `PAYMENT_SETTLED` → `OFFER_ACCEPTED` in order.
+
+---
+
+## 3. For the pump operator
+
+### 3.1 Redeeming a token
 
 When a farmer arrives with a valid token:
 
@@ -118,14 +175,14 @@ When a farmer arrives with a valid token:
    - **Expiry** — the token must not be more than 72h old
 4. If all three pass, the pump releases the requested kWh and the ledger records the event.
 
-### 2.2 Offline mode
+### 3.2 Offline mode
 
 If your kiosk has no internet:
 - The token carries its own HMAC signature — you can verify it offline using the shared operator key (ask your SACCO for the key).
 - Record each redemption locally (CSV or paper).
 - Sync to the ledger next time you have connectivity. The Mavuno API accepts backdated redeem events up to 24 hours after the fact.
 
-### 2.3 Common error codes
+### 3.3 Common error codes
 
 | Error | Meaning | What to do |
 |---|---|---|
@@ -138,9 +195,9 @@ If your kiosk has no internet:
 
 ---
 
-## 3. For the partner dashboard
+## 4. For the partner dashboard
 
-### 3.1 Opening the dashboard
+### 4.1 Opening the dashboard
 
 Browse to `https://<your-mavuno-url>/`.
 
@@ -149,7 +206,7 @@ You see:
 - **Right column** — one card per registered farmer: name, district, crop, YPS, tier, kWh allocation, credit ceiling in UGX, pump, and current ECT balance.
 - **Bottom panel** — live audit ledger, refreshing every 2 seconds.
 
-### 3.2 Controls
+### 4.2 Controls
 
 | Control | What it does |
 |---|---|
@@ -160,7 +217,7 @@ You see:
 | **Issue ECT** (per-farm) | Issue a token without redemption |
 | **Theme toggle** (moon icon, top-right) | Switches between light and dark mode; persists |
 
-### 3.3 Understanding the ledger
+### 4.3 Understanding the ledger
 
 Every state change in Mavuno writes to an append-only ledger. Each row shows:
 - **Timestamp** — when the event happened (browser local time)
@@ -174,7 +231,7 @@ Every state change in Mavuno writes to an append-only ledger. Each row shows:
 
 A tampered ledger shows up as a red toast when you click **Verify ledger**, naming the first bad line.
 
-### 3.4 USSD Simulator (development only)
+### 4.4 USSD Simulator (development only)
 
 Browse to `/phone`. This is a browser-based Nokia-style phone for testing the USSD flow without an Africa's Talking account:
 1. Click a farmer SIM on the right.
@@ -186,7 +243,7 @@ Every USSD action hits the same state machine as the real AT callback. The dashb
 
 ---
 
-## 4. Keyboard shortcuts
+## 5. Keyboard shortcuts
 
 | Location | Keys | Action |
 |---|---|---|
@@ -198,30 +255,30 @@ Every USSD action hits the same state machine as the real AT callback. The dashb
 
 ---
 
-## 5. Security & Terms of Service
+## 6. Security & Terms of Service
 
-### 5.1 Sign-in & sessions
+### 6.1 Sign-in & sessions
 Sign-in is role-based (Farmer, Buyer, Agent). On success the server sets an HMAC-signed, HttpOnly, SameSite=Lax cookie that expires after 24 hours; the cookie is also flagged `Secure` whenever the site is served over HTTPS. The cookie carries no PII — only the role, the subject ID, and an expiry — so a stolen cookie cannot be replayed beyond its window and the server can re-derive trust on every request without a database lookup.
 
 Failed sign-in attempts are throttled per IP (a small burst, then a short cool-off). The sign-in form does not display default credentials; field placeholders no longer hint at PIN values.
 
-### 5.2 Authorisation model
+### 6.2 Authorisation model
 - **Public:** the landing page, the Terms page, the USSD simulator at `/phone`, and the static market-price feed.
 - **Signed-in only:** every dashboard route, sensor telemetry, ECT issue/redeem, ledger views, the buyer marketplace, and the AI agronomist.
 - **Owner-scoped:** Farmers can only see their own farm; Buyers only their own marketplace view. Agents see everything.
 
 If a session expires while a dashboard is open, the next API call returns 401 and the page redirects back to sign-in automatically — there is no broken state.
 
-### 5.3 Terms and Conditions
+### 6.3 Terms and Conditions
 All users implicitly accept the **Terms & Conditions** by signing in (the link sits below the sign-in button). The full text lives at `/terms`.
 
-### 5.4 Mobile-friendly dashboards
+### 6.4 Mobile-friendly dashboards
 The Agent, Farmer, and Buyer dashboards collapse into a single-column layout at ≤768px with a slide-in nav drawer, a tap-anywhere backdrop, and 44px touch targets. The USSD simulator at `/phone` is feature-phone-sized by default. No horizontal scrolling on any supported viewport.
 
-### 5.5 AI agronomist privacy
+### 6.5 AI agronomist privacy
 "Ask Mavuno" is powered by an LLM when `GROQ_API_KEY` is configured server-side. The key is never sent to the browser. Before each question leaves the server, phone numbers, farm IDs, and other long numeric IDs are stripped from the question; the prompt is also length-capped. If the LLM is unreachable or no key is set, a deterministic rule bank answers from the same `(crop, district, YPS, health)` context.
 
-### 5.6 Data privacy
+### 6.6 Data privacy
 Mavuno complies with Uganda's Personal Data Protection Act 2019:
 - Farmer soil readings and GPS are stored as hashed entries in the audit ledger, not raw values
 - Each farmer opts in and can revoke consent at any time
@@ -232,7 +289,7 @@ Questions: write to the Mavuno operations team via your SACCO contact.
 
 ---
 
-## 6. Support
+## 7. Support
 
 - **Pump operator questions** → SACCO operations line
 - **Dashboard / API questions** → MoSTI technical liaison

@@ -58,3 +58,37 @@ Every state change writes one row to a SHA-256 hash-chained append-only ledger. 
 
 ## 9. Reporting a vulnerability
 Email `okechbrian@gmail.com` with subject `Mavuno security`. Please do not open public GitHub issues for security reports.
+
+## 10. Payment integrity — Mavuno Pay
+Mavuno Pay links buyers to farmers with a two-phase state machine (`pending → settled | failed`). The threat model assumes a malicious client and an untrusted network between the PSP and the server.
+
+### 10.1 Server-side amount calculation
+The `/payments/initiate` endpoint **never accepts an amount from the client**. It re-derives the amount from the referenced offer:
+
+```
+amount_ugx = offer.kg × offer.floor_ugx
+```
+
+A tampered client can only change which offer it is paying, not how much it pays for it.
+
+### 10.2 Dedupe
+An offer cannot be double-paid. Before inserting a new payment row the server checks for any existing row with `status IN ('pending','settled')` for the same `offer_id` and refuses with `payment_already_in_progress`. This prevents race-condition overpayment and stops one attacker locking up a farmer's offer on behalf of another buyer.
+
+### 10.3 HMAC-signed receipts
+Every payment row carries a signature over the canonical payload:
+
+```
+payload = "{payment_id}|{offer_id}|{amount}|{status}"
+sig     = HMAC-SHA256(HMAC_SECRET, payload)
+```
+
+The `/payments/receipt/{id}` endpoint returns the payload and signature alongside the parsed fields. Any holder of the shared operator key (typically the SACCO) can recompute the HMAC offline and confirm that the amount was not altered after settlement — even in an environment without internet or database access.
+
+### 10.4 PSP callback authentication
+The mocked PSP posts back to `/payments/confirm` with an `X-Mavuno-Sig` header containing `HMAC-SHA256(HMAC_SECRET, raw_body)`. The server recomputes the signature and uses `hmac.compare_digest` — a constant-time comparison — so an attacker cannot forge a "settled" callback nor learn the signing key through timing. The confirm endpoint is also idempotent: a duplicate callback on an already-settled payment returns `{no_op: true}` without further side-effects.
+
+### 10.5 PSP swap path for production
+The mocked PSP lives in a single async function — `app/payments.py::_psp_initiate`. To go live with Flutterwave or MTN MoMo, replace that function body with the provider's HTTP call. Everything else — the DB writes, the ledger events (`PAYMENT_INITIATED`, `PAYMENT_SETTLED`, `OFFER_ACCEPTED`), the HMAC receipt format, the buyer dashboard polling — is unchanged. Key the provider to `PUBLIC_BASE_URL/payments/confirm` and expose `HMAC_SECRET` so the provider's outbound webhook can sign the body the same way the mock does today.
+
+### 10.6 Rate limiting
+`/payments/initiate` reuses the per-IP throttle bucket that protects sign-in (`_check_login_throttle` in `app/main.py`). This is an in-memory best-effort limit; move to Redis or an equivalent distributed bucket when scaling past a single instance.

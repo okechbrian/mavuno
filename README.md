@@ -45,6 +45,20 @@ The main dashboard serves as an operations center for SACCOs and Co-ops. It feat
 The system operates a live Community Resource Platform (CRP) marketplace connecting smallholders with pre-verified institutional off-takers.
 - **The Buyer Network List:** Visible in the left sidebar, showing registered SACCOs and regional cooperatives.
 - **How to Onboard:** Click the **"+ Onboard Buyer"** button in the sidebar. Enter the institution's name, their operating region, floor price, and the crops they purchase. Once registered, they are instantly available to be matched with farmers on the USSD interface via the CRP engine.
+- **Full marketplace browse with smart-sort:** The buyer dashboard now shows **every open offer**, not just exact matches. Filter chips (`All` · `My region` · `My crops` · `Within budget`) toggle the view and are reflected in the URL for shareable links. Each offer card carries a match badge — `★ MATCH` (all three conditions satisfied), `~ partial` (two of three), or unbadged — and sorts highest-score-first, then newest-first.
+
+### 2b. Mavuno Pay — direct buyer → farmer settlement
+A complete payment state machine wired into the marketplace:
+- **`POST /payments/initiate`** — a buyer clicks **Pay UGX …** on an offer; the server computes the amount as `offer.kg × offer.floor_ugx` (the client-supplied amount is never trusted), creates a `pending` payment row, writes a `PAYMENT_INITIATED` ledger event, and triggers a mocked PSP.
+- **`POST /payments/confirm`** — callback endpoint. The body's HMAC signature (`X-Mavuno-Sig` header) is verified against `HMAC_SECRET` using `hmac.compare_digest` before the state transitions to `settled` or `failed`. On success the matching offer closes and `OFFER_ACCEPTED` lands in the ledger.
+- **`GET /payments/receipt/{id}`** — JSON receipt with payload format `payment_id|offer_id|amount|status` and a HMAC-SHA256 signature over it. A holder can verify the receipt offline using the operator's shared key.
+- **Dashboards:** the buyer dashboard polls `GET /payments/status/{id}` every 1.5 s until settled/failed and shows a toast; the farmer dashboard's **Payments Received** feed renders `GET /payments/farmer/{id}`.
+- **PSP swap path:** `app/payments.py::_psp_initiate` is the one function to replace for production — wire it to Flutterwave or MTN MoMo and the rest of the flow (DB writes, ledger, receipts) is unchanged.
+
+### 2c. Farmer self-listing
+Farmers now post offers directly from their dashboard (previously USSD-only):
+- **Inline form** (`List Produce for Sale` card): crop dropdown (prefilled from the farm's registered crop, plus a common-crop allowlist), quantity in kg (1 – 50 000), floor price in UGX/kg (100 – 10 000 000). Submits to **`POST /crp/offers`** (farmer-role, owner-scoped).
+- **My active listings** table below the form reads `GET /crp/offers?farm_id={id}&include_closed=true` and shows the joined `payment_status` as a pill (`open` / `pending` / `settled` / `failed`).
 
 ### 3. Multi-Language USSD Simulator & CRP Advisor
 Visit **http://localhost:8001/phone** to simulate the farmer's experience on a 2G feature phone.
@@ -75,6 +89,8 @@ This script proves that the system remains resilient to rural infrastructure fai
 ### 6. AI Agronomist (Groq)
 The `Ask Mavuno` feature uses Groq's `llama-3.3-70b-versatile` for one- or two-line, context-aware advice. The API key is read from `GROQ_API_KEY` server-side; it never reaches the browser. All farmer questions are PII-redacted (phone numbers, farm IDs, and other long numeric IDs are stripped) and length-capped before egress. If the key is absent or the upstream call fails, a deterministic on-device rule bank answers — the farmer always gets a reply.
 
+**UI fix (2026-04-24):** the agronomist textarea in dark mode was rendering black-on-black because browsers do not inherit `color` onto form controls by default. The farmer dashboard now applies an explicit `color: var(--ink); -webkit-text-fill-color: var(--ink); caret-color: var(--ink);` cascade to every input, textarea, and select.
+
 ### 7. Mobile-First UI
 Every dashboard (Agent, Farmer, Buyer) collapses into a single column at ≤768px with a slide-in nav drawer, a backdrop overlay, and 44px touch targets. The login screen reorders for thumb reach. The USSD simulator at `/phone` renders cleanly on a feature-phone-sized viewport.
 
@@ -83,8 +99,21 @@ See `.env.example`. Never commit a real `.env` file. The `.gitignore` excludes `
 
 | Variable | Purpose |
 |---|---|
-| `HMAC_SECRET` | Signs ECT tokens, sessions, and the ledger hash chain. Rotate to invalidate all sessions. |
+| `HMAC_SECRET` | Signs ECT tokens, sessions, payment receipts, and the ledger hash chain. Rotate to invalidate all sessions. |
 | `AGENT_PASSWORD` | Override the default agent sign-in password. Set this in production. |
 | `GROQ_API_KEY` | Optional. Enables LLM-backed agronomy advice. Falls back to rule bank when absent. |
-| `PUBLIC_BASE_URL` | Used for cookie `Secure` flag detection and absolute links. |
+| `PUBLIC_BASE_URL` | Used for cookie `Secure` flag detection, absolute links, and the mocked PSP callback URL. |
 | `AT_USERNAME` / `AT_API_KEY` | Africa's Talking USSD credentials (production only). |
+
+## HTTP API surface (selected)
+
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/crp/offers` | Farmer (or agent) posts a new offer. Body: `{farm_id, crop, kg, floor_ugx}`. |
+| `GET` | `/crp/offers` | Buyer/agent sees all open offers. With `?farm_id=…&include_closed=true` a farmer sees their own history. Each row carries a joined `payment_status`. |
+| `POST` | `/payments/initiate` | Buyer starts a payment. Body: `{offer_id, msisdn, method}`. Amount is derived server-side. |
+| `POST` | `/payments/confirm` | PSP callback. Body HMAC'd in `X-Mavuno-Sig`. |
+| `GET`  | `/payments/status/{id}` | Polled by the buyer dashboard for live status. |
+| `GET`  | `/payments/farmer/{id}` | Feed for the farmer dashboard. |
+| `GET`  | `/payments/buyer/{id}` | Feed for the buyer dashboard. |
+| `GET`  | `/payments/receipt/{id}` | Offline-verifiable, HMAC-signed JSON receipt. |

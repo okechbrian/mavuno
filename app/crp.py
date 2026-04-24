@@ -102,15 +102,46 @@ def match_buyers(offer_id: str) -> dict:
     ledger.write("MATCH", {"offer_id": offer_id, "matches": [b['buyer_id'] for b in top]})
     return {"offer_id": offer_id, "matches": top}
 
-def list_open_offers(limit: int = 10) -> dict:
+def list_open_offers(limit: int = 10, farm_id: str | None = None,
+                     include_closed: bool = False) -> dict:
+    """List offers, newest first. Each row carries `payment_status`
+    (none|pending|settled|failed) joined from the payments table so the buyer
+    UI can show real fulfilment state without a second round-trip.
+
+    - farm_id: restrict to one farm (used by the farmer dashboard).
+    - include_closed: include accepted/closed offers (used by the farmer's
+      own listings view so they can see history).
+    """
     conn = database.get_db()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM offers WHERE status = 'open' ORDER BY created_at DESC LIMIT ?", (limit,))
-    rows = cur.fetchall()
+    where = []
+    params: list = []
+    if not include_closed:
+        where.append("o.status = 'open'")
+    if farm_id:
+        where.append("o.farm_id = ?")
+        params.append(farm_id)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    sql = f"""
+        SELECT o.*,
+               (SELECT status FROM payments p
+                  WHERE p.offer_id = o.id
+                  ORDER BY (CASE p.status WHEN 'settled' THEN 0
+                                          WHEN 'pending' THEN 1
+                                          ELSE 2 END), p.created_at DESC
+                  LIMIT 1) AS payment_status
+          FROM offers o
+          {where_sql}
+          ORDER BY o.created_at DESC LIMIT ?
+    """
+    params.append(limit)
+    cur.execute(sql, tuple(params))
+    rows = [dict(r) for r in cur.fetchall()]
+
     cur.execute("SELECT count(*) as total FROM offers WHERE status = 'open'")
     total = cur.fetchone()['total']
     conn.close()
-    return {"offers": [dict(r) for r in rows], "total_open": total}
+    return {"offers": rows, "total_open": total}
 
 _RULE_BANK = {
     "pest": "Inspect leaves for holes. Neem spray every 7 days. Report to extension officer if >20% affected.",

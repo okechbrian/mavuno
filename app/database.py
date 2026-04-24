@@ -55,6 +55,26 @@ def init_db():
         floor_ugx INTEGER, radius_km REAL, lat REAL, lng REAL, contact TEXT
     )''')
 
+    cur.execute('''CREATE TABLE IF NOT EXISTS payments (
+        id TEXT PRIMARY KEY,
+        offer_id TEXT NOT NULL,
+        buyer_id TEXT NOT NULL,
+        farm_id TEXT NOT NULL,
+        amount_ugx INTEGER NOT NULL,
+        method TEXT NOT NULL,
+        msisdn TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        hmac_sig TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        settled_at INTEGER,
+        FOREIGN KEY (offer_id) REFERENCES offers (id),
+        FOREIGN KEY (buyer_id) REFERENCES buyers (id),
+        FOREIGN KEY (farm_id) REFERENCES farms (id)
+    )''')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_payments_offer ON payments(offer_id)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_payments_farm ON payments(farm_id)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_payments_buyer ON payments(buyer_id)')
+
     conn.commit()
     conn.close()
 

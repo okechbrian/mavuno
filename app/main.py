@@ -21,8 +21,11 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import crp, ect, ledger, scorer, ussd, database
+from . import crp, ect, ledger, scorer, ussd, database, payments
 from .config import HMAC_SECRET
+
+# Idempotent — ensures any newly added tables (e.g. payments) exist on disk.
+database.init_db()
 from .session import (
     COOKIE_NAME,
     clear as session_clear,
@@ -326,8 +329,40 @@ def ect_issue(req: dict, user: dict = Depends(require_user("agent"))):
 
 
 @app.get("/crp/offers")
-def crp_offers_list(limit: int = 50, user: dict = Depends(require_user("buyer", "agent"))):
-    return crp.list_open_offers(limit=limit)
+def crp_offers_list(
+    limit: int = 50,
+    farm_id: str | None = None,
+    include_closed: bool = False,
+    user: dict = Depends(require_user("buyer", "agent", "farmer")),
+):
+    """Buyers/agents see all open offers. Farmers may pass ?farm_id= to see
+    their own listings, including closed ones via include_closed=true."""
+    if user["role"] == "farmer":
+        if not farm_id or farm_id != user["subject"]:
+            raise HTTPException(status_code=403, detail="not_resource_owner")
+    return crp.list_open_offers(limit=limit, farm_id=farm_id, include_closed=include_closed)
+
+
+class OfferReq(BaseModel):
+    farm_id: str = Field(..., max_length=64)
+    crop: str = Field(..., max_length=32)
+    kg: int = Field(..., gt=0, le=50_000)
+    floor_ugx: int = Field(..., gt=0, le=10_000_000)
+
+
+_ALLOWED_CROPS = {
+    "coffee", "maize", "beans", "cassava", "rice", "matoke", "groundnuts",
+    "soybeans", "sorghum", "millet", "sweet_potato", "irish_potato",
+}
+
+
+@app.post("/crp/offers")
+def crp_offer_create(req: OfferReq, user: dict = Depends(require_user("farmer", "agent"))):
+    require_owner_or_agent("farmer", req.farm_id, user)
+    crop = req.crop.strip().lower().replace(" ", "_")
+    if crop not in _ALLOWED_CROPS:
+        raise HTTPException(status_code=400, detail="unknown_crop")
+    return crp.list_offer(req.farm_id, crop, req.kg, req.floor_ugx)
 
 
 @app.post("/crp/ask")
@@ -336,6 +371,90 @@ def crp_ask(req: dict, user: dict = Depends(require_user("farmer", "agent"))):
     require_owner_or_agent("farmer", fid, user)
     question = (req.get("question") or "")[:500]  # hard input cap before reaching Groq
     return crp.advisor(fid, question)
+
+
+# ============================================================================
+# PAYMENTS — Mavuno Pay
+# ============================================================================
+
+class PaymentInitiateReq(BaseModel):
+    offer_id: str = Field(..., max_length=64)
+    msisdn: str = Field(..., max_length=20)
+    method: str = Field("mavuno-pay", max_length=16)
+
+
+@app.post("/payments/initiate")
+def payments_initiate(
+    req: PaymentInitiateReq,
+    request: Request,
+    user: dict = Depends(require_user("buyer")),
+):
+    _check_login_throttle(_client_ip(request))  # reuse the per-IP burst guard
+    res = payments.initiate(user["subject"], req.offer_id, req.msisdn, req.method)
+    if "error" in res:
+        return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.post("/payments/confirm")
+async def payments_confirm(request: Request):
+    """PSP callback. Body is signed with HMAC_SECRET; we re-sign and compare."""
+    body = await request.body()
+    sig = request.headers.get("x-mavuno-sig", "")
+    expected = payments.callback_signature(body)
+    if not hmac.compare_digest(expected, sig):
+        return JSONResponse({"error": "bad_signature"}, status_code=401)
+    try:
+        data = json.loads(body.decode("utf-8"))
+        pid = data["payment_id"]
+        success = bool(data.get("success", False))
+    except (ValueError, KeyError):
+        return JSONResponse({"error": "bad_body"}, status_code=400)
+    return payments.confirm(pid, success)
+
+
+def _payment_party_check(p: dict, user: dict) -> None:
+    if user["role"] == "agent":
+        return
+    if user["role"] == "buyer" and user["subject"] == p["buyer_id"]:
+        return
+    if user["role"] == "farmer" and user["subject"] == p["farm_id"]:
+        return
+    raise HTTPException(status_code=403, detail="not_payment_party")
+
+
+@app.get("/payments/status/{payment_id}")
+def payments_status(payment_id: str, user: dict = Depends(require_user())):
+    p = payments.get(payment_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="payment_not_found")
+    _payment_party_check(p, user)
+    return {
+        "payment_id": p["id"], "status": p["status"],
+        "amount_ugx": p["amount_ugx"], "method": p["method"],
+        "created_at": p["created_at"], "settled_at": p["settled_at"],
+    }
+
+
+@app.get("/payments/farmer/{farm_id}")
+def payments_for_farm(farm_id: str, user: dict = Depends(require_user("farmer", "agent"))):
+    require_owner_or_agent("farmer", farm_id, user)
+    return {"payments": payments.for_farm(farm_id)}
+
+
+@app.get("/payments/buyer/{buyer_id}")
+def payments_for_buyer(buyer_id: str, user: dict = Depends(require_user("buyer", "agent"))):
+    require_owner_or_agent("buyer", buyer_id, user)
+    return {"payments": payments.for_buyer(buyer_id)}
+
+
+@app.get("/payments/receipt/{payment_id}")
+def payments_receipt(payment_id: str, user: dict = Depends(require_user())):
+    p = payments.get(payment_id)
+    if not p:
+        raise HTTPException(status_code=404, detail="payment_not_found")
+    _payment_party_check(p, user)
+    return payments.receipt(payment_id)
 
 
 @app.post("/demo/cycle")

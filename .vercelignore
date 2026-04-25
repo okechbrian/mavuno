@@ -9,3 +9,7 @@ docs/
 README.md
 scripts/
 server.log
+.venv*
+.gradle/
+build/
+

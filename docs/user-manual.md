@@ -289,7 +289,60 @@ Questions: write to the Mavuno operations team via your SACCO contact.
 
 ---
 
-## 7. Support
+## 7. Mavuno Chat — talking to a counterparty before the deal
+
+Chat is offer-aware. Every conversation is pinned to a specific listing so questions like *"is this Robusta?"*, *"50 kg sacks ok?"*, or *"when was it harvested?"* stay with the deal they belong to.
+
+### 7.1 Buyer flow
+There are two entry points to the same drawer:
+
+- **From an offer card** — every offer in the marketplace shows a `💬 Chat` button next to `Pay UGX …`. Clicking opens (or reopens) a thread tied to that specific offer with that specific farmer.
+- **From the topbar** — the `💬 Messages` chip at the top right opens an inbox view of every thread you've ever opened, sorted by most-recent message. The red dot on the chip is your unread count; it refreshes every 15 s.
+
+Inside a thread, type and press **Enter** to send (Shift+Enter for a new line). Messages are capped at 500 characters. The composer auto-redacts phone numbers and farm IDs you paste in — **don't** paste contact info into chat; use the Mavuno Pay msisdn field on the offer card instead, which moves the contact through a sealed channel.
+
+A small rate limit (1 message every 2 seconds) prevents accidental double-fires from a slow connection. If you hit it you'll see a toast — wait a moment and try again.
+
+### 7.2 Farmer flow
+Open the farmer dashboard. The topbar gains a `💬 Messages` chip with the same unread badge. Inside, you see a list of every buyer who has reached out, newest message first. Tap a row to open the conversation.
+
+Replies use the same composer. The same 500-character cap and auto-redaction apply on your side.
+
+### 7.3 What the audit log records
+Every chat event writes one row to the Mavuno ledger: thread ID, sender role, sender ID, message ID, timestamps. **The body of the message is never written to the ledger.** That means an auditor with the operator key can prove *when and between whom* a conversation happened, without storing the text in a tamper-evident log.
+
+### 7.4 Known limits in this build
+- **Cold-start eviction.** Until the Neon/Postgres migration ships, the SQLite database wipes on a Vercel cold start. Threads and messages clear with it. Treat anything older than ~24 hours as gone.
+- **Best-effort PII redaction.** The regex catches obvious phone-number patterns but not free-form workarounds ("call me at zero seven…"). The product fix is the Mavuno Pay msisdn channel, which is sealed end-to-end.
+- **No end-to-end encryption.** Bodies are stored server-side in plaintext after redaction. Fine for a market negotiation; insufficient for medical or legal content.
+
+---
+
+## 8. Mavuno Social — public farmer feed
+
+A lightweight reputation surface where farmers post crop updates and buyers browse.
+
+### 8.1 Get there
+Every dashboard now has a `🌾 Mavuno Social` link in the topbar. Or visit `/feed-page` directly.
+
+### 8.2 Farmer flow
+The composer at the top of the page is visible only to farmers. Type up to 300 characters — *"Harvest done, 200 kg Robusta ready for pickup"*, *"Beans graded A; floor price holding at 2 200 UGX/kg"* — and click **Post**. The post appears immediately at the top of everyone's feed.
+
+Avoid: contact info (it auto-redacts to `[redacted]` anyway), profanity (the post is rejected with a banned-word error before it lands).
+
+### 8.3 Buyer flow
+The feed is reverse-chronological across all farmers. Each post shows the farmer's name, their district, the registered crop, the body, a time-since stamp, and four reaction emojis: 🌱 🔥 ❤️ 👏. Click any emoji to react — the count bumps live. Clicking again is a no-op (one reaction per buyer per emoji per post).
+
+### 8.4 Flagging
+Every post has a 🚩 button. Clicking it asks for confirmation, then immediately hides the post from the feed for everyone and writes `POST_FLAGGED` to the ledger. There is **no human moderator** in this build — the first flag is the whole defence. A cockpit review queue is in the post-hackathon roadmap.
+
+### 8.5 Known limits
+- **Text-only.** The `photo_url` field is reserved in the schema, but Tier 2 ships text-only for the demo window. Image uploads are deferred to the Vercel Blob integration.
+- **Same SQLite cold-start caveat as chat.** Posts wipe on cold start until the Postgres migration.
+
+---
+
+## 9. Support
 
 - **Pump operator questions** → SACCO operations line
 - **Dashboard / API questions** → MoSTI technical liaison

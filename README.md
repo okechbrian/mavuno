@@ -55,6 +55,23 @@ A complete payment state machine wired into the marketplace:
 - **Dashboards:** the buyer dashboard polls `GET /payments/status/{id}` every 1.5 s until settled/failed and shows a toast; the farmer dashboard's **Payments Received** feed renders `GET /payments/farmer/{id}`.
 - **PSP swap path:** `app/payments.py::_psp_initiate` is the one function to replace for production — wire it to Flutterwave or MTN MoMo and the rest of the flow (DB writes, ledger, receipts) is unchanged.
 
+### 2d. Mavuno Chat — offer-scoped buyer ↔ farmer messaging
+A long-poll chat layer that pins conversations to specific offers, so judges (and real users) can see the *"is this Robusta? what bag size? when harvested?"* exchange that closes a deal:
+- **`POST /chat/threads`** — buyer-initiated, idempotent on `(farm_id, buyer_id, offer_id)`. Writes `CHAT_OPEN` to the ledger.
+- **`POST /chat/{thread_id}/messages`** — body capped at 500 chars, **PII-redacted on write** (phone numbers and farm IDs replaced with `[redacted]`), rate-limited 1 msg / 2 s per `sender_id`. Writes `CHAT_MSG` to the ledger — **payload never carries the body**, only structural identifiers.
+- **`GET /chat/{thread_id}/messages?since=ts&wait=25`** — long-poll read. Holds up to 25 s waiting for new rows; breaks early on client disconnect. Auto-advances the reader's cursor so unread counts settle without a separate call.
+- **`GET /chat/threads`** — owner-scoped inbox; `GET /chat/unread/count` powers the topbar badge.
+- **Surfaces:** buyer dashboard has both a per-offer 💬 button on the offer card *and* a topbar Messages chip; the farmer dashboard has a "Buyer Messages" inbox card and the same topbar chip. Drawer is pure CSS slide-in, no new deps.
+
+### 2e. Mavuno Social — public farmer feed (text-only for demo)
+A lightweight reputation surface where farmers post crop updates and buyers react:
+- **`POST /feed`** (farmer-only) — body 1–300 chars, PII-redacted, banned-word checked against `app/data/banned_words.json`. Writes `POST_CREATED`.
+- **`GET /feed?limit=50`** — reverse-chrono, excludes hidden posts; hydrated with farmer name, district, crop, and grouped reaction counts.
+- **`POST /feed/{id}/react`** — emoji allowlist (🌱 🔥 ❤️ 👏); composite-PK upsert means clicking the same emoji twice is a no-op.
+- **`POST /feed/{id}/flag`** — any signed-in user can flag; first flag flips `posts.hidden = 1` and writes `POST_FLAGGED`. Auto-moderation only — production needs a human review queue (documented in `docs/SECURITY.md` §11.5).
+- **Page:** `/feed-page` serves a standalone feed UI with role-aware composer; topbar links from every dashboard.
+- **Photos deferred:** `posts.photo_url` is reserved for a follow-up Vercel Blob integration.
+
 ### 2c. Farmer self-listing
 Farmers now post offers directly from their dashboard (previously USSD-only):
 - **Inline form** (`List Produce for Sale` card): crop dropdown (prefilled from the farm's registered crop, plus a common-crop allowlist), quantity in kg (1 – 50 000), floor price in UGX/kg (100 – 10 000 000). Submits to **`POST /crp/offers`** (farmer-role, owner-scoped).
@@ -117,3 +134,14 @@ See `.env.example`. Never commit a real `.env` file. The `.gitignore` excludes `
 | `GET`  | `/payments/farmer/{id}` | Feed for the farmer dashboard. |
 | `GET`  | `/payments/buyer/{id}` | Feed for the buyer dashboard. |
 | `GET`  | `/payments/receipt/{id}` | Offline-verifiable, HMAC-signed JSON receipt. |
+| `POST` | `/chat/threads` | Buyer opens (or fetches) a thread on `(farm_id, offer_id?)`. Idempotent. |
+| `GET`  | `/chat/threads` | Owner-scoped inbox: farmer sees their threads, buyer sees theirs, agent sees all. |
+| `GET`  | `/chat/{id}/messages?since=ts&wait=25` | Long-poll read. Auto-marks the reader's cursor. |
+| `POST` | `/chat/{id}/messages` | Body PII-redacted on write. Rate-limited 1/2 s per `sender_id`. |
+| `GET`  | `/chat/unread/count` | Topbar badge feed. |
+| `GET`  | `/feed-page` | Public farmer feed UI (any signed-in user). |
+| `POST` | `/feed` | Farmer creates a post. PII-redacted, banned-word filtered. |
+| `GET`  | `/feed?limit=50` | Reverse-chrono feed; excludes hidden posts. |
+| `GET`  | `/feed/{id}` | Single post with grouped reaction counts. |
+| `POST` | `/feed/{id}/react` | Emoji allowlist (🌱 🔥 ❤️ 👏); idempotent on (post, user, emoji). |
+| `POST` | `/feed/{id}/flag` | Auto-hides the post; writes `POST_FLAGGED` to the ledger. |

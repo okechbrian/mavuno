@@ -1,0 +1,9 @@
+<resources>
+    <string name="farmer_app_title">Mavuno Farmer</string>
+    <string name="welcome_back">Kulaba okulala,</string>
+    <string name="farm_id_label">Namba y\'ennimiro: %1$s</string>
+    <string name="yps_title">Obulungi bw\'amakungula</string>
+    <string name="ect_balance_title">Sente za ECT</string>
+    <string name="approx_ugx">≈ Sente %1$s</string>
+    <string name="chat_agronomist">Yogera n\'omukugu</string>
+</resources>

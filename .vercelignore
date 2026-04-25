@@ -1,4 +1,5 @@
 .venv/
+.venv2/
 __pycache__/
 *.pyc
 .env
@@ -6,3 +7,5 @@ run.bat
 ml/
 docs/
 README.md
+scripts/
+server.log

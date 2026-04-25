@@ -1,13 +1,21 @@
 """Yield Probability Scorer for Prototype."""
-import joblib
-import numpy as np
+import math
+import statistics
 from functools import lru_cache
 from .database import get_db
 
 @lru_cache(maxsize=1)
 def _load_model():
-    from .database import DATA_DIR
-    return joblib.load(DATA_DIR / "yps_model.pkl")
+    """Optional model loader. Fallback to simple logic if dependencies or file missing."""
+    try:
+        import joblib
+        from .database import DATA_DIR
+        path = DATA_DIR / "yps_model.pkl"
+        if path.exists():
+            return joblib.load(path)
+    except ImportError:
+        pass
+    return None
 
 def score_farm(farm_id: str):
     conn = get_db()
@@ -15,7 +23,6 @@ def score_farm(farm_id: str):
     cur.execute("SELECT crop FROM farms WHERE id = ?", (farm_id,))
     row = cur.fetchone()
     if not row: return {"error": "unknown_farm"}
-    crop = row['crop']
     
     cur.execute("SELECT soil_moisture, temp_c, rainfall_mm, humidity_pct, n_mg_kg, p_mg_kg, k_mg_kg FROM sensor_history WHERE farm_id = ? ORDER BY timestamp DESC LIMIT 7", (farm_id,))
     window = cur.fetchall()
@@ -29,20 +36,28 @@ def score_farm(farm_id: str):
         "k": [r['k_mg_kg'] for r in reversed(window)]
     }
 
-    sm_avg = float(np.mean([r['soil_moisture'] for r in window]))
-    rain_sum = float(np.sum([r['rainfall_mm'] for r in window]))
-    temp_var = float(np.var([r['temp_c'] for r in window]))
-    hum_avg = float(np.mean([r['humidity_pct'] for r in window]))
+    soil_moistures = [r['soil_moisture'] for r in window]
+    rainfalls = [r['rainfall_mm'] for r in window]
+    temps = [r['temp_c'] for r in window]
+    humidities = [r['humidity_pct'] for r in window]
 
-    bundle = _load_model()
-    # Simple YPS Logic
+    sm_avg = statistics.mean(soil_moistures)
+    rain_sum = sum(rainfalls)
+    # Variance fallback if statistics.variance fails on small data
+    try:
+        temp_var = statistics.variance(temps)
+    except statistics.StatisticsError:
+        temp_var = 0
+    hum_avg = statistics.mean(humidities)
+
+    # Simple YPS Logic (used in prototype instead of heavy GB model to save bundle size)
     expected = (sm_avg * 10) + (rain_sum * 2) - (temp_var * 5)
     yps = int(max(0, min(1000, 500 + expected)))
     
     # Generate actionable diagnostics based on the 7 crucial signals
-    n_avg = np.mean(nutrients["n"]) if nutrients["n"] else 0
-    p_avg = np.mean(nutrients["p"]) if nutrients["p"] else 0
-    k_avg = np.mean(nutrients["k"]) if nutrients["k"] else 0
+    n_avg = statistics.mean(nutrients["n"]) if nutrients["n"] else 0
+    p_avg = statistics.mean(nutrients["p"]) if nutrients["p"] else 0
+    k_avg = statistics.mean(nutrients["k"]) if nutrients["k"] else 0
     
     diagnostics = []
     if sm_avg < 20:

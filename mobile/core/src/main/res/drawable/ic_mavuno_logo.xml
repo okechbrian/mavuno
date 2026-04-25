@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM12,20c-4.41,0 -8,-3.59 -8,-8s3.59,-8 8,-8 8,3.59 8,8 -3.59,8 -8,8zM11,7h2v2h-2zM11,11h2v6h-2z"/>
+    <!-- Mavuno Leaf/Circle Logo -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M12,6c-3.31,0 -6,2.69 -6,6 0,2.32 1.33,4.32 3.28,5.3L12,12l2.72,5.3c1.95,-0.98 3.28,-2.98 3.28,-5.3 0,-3.31 -2.69,-6 -6,-6z"/>
+</vector>

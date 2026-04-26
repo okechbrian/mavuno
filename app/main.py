@@ -383,7 +383,8 @@ def crp_ask(req: dict, user: dict = Depends(require_user("farmer", "agent"))):
     fid = req.get("farm_id")
     require_owner_or_agent("farmer", fid, user)
     question = (req.get("question") or "")[:500]  # hard input cap before reaching Groq
-    return crp.advisor(fid, question)
+    make_public = bool(req.get("make_public", False))
+    return crp.advisor(fid, question, make_public=make_public)
 
 
 # ============================================================================
@@ -582,6 +583,7 @@ def chat_unread(user: dict = Depends(require_user())):
 class PostCreateReq(BaseModel):
     body: str = Field(..., min_length=1, max_length=300)
     photo_url: str | None = Field(default=None, max_length=500)
+    is_verified: bool = Field(default=False)
 
 
 class ReactReq(BaseModel):
@@ -600,15 +602,15 @@ def feed_page(user: dict = Depends(require_user())):
 @app.post("/feed")
 def feed_create(req: PostCreateReq, user: dict = Depends(require_user("farmer"))):
     """Only farmers post to the feed — buyers browse and react."""
-    res = social.create_post(user["subject"], req.body, req.photo_url)
+    res = social.create_post(user["subject"], req.body, req.photo_url, req.is_verified)
     if "error" in res:
         return JSONResponse(res, status_code=400)
     return res
 
 
 @app.get("/feed")
-def feed_list(limit: int = 50, user: dict = Depends(require_user())):
-    return {"posts": social.feed(limit=max(1, min(int(limit), 100)))}
+def feed_list(limit: int = 50, district: str | None = None, user: dict = Depends(require_user())):
+    return {"posts": social.feed(limit=max(1, min(int(limit), 100)), district=district)}
 
 
 @app.get("/feed/{post_id}")

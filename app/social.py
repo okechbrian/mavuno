@@ -6,8 +6,8 @@ PII-redacted at write time via `crp._redact_pii`. Banned-word list lives at
 `app/data/banned_words.json` (loaded once, mutation requires process
 restart — fine for the demo window).
 
-Ledger events: `POST_CREATED`, `POST_REACTED`, `POST_FLAGGED`. Payloads
-include structural identifiers only — never the post body.
+Ledger events: `POST_CREATED`, `POST_REACTED`, `POST_FLAGGED`, `VERIFIED_HARVEST`.
+Payloads include structural identifiers only — never the post body.
 """
 from __future__ import annotations
 import json
@@ -16,7 +16,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from . import crp, database, ledger
+from . import crp, database, ledger, scorer
 
 BODY_MAX = 300
 ALLOWED_EMOJI = {"\U0001f331", "\U0001f525", "❤️", "\U0001f44f"}  # 🌱 🔥 ❤️ 👏
@@ -45,7 +45,7 @@ def _contains_banned(text: str) -> bool:
     return any(b in t for b in _BANNED_WORDS)
 
 
-def create_post(farm_id: str, body: str, photo_url: Optional[str] = None) -> dict:
+def create_post(farm_id: str, body: str, photo_url: Optional[str] = None, is_verified: bool = False) -> dict:
     body = (body or "").strip()
     if not body:
         return {"error": "empty_body"}
@@ -64,18 +64,23 @@ def create_post(farm_id: str, body: str, photo_url: Optional[str] = None) -> dic
     safe_body = crp._redact_pii(body)
     pid = _new_post_id()
     now = int(time.time())
+    is_verified_int = 1 if is_verified else 0
     cur.execute(
-        """INSERT INTO posts (id, farm_id, body, photo_url, created_at, hidden)
-           VALUES (?, ?, ?, ?, ?, 0)""",
-        (pid, farm_id, safe_body, photo_url, now),
+        """INSERT INTO posts (id, farm_id, body, photo_url, is_verified, created_at, hidden)
+           VALUES (?, ?, ?, ?, ?, ?, 0)""",
+        (pid, farm_id, safe_body, photo_url, is_verified_int, now),
     )
     conn.commit()
     conn.close()
 
     ledger.write("POST_CREATED", {"post_id": pid, "farm_id": farm_id})
+    if is_verified_int:
+        ledger.write("VERIFIED_HARVEST", {"post_id": pid, "farm_id": farm_id, "timestamp": now})
+
     return {
         "id": pid, "farm_id": farm_id, "body": safe_body,
-        "photo_url": photo_url, "created_at": now, "hidden": 0,
+        "photo_url": photo_url, "is_verified": is_verified_int,
+        "created_at": now, "hidden": 0,
     }
 
 
@@ -92,6 +97,14 @@ def _hydrate(post_row) -> dict:
     d["farmer_name"] = f["farmer_name"] if f else d["farm_id"]
     d["district"] = f["district"] if f else ""
     d["crop"] = f["crop"] if f else ""
+    
+    # YPS Flex
+    try:
+        score = scorer.score_farm(d["farm_id"])
+        d["yps"] = score.get("yps")
+    except Exception:
+        d["yps"] = None
+
     cur.execute(
         """SELECT emoji, count(*) AS n FROM reactions
            WHERE post_id = ? GROUP BY emoji""",
@@ -102,15 +115,26 @@ def _hydrate(post_row) -> dict:
     return d
 
 
-def feed(limit: int = 50) -> list[dict]:
-    """Reverse-chrono, excludes hidden posts. Hydrated with farm + reactions."""
+def feed(limit: int = 50, district: Optional[str] = None) -> list[dict]:
+    """Reverse-chrono, excludes hidden posts. Hydrated with farm + reactions. Geo-fenced by district if provided."""
     conn = database.get_db()
     cur = conn.cursor()
-    cur.execute(
-        """SELECT * FROM posts WHERE hidden = 0
-           ORDER BY created_at DESC LIMIT ?""",
-        (int(limit),),
-    )
+    
+    if district:
+        cur.execute(
+            """SELECT p.* FROM posts p
+               JOIN farms f ON p.farm_id = f.id
+               WHERE p.hidden = 0 AND f.district = ?
+               ORDER BY p.created_at DESC LIMIT ?""",
+            (district, int(limit)),
+        )
+    else:
+        cur.execute(
+            """SELECT * FROM posts WHERE hidden = 0
+               ORDER BY created_at DESC LIMIT ?""",
+            (int(limit),),
+        )
+    
     rows = cur.fetchall()
     conn.close()
     return [_hydrate(r) for r in rows]

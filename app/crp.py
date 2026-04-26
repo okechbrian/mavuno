@@ -175,7 +175,7 @@ def _groq_advise(question: str, ctx: dict) -> str | None:
     except Exception:
         return None
 
-def advisor(farm_id: str, question: str) -> dict:
+def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
     conn = database.get_db()
     cur = conn.cursor()
     cur.execute("SELECT crop, district FROM farms WHERE id = ?", (farm_id,))
@@ -212,5 +212,11 @@ def advisor(farm_id: str, question: str) -> dict:
             else:
                 answer = f"For {crop} in {ctx.get('district')} (Health: {ctx.get('health')}), ensure consistent monitoring. Dial *165*0# for local extension support."
 
-    ledger.write("ADVISE", {"farm_id": farm_id, "source": source})
+    if make_public:
+        from . import social
+        safe_q = _redact_pii(question)
+        post_body = f"🌱 Public Query:\nQ: {safe_q}\nA: {answer}"
+        social.create_post(farm_id, post_body)
+
+    ledger.write("ADVISE", {"farm_id": farm_id, "source": source, "public": make_public})
     return {"farm_id": farm_id, "answer": answer, "source": source, "context": ctx}

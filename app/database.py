@@ -111,10 +111,15 @@ def init_db():
         farm_id TEXT NOT NULL,
         body TEXT NOT NULL,
         photo_url TEXT,
+        is_verified INTEGER NOT NULL DEFAULT 0,
         created_at INTEGER NOT NULL,
         hidden INTEGER NOT NULL DEFAULT 0,
         FOREIGN KEY (farm_id) REFERENCES farms (id)
     )''')
+    try:
+        cur.execute("ALTER TABLE posts ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass # Column already exists
     cur.execute('''CREATE TABLE IF NOT EXISTS reactions (
         post_id TEXT NOT NULL,
         reactor_role TEXT NOT NULL,

@@ -736,6 +736,74 @@ def bulk_issue(user: dict = Depends(require_user("agent"))):
     return {"issued": issued, "total_ugx": total_ugx}
 
 
+@app.get("/logistics/pending")
+def logistics_pending(user: dict = Depends(require_user("logistics", "agent"))):
+    """Returns structured pending collections with farm GPS data."""
+    conn = database.get_db()
+    cur = conn.cursor()
+    # Get settled payments that haven't been 'dispatched' (using ledger as source of truth)
+    cur.execute("""
+        SELECT p.id as payment_id, p.farm_id, p.amount_ugx, p.settled_at, 
+               f.farmer_name, f.district, f.lat, f.lng, f.crop
+        FROM payments p
+        JOIN farms f ON p.farm_id = f.id
+        WHERE p.status = 'settled'
+        ORDER BY p.settled_at DESC
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return {"pending": rows}
+
+
+@app.post("/logistics/optimize")
+def logistics_optimize(req: dict, user: dict = Depends(require_user("logistics", "agent"))):
+    """Groups pending collections into optimized routes based on proximity (greedy clustering)."""
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT p.id as pid, f.id as fid, f.lat, f.lng, f.farmer_name, f.crop
+        FROM payments p JOIN farms f ON p.farm_id = f.id
+        WHERE p.status = 'settled'
+    """)
+    pending = [dict(r) for r in cur.fetchall()]
+    conn.close()
+
+    if not pending: return {"routes": []}
+
+    routes = []
+    visited = set()
+    max_dist_km = float(req.get("max_dist_km", 15.0))
+
+    for i, p1 in enumerate(pending):
+        if p1['pid'] in visited: continue
+        
+        current_route = [p1]
+        visited.add(p1['pid'])
+        
+        for j, p2 in enumerate(pending):
+            if p2['pid'] in visited: continue
+            
+            dist = crp._haversine_km(p1['lat'], p1['lng'], p2['lat'], p2['lng'])
+            if dist <= max_dist_km:
+                current_route.append(p2)
+                visited.add(p2['pid'])
+        
+        routes.append({
+            "id": f"RT-{secrets.token_hex(2).upper()}",
+            "stops": current_route,
+            "total_stops": len(current_route),
+            "district": p1.get('district', 'Regional')
+        })
+
+    return {"routes": routes}
+
+
+@app.post("/cron/check-prices")
+def cron_check_prices():
+    """Triggered by a daily scheduler to alert farmers of market shifts."""
+    return crp.check_price_fluctuations()
+
+
 @app.post("/agent/alert")
 def agent_alert(req: dict, user: dict = Depends(require_user("agent"))):
     ledger.write("AGENT_ALERT", {"farm_id": req["farm_id"], "type": req["type"]})

@@ -11,6 +11,7 @@
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
     --accent: #a0542c; --accent-soft: #c87a52; --gold: #a17b2c; --bad: #8a2f24;
+    --brand-green: #1B4332;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
@@ -34,19 +35,27 @@
   .main { flex: 1; overflow-y: auto; padding: 48px; }
   
   .route-card {
-    background: var(--paper); border: 1px solid var(--line); padding: 20px; border-radius: 4px;
-    margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px;
+    background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: 8px;
+    margin-bottom: 20px; display: flex; flex-direction: column; gap: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
   }
   .r-head { display: flex; justify-content: space-between; align-items: center; }
-  .status-pill { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
   .s-pending { background: var(--bg-alt); color: var(--muted); }
-  .s-active { background: rgba(160, 84, 44, 0.1); color: var(--accent); }
+  .s-optimized { background: rgba(46, 67, 50, 0.1); color: var(--brand-green); }
   
   .btn {
-    padding: 10px 16px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
-    font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px;
+    padding: 12px 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    font-size: 11px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 4px;
+    transition: all 200ms;
   }
-  .btn:hover { opacity: 0.8; }
+  .btn:hover { opacity: 0.8; transform: translateY(-1px); }
+  .btn.outline { background: transparent; color: var(--ink); }
+
+  .stop-item {
+    display: flex; gap: 12px; padding: 12px; background: var(--bg); border-radius: 6px;
+    border-left: 3px solid var(--accent);
+  }
 </style>
 </head>
 <body>
@@ -57,10 +66,12 @@
     <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted);">Logistics Hub</div>
   </div>
 
-  <div class="radar-card" style="background:var(--bg-alt); padding:20px; border:1px solid var(--line);">
-    <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">Pending Collections</span>
+  <div class="radar-card" style="background:var(--bg-alt); padding:20px; border:1px solid var(--line); border-radius:4px;">
+    <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">Pending Loads</span>
     <div class="display" style="font-size:32px;" id="pending-count">0</div>
   </div>
+
+  <button class="btn" style="background:var(--brand-green); border-color:var(--brand-green);" onclick="optimizeRoutes()">✨ Optimize Routes</button>
 
   <div style="margin-top:auto;">
     <a href="/logout" style="text-decoration:none; color:var(--bad); font-weight:600; display:block;">← Logout</a>
@@ -68,12 +79,13 @@
 </div>
 
 <div class="main">
-  <h1 class="display" style="font-size: 32px; margin:0 0 40px 0;">Bulk Logistics Coordination</h1>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+    <h1 class="display" style="font-size: 32px; margin:0;">Regional Coordination</h1>
+    <div id="sync-status" style="font-size:11px; color:var(--muted);">Synced just now</div>
+  </div>
   
   <div id="routes-container">
-    <div style="padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">
-      No active routes. Settlements in the marketplace will appear here for coordination.
-    </div>
+    <!-- Populated by JS -->
   </div>
 </div>
 
@@ -82,39 +94,99 @@ async function jget(url) {
   const r = await fetch(url);
   return r.json();
 }
+async function jpost(url, body) {
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body || {})
+  });
+  return r.json();
+}
 
-async function loadRoutes() {
-  const res = await jget("/ledger");
-  const settled = res.rows.filter(r => r.entry.type === "PAYMENT_CONFIRMED" && r.entry.payload.status === "settled");
+let isOptimizedView = false;
+
+async function loadData() {
+  if (isOptimizedView) return;
+  const res = await jget("/logistics/pending");
+  const pending = res.pending || [];
   
   const container = document.getElementById("routes-container");
-  document.getElementById("pending-count").textContent = settled.length;
+  document.getElementById("pending-count").textContent = pending.length;
 
-  if (settled.length > 0) {
-    container.innerHTML = settled.map(r => `
+  if (pending.length > 0) {
+    container.innerHTML = pending.map(p => `
       <div class="route-card">
         <div class="r-head">
-          <strong style="font-size:14px;">Collection: ${r.entry.payload.payment_id}</strong>
-          <span class="status-pill s-active">Awaiting Dispatch</span>
+          <strong style="font-size:16px;">Collection: ${p.payment_id}</strong>
+          <span class="status-pill s-pending">Pending Pickup</span>
         </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; font-size:11px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; font-size:12px;">
           <div>
             <span style="color:var(--muted); text-transform:uppercase; font-size:9px;">Source Farm</span><br>
-            <strong>${r.entry.payload.farm_id}</strong>
+            <strong>${p.farmer_name}</strong><br>
+            <span style="color:var(--muted); font-size:10px;">${p.district}</span>
+          </div>
+          <div>
+            <span style="color:var(--muted); text-transform:uppercase; font-size:9px;">Commodity</span><br>
+            <strong>${p.crop.toUpperCase()}</strong>
           </div>
           <div>
             <span style="color:var(--muted); text-transform:uppercase; font-size:9px;">Settled At</span><br>
-            <strong>${new Date(r.entry.ts*1000).toLocaleString()}</strong>
+            <strong>${new Date(p.settled_at*1000).toLocaleTimeString()}</strong>
           </div>
         </div>
-        <button class="btn">Assign Driver</button>
+        <div style="display:flex; gap:12px; margin-top:8px;">
+          <button class="btn">Assign Driver</button>
+          <button class="btn outline" onclick="window.open('https://www.google.com/maps?q=${p.lat},${p.lng}')">📍 View Map</button>
+        </div>
       </div>
     `).join("");
+  } else {
+    container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No active settlements for collection.</div>';
   }
 }
 
-loadRoutes();
-setInterval(loadRoutes, 10000);
+async function optimizeRoutes() {
+  isOptimizedView = true;
+  const res = await jpost("/logistics/optimize", {max_dist_km: 20.0});
+  const routes = res.routes || [];
+  
+  const container = document.getElementById("routes-container");
+  if (!routes.length) {
+    isOptimizedView = false;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="margin-bottom:24px; display:flex; align-items:center; gap:12px;">
+      <span class="status-pill s-optimized">Showing Optimized Clusters</span>
+      <button class="btn outline" style="font-size:9px; padding:6px 12px;" onclick="isOptimizedView=false; loadData();">Reset View</button>
+    </div>
+  ` + routes.map(r => `
+    <div class="route-card" style="border-left: 6px solid var(--brand-green);">
+      <div class="r-head">
+        <strong style="font-size:18px; color:var(--brand-green);">Route ${r.id} (${r.district})</strong>
+        <span class="status-pill s-optimized">${r.total_stops} Pickups Grouped</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+        ${r.stops.map((s, idx) => `
+          <div class="stop-item">
+            <span style="font-weight:800; color:var(--accent);">${idx+1}</span>
+            <div style="flex:1;">
+              <div style="font-weight:600;">${s.farmer_name}</div>
+              <div style="font-size:10px; color:var(--muted);">${s.crop.toUpperCase()} · ${s.pid}</div>
+            </div>
+            <button class="btn outline" style="font-size:9px; padding:4px 8px;" onclick="window.open('https://www.google.com/maps?q=${s.lat},${s.lng}')">MAP</button>
+          </div>
+        `).join("")}
+      </div>
+      <button class="btn" style="margin-top:12px; background:var(--brand-green); border-color:var(--brand-green);">Dispatch Bulk Carrier</button>
+    </div>
+  `).join("");
+}
+
+loadData();
+setInterval(loadData, 10000);
 </script>
 
 </body>

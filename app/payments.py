@@ -15,6 +15,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import hmac
+import json
 import secrets
 import time
 from typing import Optional
@@ -24,7 +25,7 @@ import httpx
 from . import database, ledger
 from .config import HMAC_SECRET, PUBLIC_BASE_URL
 
-VALID_METHODS = {"mtn", "airtel", "mavuno-pay"}
+VALID_METHODS = {"mtn", "airtel", "mavuno-pay", "mavuno-pay-batch"}
 PSP_DELAY_SECONDS = 2.0  # simulated mobile-money round-trip
 PSP_FAILURE_RATE = 0.0   # demo determinism — flip up only when stress-testing
 
@@ -106,25 +107,31 @@ def initiate(buyer_id: str, offer_id: str, msisdn: str, method: str) -> dict:
     })
 
     # Create notification for farmer
-    cur.execute(
-        """INSERT INTO notifications (user_id, title, body, type, created_at)
-           VALUES (?, ?, ?, 'payment_initiated', ?)""",
-        (offer["farm_id"], "New Procurement Bid", f"A buyer has initiated a payment of UGX {amount:,} for your {offer['crop']} listing.", now),
-    )
-    conn.commit()
+    _create_farmer_notification(offer["farm_id"], "New Procurement Bid", f"A buyer has initiated a payment of UGX {amount:,} for your {offer['crop']} listing.", now)
 
-    # Fire-and-forget the PSP callback. In production swap this for a real
-    # provider HTTP call; the rest of the flow is unchanged.
-    try:
-        asyncio.get_running_loop().create_task(_psp_initiate(pid, amount, offer_id))
-    except RuntimeError:
-        # No running loop — caller is sync (e.g. a test). Caller handles confirm.
-        pass
+    # Fire-and-forget the PSP callback.
+    if method != "mavuno-pay-batch":
+        try:
+            asyncio.get_running_loop().create_task(_psp_initiate(pid, amount, offer_id))
+        except RuntimeError:
+            pass
 
     return {
         "payment_id": pid, "offer_id": offer_id, "amount_ugx": amount,
         "status": "pending", "method": method,
     }
+
+
+def _create_farmer_notification(farm_id: str, title: str, body: str, now: int):
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO notifications (user_id, title, body, type, created_at)
+           VALUES (?, ?, ?, 'payment_alert', ?)""",
+        (farm_id, title, body, now),
+    )
+    conn.commit()
+    conn.close()
 
 
 async def _psp_initiate(payment_id: str, amount_ugx: int, offer_id: str) -> None:
@@ -141,8 +148,6 @@ async def _psp_initiate(payment_id: str, amount_ugx: int, offer_id: str) -> None
                 "X-Mavuno-Sig": sig,
             })
     except Exception:
-        # Even if the callback dispatch fails, /payments/confirm can be
-        # retried manually by the buyer dashboard's status poller.
         pass
 
 
@@ -172,13 +177,7 @@ def confirm(payment_id: str, success: bool) -> dict:
     # Create notification for farmer
     title = "Payment Settled" if success else "Payment Failed"
     msg = f"Payment of UGX {row['amount_ugx']:,} for your {row['offer_id']} listing has been {new_status}."
-    cur.execute(
-        """INSERT INTO notifications (user_id, title, body, type, created_at)
-           VALUES (?, ?, ?, ?, ?)""",
-        (row["farm_id"], title, msg, f"payment_{new_status}", now),
-    )
-    conn.commit()
-    conn.close()
+    _create_farmer_notification(row["farm_id"], title, msg, now)
 
     ledger.write("PAYMENT_SETTLED", {
         "payment_id": payment_id, "offer_id": row["offer_id"],
@@ -191,6 +190,82 @@ def confirm(payment_id: str, success: bool) -> dict:
         })
 
     return {"payment_id": payment_id, "status": new_status}
+
+def initiate_batch(buyer_id: str, offer_ids: list[str], msisdn: str) -> dict:
+    """Initiates a bulk payment for multiple offers."""
+    total_amount = 0
+    pids = []
+    
+    for oid in offer_ids:
+        # Create individual pending payment
+        res = initiate(buyer_id, oid, msisdn, "mavuno-pay-batch")
+        if "payment_id" in res:
+            pids.append(res["payment_id"])
+            total_amount += res["amount_ugx"]
+
+    if not pids:
+        return {"error": "no_valid_offers"}
+
+    bid = "BTH-" + secrets.token_hex(4).upper()
+    now = int(time.time())
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO payment_batches (id, buyer_id, total_amount_ugx, payment_ids_json, created_at) VALUES (?,?,?,?,?)",
+        (bid, buyer_id, total_amount, json.dumps(pids), now)
+    )
+    conn.commit()
+    conn.close()
+    
+    ledger.write("BATCH_INITIATED", {"batch_id": bid, "count": len(pids), "total": total_amount})
+    
+    # Simulate batch PSP callback
+    try:
+        asyncio.get_running_loop().create_task(_psp_initiate_batch(bid))
+    except RuntimeError:
+        pass
+
+    return {"ok": True, "batch_id": bid, "total_ugx": total_amount, "payment_ids": pids}
+
+async def _psp_initiate_batch(batch_id: str) -> None:
+    await asyncio.sleep(PSP_DELAY_SECONDS)
+    success = True
+    body = f'{{"batch_id":"{batch_id}","success":{str(success).lower()}}}'.encode("utf-8")
+    sig = callback_signature(body)
+    url = f"{PUBLIC_BASE_URL.rstrip('/')}/payments/batch/confirm"
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            await client.post(url, content=body, headers={
+                "Content-Type": "application/json",
+                "X-Mavuno-Sig": sig,
+            })
+    except Exception:
+        pass
+
+def confirm_batch(batch_id: str, success: bool) -> dict:
+    """Settles all individual payments in a batch."""
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT payment_ids_json FROM payment_batches WHERE id = ?", (batch_id,))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        return {"error": "unknown_batch"}
+    
+    pids = json.loads(row["payment_ids_json"])
+    for pid in pids:
+        confirm(pid, success)
+        
+    now = int(time.time())
+    status = "settled" if success else "failed"
+    cur.execute(
+        "UPDATE payment_batches SET status = ?, settled_at = ? WHERE id = ?",
+        (status, now, batch_id)
+    )
+    conn.commit()
+    conn.close()
+    ledger.write("BATCH_SETTLED", {"batch_id": batch_id, "status": status})
+    return {"ok": True, "batch_id": batch_id, "status": status}
 
 
 def get(payment_id: str) -> Optional[dict]:

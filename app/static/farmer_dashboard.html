@@ -52,9 +52,8 @@
   .listing-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 0.8fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); align-items: center; font-size: 12px; }
   .pill { padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 600; text-transform: uppercase; }
   .pill-open { background: var(--line-soft); color: var(--muted); }
-  .pill-pending { background: rgba(161,123,44,0.15); color: var(--gold); }
-  .pill-settled { background: rgba(46,77,31,0.15); color: var(--accent); }
-  .pill-failed { background: rgba(138,47,36,0.15); color: var(--bad); }
+  .pill-accepted { background: rgba(46,77,31,0.15); color: var(--accent); }
+  .pill-closed { background: var(--bg-alt); color: var(--muted); }
   @media (max-width: 768px) {
     .list-form-row { grid-template-columns: 1fr; }
     .listing-row { grid-template-columns: 1fr 1fr; }
@@ -284,6 +283,20 @@
       <div id="weather-planner"></div>
     </div>
   </div>
+
+  <div style="margin-top:40px; border-top: 1px solid var(--line); padding-top:40px;">
+    <h2 class="display" style="font-size: 24px; margin-bottom:24px;">Training & Certifications</h2>
+    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
+      <div>
+        <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">Available Modules</h3>
+        <div id="training-modules" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;"></div>
+      </div>
+      <div>
+        <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">My Certifications</h3>
+        <div id="my-certifications" style="display:flex; flex-direction:column; gap:12px;"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="chat-drawer" id="chat-drawer" aria-hidden="true">
@@ -379,6 +392,12 @@ async function loadData() {
   const farm = farms[farmId];
   if (!farm || farm.error) { document.getElementById("farm-content").innerHTML = "Farm data unavailable."; return; }
   currentFarm = farm; populateCropDropdown(farm.crop);
+  
+  loadMyListings();
+  loadPayments();
+  loadTraining();
+  loadCertifications();
+
   document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
 
   const score = await jget("/score/" + farmId);
@@ -429,10 +448,71 @@ async function askMavuno() {
   document.getElementById("ask-answer").innerHTML = r.error ? "Error" : `"${r.answer}"<br><span style="font-size:9px; color:var(--muted-soft);">Source: ${r.source}</span>`;
 }
 
+/* --- Training & Certifications --- */
+async function loadTraining() {
+  const res = await jget("/training/modules");
+  const el = document.getElementById("training-modules");
+  if (!el || res.error) return;
+  
+  el.innerHTML = (res.modules || []).map(m => `
+    <div style="background:var(--bg-alt); padding:16px; border-radius:8px; border:1px solid var(--line-soft); display:flex; flex-direction:column; gap:8px;">
+      <div style="font-size:9px; font-weight:700; color:var(--gold); text-transform:uppercase;">${m.category}</div>
+      <div style="font-weight:600; font-size:13px;">${m.title}</div>
+      <div style="font-size:11px; color:var(--ink-soft); line-height:1.4;">${m.description}</div>
+      <button class="btn outline" style="margin-top:8px; font-size:9px;" onclick="completeTraining('${m.id}')">Complete +${m.xp_reward} XP</button>
+    </div>
+  `).join("");
+}
+
+async function completeTraining(id) {
+  toast("Recording completion...");
+  const res = await jpost("/training/complete", { module_id: id });
+  if (res.error) toast("Error: " + res.error);
+  else {
+    toast("Success! Certification issued.");
+    loadCertifications();
+  }
+}
+
+async function loadCertifications() {
+  const res = await jget(`/farmer/${farmId}/certifications`);
+  const el = document.getElementById("my-certifications");
+  if (!el || res.error) return;
+
+  if (!res.certifications.length) {
+    el.innerHTML = '<div style="font-size:11px; color:var(--muted); text-align:center; padding:20px; border:1px dashed var(--line); border-radius:8px;">No certifications earned yet.</div>';
+    return;
+  }
+
+  el.innerHTML = res.certifications.map(c => `
+    <div style="background:var(--accent); color:white; padding:12px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div>
+        <div style="font-size:12px; font-weight:700;">${c.title}</div>
+        <div style="font-size:9px; opacity:0.8;">Issued: ${new Date(c.issued_at*1000).toLocaleDateString()}</div>
+      </div>
+      <div style="font-size:10px; font-weight:800; border:1.5px solid white; padding:2px 6px; border-radius:4px;">VERIFIED</div>
+    </div>
+  `).join("");
+}
+
+async function loadMyListings() {
+  const res = await jget(`/crp/offers?farm_id=${farmId}&include_closed=true`);
+  const el = document.getElementById("my-listings");
+  if (!el || res.error) return;
+  el.innerHTML = (res.offers || []).map(o => `<div class="listing-row"><div><strong>${o.crop.toUpperCase()}</strong><br><span style="font-size:9px; color:var(--muted);">${fmtDate(o.created_at)}</span></div><div>${o.kg}kg</div><div>${fmtUGX(o.floor_ugx)}</div><div><span class="pill pill-${o.status}">${o.status}</span></div></div>`).join("");
+}
+
+async function loadPayments() {
+  const res = await jget(`/payments/farmer/${farmId}`);
+  const el = document.getElementById("payments-feed");
+  if (!el || res.error) return;
+  el.innerHTML = (res.payments || []).map(p => `<div style="padding:12px 0; border-bottom:1px solid var(--line-soft);"><strong>+${fmtUGX(p.amount_ugx)}</strong><br><span style="font-size:9px; color:var(--muted);">${p.method} · ${fmtDate(p.settled_at || p.created_at)}</span></div>`).join("");
+}
+
 /* --- Notifications --- */
 async function refreshUnread() {
   const [cRes, nRes] = await Promise.all([jget("/chat/unread/count"), jget("/notifications")]);
-  const msgDot = document.getElementById("msg-unread"); if (msgDot) { const n = cRes.count || 0; if (n > 0) { msgDot.textContent = n; msgDot.classList.add("on"); } else msgDot.classList.remove("on"); }
+  const msgDot = document.getElementById("msg-unread"); if (msgDot) { const n = (cRes && !cRes.error) ? Number(cRes.count || 0) : 0; if (n > 0) { msgDot.textContent = n; msgDot.classList.add("on"); } else msgDot.classList.remove("on"); }
   const notifDot = document.getElementById("notif-unread"); if (notifDot) { const unread = (nRes.notifications || []).filter(n => !n.read).length; if (unread > 0) { notifDot.textContent = unread; notifDot.classList.add("on"); } else notifDot.classList.remove("on"); renderNotifications(nRes.notifications || []); }
 }
 function toggleNotifs() { const el = document.getElementById("notif-popover"); el.style.display = el.style.display === "none" ? "flex" : "none"; }

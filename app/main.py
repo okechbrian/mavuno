@@ -21,11 +21,13 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import crp, ect, ledger, scorer, ussd, database, payments, chat, social
+from . import crp, ect, ledger, scorer, ussd, database, payments, chat, social, pdf, training
 from .config import HMAC_SECRET
 
 # Idempotent — ensures any newly added tables (e.g. payments) exist on disk.
 database.init_db()
+training.seed_training_data()
+
 from .session import (
     COOKIE_NAME,
     clear as session_clear,
@@ -98,6 +100,8 @@ def root(request: Request):
             return RedirectResponse(f"/farmer/{user['subject']}")
         if user["role"] == "buyer":
             return RedirectResponse(f"/buyer/{user['subject']}")
+        if user["role"] == "logistics":
+            return RedirectResponse("/logistics")
     return FileResponse(database.ROOT / "app" / "static" / "index.html")
 
 
@@ -140,6 +144,12 @@ def login(req: LoginReq, request: Request, response: Response):
         if hmac.compare_digest(req.pin_or_password, _AGENT_PASSWORD):
             session_issue(response, "agent", "admin")
             return {"ok": True, "redirect": "/agent"}
+        return JSONResponse({"error": "Invalid credentials"}, status_code=401)
+    
+    if req.role == "logistics":
+        if hmac.compare_digest(req.pin_or_password, _AGENT_PASSWORD):
+            session_issue(response, "logistics", "coord-01")
+            return {"ok": True, "redirect": "/logistics"}
         return JSONResponse({"error": "Invalid credentials"}, status_code=401)
 
     if req.role == "farmer":
@@ -393,7 +403,7 @@ def crp_ask(req: dict, user: dict = Depends(require_user("farmer", "agent"))):
 
 
 # ============================================================================
-# PAYMENTS — Mavuno Pay
+# PAYMENTS — Mavuno Pay & Batching
 # ============================================================================
 
 class PaymentInitiateReq(BaseModel):
@@ -408,7 +418,7 @@ def payments_initiate(
     request: Request,
     user: dict = Depends(require_user("buyer")),
 ):
-    _check_login_throttle(_client_ip(request))  # reuse the per-IP burst guard
+    _check_login_throttle(_client_ip(request))
     res = payments.initiate(user["subject"], req.offer_id, req.msisdn, req.method)
     if "error" in res:
         return JSONResponse(res, status_code=400)
@@ -420,8 +430,7 @@ async def payments_confirm(request: Request):
     """PSP callback. Body is signed with HMAC_SECRET; we re-sign and compare."""
     body = await request.body()
     sig = request.headers.get("x-mavuno-sig", "")
-    expected = payments.callback_signature(body)
-    if not hmac.compare_digest(expected, sig):
+    if not hmac.compare_digest(payments.callback_signature(body), sig):
         return JSONResponse({"error": "bad_signature"}, status_code=401)
     try:
         data = json.loads(body.decode("utf-8"))
@@ -430,6 +439,26 @@ async def payments_confirm(request: Request):
     except (ValueError, KeyError):
         return JSONResponse({"error": "bad_body"}, status_code=400)
     return payments.confirm(pid, success)
+
+
+@app.post("/payments/batch")
+def payments_batch_init(req: dict, user: dict = Depends(require_user("buyer"))):
+    oids = req.get("offer_ids", [])
+    msisdn = req.get("msisdn", "")
+    if not oids: raise HTTPException(status_code=400, detail="missing_offer_ids")
+    res = payments.initiate_batch(user["subject"], oids, msisdn)
+    if "error" in res: return JSONResponse(res, status_code=400)
+    return res
+
+
+@app.post("/payments/batch/confirm")
+async def payments_batch_confirm(request: Request):
+    body = await request.body()
+    sig = request.headers.get("x-mavuno-sig", "")
+    if not hmac.compare_digest(payments.callback_signature(body), sig):
+        return JSONResponse({"error": "bad_signature"}, status_code=401)
+    data = json.loads(body.decode("utf-8"))
+    return payments.confirm_batch(data["batch_id"], data.get("success", False))
 
 
 def _payment_party_check(p: dict, user: dict) -> None:
@@ -493,10 +522,32 @@ def payments_receipt_pdf(payment_id: str, user: dict = Depends(require_user())):
 
 
 # ============================================================================
-# CHAT — offer-scoped buyer <-> farmer messaging (long-poll transport)
+# TRAINING & CERTIFICATION
 # ============================================================================
 
-import asyncio  # noqa: E402  -- local import keeps the top clean for readers
+@app.get("/training/modules")
+def training_modules(user: dict = Depends(require_user())):
+    return {"modules": training.list_modules()}
+
+
+@app.post("/training/complete")
+def training_complete(req: dict, user: dict = Depends(require_user("farmer"))):
+    module_id = req.get("module_id")
+    if not module_id: raise HTTPException(status_code=400, detail="missing_module_id")
+    return training.complete_module(user["subject"], module_id)
+
+
+@app.get("/farmer/{farm_id}/certifications")
+def farmer_certs(farm_id: str, user: dict = Depends(require_user())):
+    require_owner_or_agent("farmer", farm_id, user)
+    return {"certifications": training.get_farmer_certifications(farm_id)}
+
+
+# ============================================================================
+# CHAT
+# ============================================================================
+
+import asyncio  # noqa: E402
 
 
 class ChatThreadReq(BaseModel):
@@ -520,12 +571,9 @@ def _chat_party_check(thread: dict, user: dict) -> None:
 
 @app.post("/chat/threads")
 def chat_open_thread(req: ChatThreadReq, user: dict = Depends(require_user("buyer", "agent"))):
-    """Idempotent open-or-fetch. Buyers open threads against a farm (optionally
-    pinned to an offer). Agents may open on behalf of any buyer for audit."""
     if user["role"] == "buyer":
         buyer_id = user["subject"]
     else:
-        # Agent-mode requires an explicit buyer hint in the offer; keep narrow.
         raise HTTPException(status_code=400, detail="agent_open_not_supported")
     res = chat.open_thread(buyer_id, req.farm_id, req.offer_id)
     if "error" in res:
@@ -550,11 +598,6 @@ async def chat_get_messages(
     wait: int = 25,
     user: dict = Depends(require_user()),
 ):
-    """Long-poll read. If `since` is given and no new messages exist yet,
-    hold the request up to `wait` seconds (capped at 25 s) before returning.
-
-    The handler breaks out early if the client disconnects, so a closed drawer
-    doesn't keep the function warm longer than needed."""
     thread = chat.get_thread(thread_id)
     if not thread:
         raise HTTPException(status_code=404, detail="thread_not_found")
@@ -569,8 +612,6 @@ async def chat_get_messages(
         await asyncio.sleep(1.0)
         msgs = chat.messages(thread_id, since_ts=since)
 
-    # Reader has implicitly seen everything up to "now"; advance their cursor
-    # so unread counts settle down without a separate call.
     chat.mark_read(thread_id, user["role"], user["subject"])
     return {"thread_id": thread_id, "messages": msgs}
 
@@ -598,7 +639,7 @@ def chat_unread(user: dict = Depends(require_user())):
 
 
 # ============================================================================
-# MAVUNO SOCIAL — public feed (Tier 2, text-only for demo)
+# MAVUNO SOCIAL
 # ============================================================================
 
 class PostCreateReq(BaseModel):
@@ -622,7 +663,6 @@ def feed_page(user: dict = Depends(require_user())):
 
 @app.post("/feed")
 def feed_create(req: PostCreateReq, user: dict = Depends(require_user("farmer"))):
-    """Only farmers post to the feed — buyers browse and react."""
     res = social.create_post(user["subject"], req.body, req.photo_url, req.is_verified)
     if "error" in res:
         return JSONResponse(res, status_code=400)
@@ -644,7 +684,6 @@ def feed_get(post_id: str, user: dict = Depends(require_user())):
 
 @app.get("/feed/verified/gallery")
 def feed_verified_gallery(user: dict = Depends(require_user())):
-    """Returns only posts with verified harvest photos."""
     conn = database.get_db()
     cur = conn.cursor()
     cur.execute(
@@ -672,10 +711,7 @@ def notifications_list(user: dict = Depends(require_user())):
 def notifications_mark_read(user: dict = Depends(require_user())):
     conn = database.get_db()
     cur = conn.cursor()
-    cur.execute(
-        "UPDATE notifications SET read = 1 WHERE user_id = ?",
-        (user["subject"],),
-    )
+    cur.execute("UPDATE notifications SET read = 1 WHERE user_id = ?", (user["subject"],))
     conn.commit()
     conn.close()
     return {"ok": True}
@@ -697,51 +733,14 @@ def feed_flag(post_id: str, req: FlagReq, user: dict = Depends(require_user())):
     return res
 
 
-@app.post("/demo/cycle")
-def demo_cycle(req: dict, user: dict = Depends(require_user("agent"))):
-    fid = req.get("farm_id")
-    s = scorer.score_farm(fid)
-    if "error" in s:
-        return s
-    t = ect.issue(fid, s["yps"], s["kwh_allocated"])
-    if "error" in t:
-        return {"score": s, "ect": t}
-
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT pump_lat, pump_lng FROM farms WHERE id = ?", (fid,))
-    f = cur.fetchone()
-    conn.close()
-
-    r = ect.redeem(t["token_id"], f["pump_lat"], f["pump_lng"], min(10, t["kwh_allocated"]))
-    return {"score": s, "ect": t, "redeem": r}
-
-
-@app.post("/ect/bulk-issue")
-def bulk_issue(user: dict = Depends(require_user("agent"))):
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id FROM farms")
-    fids = [r["id"] for r in cur.fetchall()]
-    conn.close()
-
-    issued, total_ugx = 0, 0
-    for fid in fids:
-        s = scorer.score_farm(fid)
-        if "error" not in s and s.get("credit_health") == "Excellent":
-            t = ect.issue(fid, s["yps"], s["kwh_allocated"])
-            if "error" not in t:
-                issued += 1
-                total_ugx += s.get("credit_ceiling_ugx", 0)
-    return {"issued": issued, "total_ugx": total_ugx}
-
+# ============================================================================
+# LOGISTICS
+# ============================================================================
 
 @app.get("/logistics/pending")
 def logistics_pending(user: dict = Depends(require_user("logistics", "agent"))):
-    """Returns structured pending collections with farm GPS data."""
     conn = database.get_db()
     cur = conn.cursor()
-    # Get settled payments that haven't been 'dispatched' (using ledger as source of truth)
     cur.execute("""
         SELECT p.id as payment_id, p.farm_id, p.amount_ugx, p.settled_at, 
                f.farmer_name, f.district, f.lat, f.lng, f.crop
@@ -757,7 +756,6 @@ def logistics_pending(user: dict = Depends(require_user("logistics", "agent"))):
 
 @app.post("/logistics/optimize")
 def logistics_optimize(req: dict, user: dict = Depends(require_user("logistics", "agent"))):
-    """Groups pending collections into optimized routes based on proximity (greedy clustering)."""
     conn = database.get_db()
     cur = conn.cursor()
     cur.execute("""
@@ -767,56 +765,54 @@ def logistics_optimize(req: dict, user: dict = Depends(require_user("logistics",
     """)
     pending = [dict(r) for r in cur.fetchall()]
     conn.close()
-
     if not pending: return {"routes": []}
-
     routes = []
     visited = set()
     max_dist_km = float(req.get("max_dist_km", 15.0))
-
-    for i, p1 in enumerate(pending):
+    for p1 in pending:
         if p1['pid'] in visited: continue
-        
         current_route = [p1]
         visited.add(p1['pid'])
-        
-        for j, p2 in enumerate(pending):
+        for p2 in pending:
             if p2['pid'] in visited: continue
-            
             dist = crp._haversine_km(p1['lat'], p1['lng'], p2['lat'], p2['lng'])
             if dist <= max_dist_km:
                 current_route.append(p2)
                 visited.add(p2['pid'])
-        
-        routes.append({
-            "id": f"RT-{secrets.token_hex(2).upper()}",
-            "stops": current_route,
-            "total_stops": len(current_route),
-            "district": p1.get('district', 'Regional')
-        })
-
+        routes.append({"id": f"RT-{secrets.token_hex(2).upper()}", "stops": current_route, "total_stops": len(current_route)})
     return {"routes": routes}
 
 
 @app.post("/logistics/advise")
 def logistics_advise_ai(req: dict, user: dict = Depends(require_user("logistics", "agent"))):
-    """Uses AI to provide strategic dispatch advice based on pending loads."""
-    # Get recent market trends as context
-    mkt = crp.market_prices("coffee", "Eastern") # default context
-    ctx = f"Coffee is trending {mkt.get('trend')}. 7-day avg: {mkt.get('last7_avg')} UGX/kg."
+    mkt = crp.market_prices("coffee", "Eastern")
+    ctx = f"Coffee trending {mkt.get('trend')}. 7d avg: {mkt.get('last7_avg')} UGX."
     return {"advice": crp.logistics_advisor(req.get("pending", []), ctx)}
 
 
+# ============================================================================
+# SYSTEM / CRON
+# ============================================================================
+
 @app.post("/cron/check-prices")
 def cron_check_prices():
-    """Triggered by a daily scheduler to alert farmers of market shifts."""
     return crp.check_price_fluctuations()
 
 
-@app.post("/agent/alert")
-def agent_alert(req: dict, user: dict = Depends(require_user("agent"))):
-    ledger.write("AGENT_ALERT", {"farm_id": req["farm_id"], "type": req["type"]})
-    return {"ok": True}
+@app.post("/demo/cycle")
+def demo_cycle(req: dict, user: dict = Depends(require_user("agent"))):
+    fid = req.get("farm_id")
+    s = scorer.score_farm(fid)
+    if "error" in s: return s
+    t = ect.issue(fid, s["yps"], s["kwh_allocated"])
+    if "error" in t: return {"score": s, "ect": t}
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT pump_lat, pump_lng FROM farms WHERE id = ?", (fid,))
+    f = cur.fetchone()
+    conn.close()
+    r = ect.redeem(t["token_id"], f["pump_lat"], f["pump_lng"], min(10, t["kwh_allocated"]))
+    return {"score": s, "ect": t, "redeem": r}
 
 
 @app.get("/ledger")

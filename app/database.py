@@ -148,6 +148,37 @@ def init_db():
         read INTEGER NOT NULL DEFAULT 0,
         created_at INTEGER NOT NULL
     )''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS payment_batches (
+        id TEXT PRIMARY KEY,
+        buyer_id TEXT NOT NULL,
+        total_amount_ugx INTEGER NOT NULL,
+        payment_ids_json TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        created_at INTEGER NOT NULL,
+        settled_at INTEGER,
+        FOREIGN KEY (buyer_id) REFERENCES buyers (id)
+    )''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS training_modules (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL,
+        xp_reward INTEGER NOT NULL,
+        content_url TEXT
+    )''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS farmer_certifications (
+        id TEXT PRIMARY KEY,
+        farm_id TEXT NOT NULL,
+        module_id TEXT NOT NULL,
+        issued_at INTEGER NOT NULL,
+        expiry_at INTEGER,
+        ledger_hash TEXT NOT NULL,
+        FOREIGN KEY (farm_id) REFERENCES farms (id),
+        FOREIGN KEY (module_id) REFERENCES training_modules (id)
+    )''')
     
     cur.execute('CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC)')
     cur.execute('CREATE INDEX IF NOT EXISTS idx_reactions_post ON reactions(post_id)')

@@ -4,10 +4,10 @@ import json
 import time
 import random
 from pathlib import Path
+from .config import DATA_DIR
 
 # In prototype, we'll keep data in app/data
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = ROOT / "app" / "data"
 DB_PATH = DATA_DIR / "mavuno.db"
 
 def get_db():

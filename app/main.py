@@ -471,6 +471,22 @@ def payments_receipt(payment_id: str, user: dict = Depends(require_user())):
     return payments.receipt(payment_id)
 
 
+@app.get("/payments/receipt/{payment_id}/pdf")
+def payments_receipt_pdf(payment_id: str, user: dict = Depends(require_user())):
+    data = payments.receipt(payment_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="receipt_not_found")
+    _payment_party_check(payments.get(payment_id), user)
+    
+    pdf_bytes = pdf.generate_receipt_pdf(data)
+    filename = f"MAVUNO-RECEIPT-{payment_id}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 # ============================================================================
 # CHAT — offer-scoped buyer <-> farmer messaging (long-poll transport)
 # ============================================================================

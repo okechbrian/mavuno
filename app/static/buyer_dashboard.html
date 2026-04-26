@@ -496,7 +496,11 @@ async function pollPayment(paymentId, offerId, statusEl) {
     const s = await jget("/payments/status/" + paymentId);
     if (s.error) { statusEl.textContent = "Status check failed: " + s.error; return; }
     if (s.status === "settled") {
-      statusEl.innerHTML = `<strong style="color:var(--accent);">✓ Settled.</strong> UGX ${s.amount_ugx.toLocaleString()} sent. <a href="/payments/receipt/${paymentId}" target="_blank" style="color:var(--accent);">View signed receipt</a>`;
+      statusEl.innerHTML = `<strong style="color:var(--accent);">✓ Settled.</strong> UGX ${s.amount_ugx.toLocaleString()} sent. 
+        <div style="margin-top:8px; display:flex; gap:12px;">
+          <a href="/payments/receipt/${paymentId}" target="_blank" style="color:var(--accent); font-size:11px; text-decoration:none; font-weight:600;">VIEW JSON</a>
+          <a href="/payments/receipt/${paymentId}/pdf" target="_blank" style="color:var(--accent); font-size:11px; text-decoration:none; font-weight:600;">DOWNLOAD PDF RECEIPT</a>
+        </div>`;
       toast("Payment settled — farmer notified.");
       setTimeout(loadOffers, 1200);
       return;

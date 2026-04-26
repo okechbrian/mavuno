@@ -16,22 +16,26 @@ def route(phone: str, text: str):
     lang = "en" if parts[0] == "1" else "lg"
     S = {
         "en": {
-            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Community\n7. Ask Mavuno\n8. Exit",
+            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Community\n7. Market\n8. Ask Mavuno\n9. Exit",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Enter question:",
             "sell": "Enter kg to sell:",
             "price": "Enter floor price (UGX/kg):",
             "feed": "{i}/{n} {u}:\n{b}\n0. Next",
-            "feed_empty": "Feed is empty."
+            "feed_empty": "Feed is empty.",
+            "mkt": "{i}/{n} {u}:\n{k}kg {c}\nUGX {p}/kg\n0. Next",
+            "mkt_empty": "Market is empty."
         },
         "lg": {
-            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Buuza Mavuno\n8. Fuluma",
+            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Akatale\n8. Buuza Mavuno\n9. Fuluma",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Wandiika ekibuuzo kyo:",
             "sell": "Oyingize kilo:",
             "price": "Omuwendo gwa wansi (UGX/kg):",
             "feed": "{i}/{n} {u}:\n{b}\n0. Next",
-            "feed_empty": "Feed ekalu."
+            "feed_empty": "Feed ekalu.",
+            "mkt": "{i}/{n} {u}:\n{k}kg {c}\nUGX {p}/kg\n0. Next",
+            "mkt_empty": "Akatale kakalu."
         }
     }[lang]
 
@@ -96,6 +100,20 @@ def route(phone: str, text: str):
         )
 
     if cmd == "7":
+        # Marketplace Browsing
+        page_depth = parts[2:].count("0")
+        offers = crp.list_open_offers(limit=10).get('offers', [])
+        if not offers:
+            return "END " + S["mkt_empty"]
+        
+        idx = page_depth % len(offers)
+        o = offers[idx]
+        return "CON " + S["mkt"].format(
+            i=idx + 1, n=len(offers), u=o['farmer_name'].split()[0], 
+            k=o['kg'], c=o['crop'].upper(), p=o['floor_ugx']
+        )
+
+    if cmd == "8":
         if len(parts) == 2:
             return "CON " + S["ask"]
         question = " ".join(parts[2:])

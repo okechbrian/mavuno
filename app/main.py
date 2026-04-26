@@ -798,6 +798,15 @@ def logistics_optimize(req: dict, user: dict = Depends(require_user("logistics",
     return {"routes": routes}
 
 
+@app.post("/logistics/advise")
+def logistics_advise_ai(req: dict, user: dict = Depends(require_user("logistics", "agent"))):
+    """Uses AI to provide strategic dispatch advice based on pending loads."""
+    # Get recent market trends as context
+    mkt = crp.market_prices("coffee", "Eastern") # default context
+    ctx = f"Coffee is trending {mkt.get('trend')}. 7-day avg: {mkt.get('last7_avg')} UGX/kg."
+    return {"advice": crp.logistics_advisor(req.get("pending", []), ctx)}
+
+
 @app.post("/cron/check-prices")
 def cron_check_prices():
     """Triggered by a daily scheduler to alert farmers of market shifts."""

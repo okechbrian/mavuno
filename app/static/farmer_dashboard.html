@@ -10,83 +10,57 @@
     --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
-    --accent: #2e4d1f; --accent-soft: #4a6b37; --gold: #a17b2c; --clay: #a0542c; --bad: #8a2f24;
+    --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
     --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
     --line: #2d2b21; --line-soft: #242219;
-    --accent: #c4d19c; --accent-soft: #a7b87a; --gold: #d4a656; --clay: #c87a52; --bad: #d07668;
+    --accent: #78a163; --accent-soft: #4a6b36; --clay: #c87a52; --gold: #d4a656; --bad: #d07668;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
   body {
     background: var(--bg); color: var(--ink);
-    font-family: "Inter", sans-serif; font-size: 14px; line-height: 1.5;
+    font-family: "Inter", sans-serif; font-size: 13px; line-height: 1.5;
     -webkit-font-smoothing: antialiased; display: flex;
   }
   .display { font-family: "Fraunces", serif; }
-  
   .sidebar {
     width: 280px; background: var(--paper); border-right: 1px solid var(--line);
     padding: 32px; display: flex; flex-direction: column; gap: 32px; overflow-y: auto;
   }
   .main { flex: 1; overflow-y: auto; padding: 48px; }
-  
-  .radar-card { background: var(--bg-alt); padding: 20px; border: 1px solid var(--line); border-radius: 4px; }
-  .radar-card .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; display: block; }
-  .radar-card .value { font-family: "Fraunces", serif; font-size: 28px; line-height: 1.1; }
-  
-  .farm-card { background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: 4px; display: flex; flex-direction: column; gap: 16px; }
-  .f-head { display: flex; justify-content: space-between; align-items: start; }
-  .f-head h3 { font-family: "Fraunces", serif; font-size: 20px; margin: 0; }
-  .spark-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .spark-box { background: var(--bg); padding: 8px; border-radius: 2px; }
-  .spark-box span { font-size: 8px; text-transform: uppercase; color: var(--muted); display: block; }
-  
-  .badge { padding: 3px 8px; border-radius: 12px; font-size: 9px; font-weight: 600; text-transform: uppercase; }
-  .b-excellent { background: rgba(46, 77, 31, 0.1); color: var(--accent); }
-  .b-good { background: rgba(161, 123, 44, 0.1); color: var(--gold); }
-  .b-poor { background: rgba(138, 47, 36, 0.1); color: var(--bad); }
-
-  .btn { padding: 10px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+  .radar-card { background: var(--paper); border: 1px solid var(--line); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+  .radar-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); display: block; margin-bottom: 8px; }
+  .radar-card .value { font-family: "Fraunces", serif; font-size: 28px; line-height: 1; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-top: 8px; }
+  .b-excellent { background: rgba(46,77,31,0.15); color: var(--accent); }
+  .b-good { background: rgba(161,123,44,0.15); color: var(--gold); }
+  .b-poor { background: rgba(138,47,36,0.15); color: var(--bad); }
+  .farm-card { background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 24px; }
+  .f-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .f-head h3 { margin: 0; font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; }
+  .spark-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .spark-box { background: var(--bg); border: 1px solid var(--line-soft); padding: 12px; border-radius: 4px; }
+  .spark-box span { font-size: 9px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 8px; }
+  .list-form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .list-form-row label { display: block; font-size: 9px; text-transform: uppercase; margin-bottom: 4px; color: var(--muted); }
+  .list-form-row input, .list-form-row select { width: 100%; padding: 10px; background: var(--bg-alt); border: 1px solid var(--line); color: var(--ink); border-radius: 2px; font-family: inherit; font-size: 13px; }
+  .btn { padding: 10px 16px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
   .btn:hover { opacity: 0.8; }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  /* Form inputs need explicit color — browsers don't always inherit `color` on form controls,
-     so dark-mode text was rendering black-on-black. */
-  textarea, input[type="text"], input[type="number"], input[type="tel"], select {
-    color: var(--ink);
-    -webkit-text-fill-color: var(--ink);
-    caret-color: var(--ink);
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    padding: 10px 12px;
-    font-family: inherit;
-    font-size: 14px;
-  }
-  textarea::placeholder, input::placeholder { color: var(--muted); opacity: 0.7; }
-
-  .list-form-row { display: grid; grid-template-columns: 1.2fr 1fr 1.4fr; gap: 10px; margin: 12px 0; }
-  .list-form-row > div > label { display:block; font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:4px; }
-  .list-form-row input, .list-form-row select { width: 100%; }
-  .listing-row { display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:10px; padding:10px 0; border-bottom:1px solid var(--line-soft); align-items:center; font-size:12px; }
-  .listing-row:last-child { border-bottom: 0; }
-  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:9px; text-transform:uppercase; letter-spacing:0.08em; }
-  .pill-open { background: rgba(46,77,31,0.12); color: var(--accent); }
-  .pill-pending { background: rgba(160,84,44,0.15); color: var(--clay); }
-  .pill-settled { background: var(--accent); color: var(--paper); }
+  .listing-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 0.8fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); align-items: center; font-size: 12px; }
+  .pill { padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 600; text-transform: uppercase; }
+  .pill-open { background: var(--line-soft); color: var(--muted); }
+  .pill-pending { background: rgba(161,123,44,0.15); color: var(--gold); }
+  .pill-settled { background: rgba(46,77,31,0.15); color: var(--accent); }
   .pill-failed { background: rgba(138,47,36,0.15); color: var(--bad); }
   @media (max-width: 768px) {
     .list-form-row { grid-template-columns: 1fr; }
     .listing-row { grid-template-columns: 1fr 1fr; }
   }
-  
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index:9999; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500;}
   .toast.show { opacity: 1; }
-
-  /* Topbar chips */
   .topbar-actions { display: flex; align-items: center; gap: 10px; }
   .topbar-btn {
     position: relative; padding: 8px 14px; border: 1px solid var(--line);
@@ -101,8 +75,6 @@
     margin-left: 4px; min-width: 16px; text-align: center;
   }
   .unread-dot.on { display: inline-block; }
-
-  /* Chat drawer */
   .chat-drawer {
     position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
     background: var(--paper); border-left: 1px solid var(--line);
@@ -145,10 +117,6 @@
     background: transparent; border: 1px solid var(--line); padding: 4px 10px;
     font-size: 11px; color: var(--ink); cursor: pointer; border-radius: 4px; margin-bottom: 12px;
   }
-  @media (max-width: 768px) {
-    .chat-drawer { width: 100%; max-width: 100%; }
-  }
-
   .nav-toggle {
     display: none;
     width: 44px; height: 44px; border-radius: 8px;
@@ -161,8 +129,6 @@
     z-index: 998; opacity: 0; pointer-events: none; transition: opacity 200ms;
   }
   .backdrop.open { opacity: 1; pointer-events: auto; }
-
-  /* ============================ MOBILE ============================ */
   @media (max-width: 768px) {
     html, body { height: auto; overflow: auto; }
     body { display: block; }
@@ -186,7 +152,6 @@
     .radar-card .value { font-size: 22px; }
     .farm-card { padding: 18px; }
     .spark-box span { font-size: 10px; }
-    /* Stack the 1fr 1fr grid at the bottom */
     .main > div[style*="grid-template-columns: 1fr 1fr"] {
       grid-template-columns: 1fr !important; gap: 16px !important;
       margin-top: 24px !important;
@@ -205,6 +170,23 @@
   <div class="radar-card">
     <span class="label">Farm ID</span>
     <div class="value" id="disp-farm-id" style="font-size: 16px;">—</div>
+  </div>
+
+  <div class="radar-card" style="position:relative; overflow:hidden;">
+    <span class="label">Yield Probability Score (YPS)</span>
+    <div style="display:flex; align-items:center; gap:20px; margin-top:10px;">
+      <div style="position:relative; width:80px; height:80px;">
+        <svg viewBox="0 0 36 36" style="width:80px; height:80px; transform: rotate(-90deg);">
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--line-soft)" stroke-width="3" />
+          <path id="yps-ring" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round" style="transition: stroke-dasharray 1s ease;" />
+        </svg>
+        <div class="display" id="yps-value" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700;">0</div>
+      </div>
+      <div>
+        <div id="yps-label" style="font-weight:700; color:var(--accent); font-size:14px; text-transform:uppercase;">Calculating...</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:2px;">Based on 7-day signals</div>
+      </div>
+    </div>
   </div>
 
   <div class="radar-card">
@@ -235,7 +217,6 @@
     </div>
   </div>
 
-  <!-- Notifications Popover -->
   <div id="notif-popover" style="display:none; position:fixed; top:80px; right:48px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:4px; box-shadow:0 8px 32px rgba(0,0,0,0.1); z-index:1000; flex-direction:column; overflow:hidden;">
     <div style="padding:12px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
       <strong style="font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Notifications</strong>
@@ -247,7 +228,6 @@
   <div id="farm-content">Loading your farm data...</div>
 
   <div style="margin-top:40px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
-    <!-- List Produce for Sale -->
     <div class="radar-card" style="background:var(--paper);">
       <span class="label">List Produce for Sale</span>
       <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer. Buyers within range and budget see it instantly.</p>
@@ -258,94 +238,85 @@
             <select id="of-crop" required></select>
           </div>
           <div>
-            <label for="of-kg">Quantity (kg)</label>
-            <input id="of-kg" type="number" min="1" max="50000" step="1" required placeholder="e.g. 200" />
+            <label for="of-kg">KG</label>
+            <input type="number" id="of-kg" required placeholder="e.g. 50">
           </div>
           <div>
-            <label for="of-price">Floor price (UGX / kg)</label>
-            <input id="of-price" type="number" min="100" max="10000000" step="50" required placeholder="e.g. 8000" />
+            <label for="of-price">Floor (UGX/kg)</label>
+            <input type="number" id="of-price" required placeholder="e.g. 1500">
           </div>
         </div>
-        <button class="btn" type="submit" style="width:100%;">Post listing</button>
+        <button class="btn" type="submit" style="width:100%; margin-top:20px;">List Offer</button>
       </form>
-      <div style="margin-top:20px; border-top:1px solid var(--line); padding-top:16px;">
-        <span class="label">My active listings</span>
-        <div id="my-listings" style="margin-top:8px; font-size:12px; color:var(--muted);">Loading…</div>
+    </div>
+    <div class="radar-card" style="background:var(--paper);">
+      <span class="label">Ask Mavuno AI</span>
+      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Agricultural advisor available 24/7 via CRP logic.</p>
+      <div style="margin-top:16px;">
+        <textarea id="ask-q" placeholder="How can I improve my coffee yield?" style="width:100%; padding:10px; background:var(--bg-alt); border:1px solid var(--line); color:var(--ink); border-radius:2px; font-family:inherit; font-size:13px; min-height:80px; resize:none;"></textarea>
+        <button class="btn outline" style="width:100%; margin-top:12px; background:transparent; color:var(--ink);" onclick="askMavuno()">Ask AI Advisor</button>
       </div>
+      <div id="ask-answer" style="margin-top:16px; padding:12px; background:var(--bg); border-radius:2px; font-size:12px; line-height:1.5; color:var(--ink-soft); border-left: 3px solid var(--gold);">Waiting for question...</div>
     </div>
+  </div>
 
-    <!-- Payments Received -->
-    <div class="radar-card" style="background:var(--paper);">
-      <span class="label">Payments Received</span>
-      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Direct buyer → farmer settlements. HMAC-signed receipts.</p>
-      <div id="payments-feed" style="margin-top:16px; font-size:12px;">Loading…</div>
+  <div style="margin-top:40px; display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
+    <div>
+      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">My Listings</h2>
+      <div class="listing-header listing-row" style="background:var(--bg-alt); border:none; padding:8px 12px; border-radius:2px; font-weight:600; font-size:10px; text-transform:uppercase;">
+        <div>Crop / Date</div><div>Weight</div><div>Price</div><div>Status</div>
+      </div>
+      <div id="my-listings"></div>
     </div>
+    <div>
+      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">Recent Payments</h2>
+      <div id="payments-feed"></div>
+    </div>
+  </div>
 
-    <!-- Market Insights -->
-    <div class="radar-card" style="background:var(--paper);">
-      <span class="label">Live Market Price</span>
-      <div id="market-insight" style="margin-top:16px;">Loading market data...</div>
+  <div style="margin-top:40px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+    <div class="radar-card" style="background:var(--bg-alt);">
+      <span class="label">Local Market Insights</span>
+      <div id="market-insight"></div>
     </div>
+    <div class="radar-card" style="background:var(--bg-alt);">
+      <span class="label">3-Day Weather Planner</span>
+      <div id="weather-planner"></div>
+    </div>
+  </div>
+</div>
 
-    <!-- Weather Forecast & Irrigation Planner -->
-    <div class="radar-card" style="background:var(--paper);">
-      <span class="label">Weather & Irrigation Planner</span>
-      <div id="weather-planner" style="margin-top:16px;">Loading local forecast...</div>
-    </div>
-
-    <!-- AI Agronomist -->
-    <div class="radar-card" style="background:var(--paper); grid-column: 1 / -1;">
-      <span class="label">AI Agronomist Query</span>
-      <textarea id="ask-q" style="width:100%; height:80px; margin:12px 0;" placeholder="Ask Mavuno an agronomy question..."></textarea>
-      <button class="btn" style="width:200px;" onclick="askMavuno()">Ask AI</button>
-      <div id="ask-answer" style="margin-top:16px; font-style:italic; border-left:2px solid var(--accent); padding-left:12px;">Waiting for query...</div>
-    </div>
+<div class="chat-drawer" id="chat-drawer" aria-hidden="true">
+  <div class="chat-head">
+    <button class="chat-back" id="chat-back" onclick="renderInbox()" style="display:none;">← Inbox</button>
+    <h3 id="chat-title">Messages</h3>
+    <button class="chat-close" onclick="closeChat()">×</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-foot" id="chat-foot" style="display:none;">
+    <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
+    <button class="btn" onclick="sendChat()">Send</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Chat drawer -->
-<div class="chat-drawer" id="chat-drawer" aria-hidden="true">
-  <div class="chat-head">
-    <h3 id="chat-title">Buyer Messages</h3>
-    <button class="chat-close" onclick="closeChat()" aria-label="Close">✕</button>
-  </div>
-  <div class="chat-body" id="chat-body"><div style="color:var(--muted); font-size:12px;">Loading…</div></div>
-  <div class="chat-foot" id="chat-foot" style="display:none;">
-    <textarea id="chat-input" placeholder="Type a message…" maxlength="500"></textarea>
-    <button class="btn" onclick="sendChat()">Send</button>
-  </div>
-</div>
-
 <script>
-const pathParts = window.location.pathname.split("/");
-const farmId = pathParts[pathParts.length - 1];
-const CROP_OPTIONS = ["coffee","maize","beans","cassava","groundnut","sorghum","rice","banana","matooke","millet","sweet_potato","soybean"];
+const farmId = window.location.pathname.split("/").pop();
+const CROP_OPTIONS = ["coffee", "maize", "beans", "cassava", "rice", "matoke", "groundnuts", "soybeans", "sorghum", "millet", "sweet_potato", "irish_potato"];
 let currentFarm = null;
 
-function applyTheme(t) {
-  document.documentElement.setAttribute("data-theme", t);
-  const btn = document.getElementById("theme-toggle");
-  if (btn) btn.textContent = t === "dark" ? "☀️" : "🌙";
-  localStorage.setItem("mavuno-theme", t);
-}
-
 function toast(msg) {
-  const t = document.getElementById("toast");
-  if(!t) return;
-  t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3000);
 }
-
-function _onAuthFail() { window.location.href = "/"; }
 
 async function jget(url) {
   try {
-    const r = await fetch(url, { credentials: "same-origin" });
-    if (r.status === 401) { _onAuthFail(); return {error: "unauthorized"}; }
-    if (!r.ok) return {error: "server_error"};
-    return await r.json();
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (res.status === 401) { _onAuthFail(); return {error: "unauthorized"}; }
+    return await res.json();
   } catch(e) { return {error: "network_error"}; }
 }
 
@@ -362,14 +333,10 @@ async function jpost(url, body) {
   } catch(e) { return {error: "network_error"}; }
 }
 
-function openSidebar() {
-  document.querySelector(".sidebar").classList.add("open");
-  document.getElementById("backdrop").classList.add("open");
-}
-function closeSidebar() {
-  document.querySelector(".sidebar").classList.remove("open");
-  document.getElementById("backdrop").classList.remove("open");
-}
+function _onAuthFail() { window.location.href = "/login"; }
+
+function openSidebar() { document.querySelector(".sidebar").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
+function closeSidebar() { document.querySelector(".sidebar").classList.remove("open"); document.getElementById("backdrop").classList.remove("open"); }
 
 function nutrientSpark(series, color) {
   if (!series || !series.length) return "";
@@ -382,14 +349,9 @@ function nutrientSpark(series, color) {
 async function pingSensor() {
   toast("Pinging hardware sensor...");
   const payload = {
-    farm_id: farmId,
-    soil_moisture: (15 + Math.random() * 10).toFixed(2),
-    temp_c: (28 + Math.random() * 6).toFixed(2),
-    rainfall_mm: (0 + Math.random() * 2).toFixed(2),
-    humidity_pct: (40 + Math.random() * 20).toFixed(2),
-    n_mg_kg: (20 + Math.random() * 20).toFixed(2),
-    p_mg_kg: (10 + Math.random() * 10).toFixed(2),
-    k_mg_kg: (150 + Math.random() * 100).toFixed(2)
+    farm_id: farmId, soil_moisture: (15+Math.random()*10).toFixed(2), temp_c: (28+Math.random()*6).toFixed(2),
+    rainfall_mm: (Math.random()*2).toFixed(2), humidity_pct: (40+Math.random()*20).toFixed(2),
+    n_mg_kg: (20+Math.random()*20).toFixed(2), p_mg_kg: (10+Math.random()*10).toFixed(2), k_mg_kg: (150+Math.random()*100).toFixed(2)
   };
   await jpost("/sensor/telemetry", payload);
   toast("Telemetry received! Updating dashboard...");
@@ -397,10 +359,8 @@ async function pingSensor() {
 }
 
 function populateCropDropdown(farmCrop) {
-  const sel = document.getElementById("of-crop");
-  if (!sel) return;
-  const seen = new Set();
-  const opts = [];
+  const sel = document.getElementById("of-crop"); if (!sel) return;
+  const seen = new Set(), opts = [];
   if (farmCrop) { opts.push(farmCrop.toLowerCase()); seen.add(farmCrop.toLowerCase()); }
   for (const c of CROP_OPTIONS) { if (!seen.has(c)) { opts.push(c); seen.add(c); } }
   sel.innerHTML = opts.map(c => `<option value="${c}">${c[0].toUpperCase()+c.slice(1)}</option>`).join("");
@@ -410,81 +370,7 @@ function fmtUGX(n) { return "UGX " + Number(n || 0).toLocaleString(); }
 function fmtDate(ts) {
   if (!ts) return "—";
   const d = new Date(ts * 1000);
-  return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}) + " " +
-         d.toLocaleTimeString(undefined, {hour:"2-digit", minute:"2-digit"});
-}
-
-function renderMyListings(rows) {
-  const el = document.getElementById("my-listings");
-  if (!el) return;
-  if (!rows || !rows.length) {
-    el.innerHTML = '<div style="color:var(--muted); padding:8px 0;">No listings yet. Post one above.</div>';
-    return;
-  }
-  el.innerHTML = rows.map(r => {
-    const ps = r.payment_status;
-    const status = r.status === "accepted" && ps === "settled" ? "settled"
-                 : ps === "pending" ? "pending"
-                 : ps === "failed" ? "failed"
-                 : "open";
-    return `<div class="listing-row">
-      <div><strong>${r.crop}</strong><br><span style="color:var(--muted); font-size:10px;">${fmtDate(r.created_at)}</span></div>
-      <div>${Number(r.kg).toLocaleString()} kg</div>
-      <div>${fmtUGX(r.floor_ugx)}/kg</div>
-      <div><span class="pill pill-${status}">${status}</span></div>
-    </div>`;
-  }).join("");
-}
-
-function renderPayments(rows) {
-  const el = document.getElementById("payments-feed");
-  if (!el) return;
-  if (!rows || !rows.length) {
-    el.innerHTML = '<div style="color:var(--muted); padding:8px 0;">No payments received yet.</div>';
-    return;
-  }
-  el.innerHTML = rows.slice(0, 5).map(p => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line-soft);">
-      <div>
-        <div style="font-weight:600; color:var(--accent);">+${fmtUGX(p.amount_ugx)}</div>
-        <div style="color:var(--muted); font-size:10px;">${p.method} · ${fmtDate(p.settled_at || p.created_at)}</div>
-      </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="pill pill-${p.status}">${p.status}</span>
-        ${p.status === "settled"
-          ? `<a href="/payments/receipt/${p.id}" target="_blank" style="font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em;">receipt</a>`
-          : ""}
-      </div>
-    </div>
-  `).join("");
-}
-
-async function loadMyListings() {
-  const res = await jget(`/crp/offers?farm_id=${encodeURIComponent(farmId)}&include_closed=true&limit=10`);
-  if (res && !res.error) renderMyListings(res.offers || []);
-}
-
-async function loadPayments() {
-  const res = await jget(`/payments/farmer/${encodeURIComponent(farmId)}`);
-  if (res && !res.error) renderPayments(res.payments || []);
-}
-
-async function postOffer(ev) {
-  ev.preventDefault();
-  const crop = document.getElementById("of-crop").value.trim().toLowerCase();
-  const kg = parseInt(document.getElementById("of-kg").value, 10);
-  const floor = parseInt(document.getElementById("of-price").value, 10);
-  if (!crop || !(kg > 0) || !(floor > 0)) { toast("Fill in all listing fields."); return false; }
-  const btn = ev.target.querySelector("button[type=submit]");
-  if (btn) btn.disabled = true;
-  const res = await jpost("/crp/offers", { farm_id: farmId, crop, kg, floor_ugx: floor });
-  if (btn) btn.disabled = false;
-  if (res && res.error) { toast("Listing failed: " + res.error); return false; }
-  toast("Listing posted — " + (res.offer_id || "ok"));
-  document.getElementById("of-kg").value = "";
-  document.getElementById("of-price").value = "";
-  loadMyListings();
-  return false;
+  return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}) + " " + d.toLocaleTimeString(undefined, {hour:"2-digit", minute:"2-digit"});
 }
 
 async function loadData() {
@@ -492,17 +378,18 @@ async function loadData() {
   const farms = await jget("/farms");
   const farm = farms[farmId];
   if (!farm || farm.error) { document.getElementById("farm-content").innerHTML = "Farm data unavailable."; return; }
-  currentFarm = farm;
-  populateCropDropdown(farm.crop);
-  loadMyListings();
-  loadPayments();
-
+  currentFarm = farm; populateCropDropdown(farm.crop);
   document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
 
   const score = await jget("/score/" + farmId);
   const bal = await jget("/ect/balance/" + farmId);
-  
   document.getElementById("disp-bal").textContent = bal.kwh_remaining || 0;
+  
+  // Update YPS Meter
+  const yps = score.yps || 0;
+  document.getElementById("yps-value").textContent = yps;
+  document.getElementById("yps-ring").style.strokeDasharray = `${(yps/1000)*100}, 100`;
+  document.getElementById("yps-label").textContent = score.credit_health || "Calculating...";
 
   const hClass = `b-${(score.credit_health || "poor").toLowerCase()}`;
   document.getElementById("farm-content").innerHTML = `
@@ -510,12 +397,6 @@ async function loadData() {
       <div class="f-head">
         <div><h3>${farm.farmer_name}</h3><span style="color:var(--muted); font-size:10px;">${farm.district} · ${farm.crop}</span></div>
         <span class="badge ${hClass}">${score.credit_health || "N/A"}</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:baseline;">
-        <div class="display" style="font-size:32px;">${score.yps || 0}<span style="font-size:12px; color:var(--muted);">/1000</span></div>
-        <div style="text-align:right;">
-          <div style="font-weight:600; color:var(--accent);">${score.kwh_allocated || 0} kWh Cap</div>
-        </div>
       </div>
       <div class="spark-row">
         <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(score.nutrients?.n, "var(--accent)")}</div>
@@ -532,240 +413,39 @@ async function loadData() {
     </div>
   `;
 
-  // Market Insights
+  // Markets & Weather
   const priceRes = await jget(`/crp/prices?crop=${farm.crop}&region=${farm.district}`);
-  if(priceRes.error) {
-    document.getElementById("market-insight").innerHTML = "Price data unavailable.";
-  } else {
+  if(!priceRes.error) {
     const arrow = priceRes.trend === "up" ? "↑" : priceRes.trend === "down" ? "↓" : "=";
     const color = priceRes.trend === "up" ? "var(--accent)" : priceRes.trend === "down" ? "var(--bad)" : "var(--muted)";
-    document.getElementById("market-insight").innerHTML = `
-      <div class="display" style="font-size:36px; color:var(--ink); margin: 12px 0;">UGX ${priceRes.today.ugx.toLocaleString()}<span style="font-size:14px; color:var(--muted); font-family:'Inter', sans-serif;"> / ${priceRes.unit}</span></div>
-      <div style="font-size:12px; color:var(--muted); font-family:'JetBrains Mono', monospace;">
-        7d Avg: UGX ${priceRes.last7_avg.toLocaleString()} <strong style="color:${color}; font-size:14px;">${arrow}</strong>
-      </div>
-      <p style="font-size:12px; color:var(--muted); margin-top:16px;">Institutional floor price in your region.</p>
-    `;
+    document.getElementById("market-insight").innerHTML = `<div class="display" style="font-size:36px;">UGX ${priceRes.today.ugx.toLocaleString()}<span style="font-size:14px; color:var(--muted);"> / ${priceRes.unit}</span></div><div style="font-size:12px; color:var(--muted);">7d Avg: UGX ${priceRes.last7_avg.toLocaleString()} <strong style="color:${color};">${arrow}</strong></div>`;
   }
-
-  // Weather Planner
-  const rainProb = Math.floor(Math.random() * 40);
-  const suggestIrrigation = rainProb < 20;
-  document.getElementById("weather-planner").innerHTML = `
-    <div style="display:flex; justify-content:space-between; margin-bottom:24px; text-align:center;">
-      <div><div style="font-size:11px; color:var(--muted);">Tomorrow</div><div style="font-family:'Fraunces',serif; font-size:28px;">31°C ☀️</div><div style="font-size:12px;">${rainProb}% Rain</div></div>
-      <div><div style="font-size:11px; color:var(--muted);">Day 2</div><div style="font-family:'Fraunces',serif; font-size:28px;">29°C ⛅</div><div style="font-size:12px;">${rainProb+15}% Rain</div></div>
-      <div><div style="font-size:11px; color:var(--muted);">Day 3</div><div style="font-family:'Fraunces',serif; font-size:28px;">27°C 🌧️</div><div style="font-size:12px;">${rainProb+40}% Rain</div></div>
-    </div>
-    <div style="background:${suggestIrrigation ? 'rgba(161, 123, 44, 0.1)' : 'rgba(46, 77, 31, 0.1)'}; padding:14px; border-radius:2px; border:1px solid ${suggestIrrigation ? 'var(--gold)' : 'var(--accent)'}; font-size:12px;">
-      <strong style="color:${suggestIrrigation ? 'var(--gold)' : 'var(--accent)'};">Action Plan:</strong><br>
-      <span style="color:var(--ink-soft); display:block; margin-top:6px;">${suggestIrrigation ? "Low rain expected. Recommend using Energy Credit for morning irrigation." : "Rain expected soon. Preserve Energy Credit."}</span>
-    </div>
-  `;
 }
 
 async function askMavuno() {
-  const q = document.getElementById("ask-q").value;
-  if (!q.trim()) return toast("Please enter a question.");
-  document.getElementById("ask-answer").innerHTML = '<span style="color:var(--muted); font-style:italic;">AI is thinking...</span>';
-  try {
-      const r = await jpost("/crp/ask", {farm_id: farmId, question: q});
-      if(r.error) {
-          document.getElementById("ask-answer").textContent = "Error: " + r.error;
-      } else {
-          document.getElementById("ask-answer").innerHTML = `"${r.answer}"<br><span style="font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted-soft); margin-top:8px; display:block;">Source: ${r.source}</span>`;
-      }
-  } catch(e) {
-      document.getElementById("ask-answer").textContent = "Network error connecting to AI.";
-  }
+  const q = document.getElementById("ask-q").value; if (!q.trim()) return toast("Please enter a question.");
+  document.getElementById("ask-answer").innerHTML = 'Thinking...';
+  const r = await jpost("/crp/ask", {farm_id: farmId, question: q});
+  document.getElementById("ask-answer").innerHTML = r.error ? "Error" : `"${r.answer}"<br><span style="font-size:9px; color:var(--muted-soft);">Source: ${r.source}</span>`;
 }
 
-/* ===================== Chat (farmer side) ===================== */
-let _chatOpenThreadId = null;
-let _chatPumpAlive = false;
-let _chatLastTs = 0;
-
-function escapeHtml(s) {
-  return String(s || "").replace(/[&<>"']/g, c =>
-    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
-}
-
-function openChat(threadId) {
-  document.getElementById("chat-drawer").classList.add("open");
-  document.getElementById("chat-drawer").setAttribute("aria-hidden","false");
-  if (threadId) { renderConvo(threadId); }
-  else { renderInbox(); }
-}
-
-function closeChat() {
-  document.getElementById("chat-drawer").classList.remove("open");
-  document.getElementById("chat-drawer").setAttribute("aria-hidden","true");
-  _chatPumpAlive = false;
-  _chatOpenThreadId = null;
-  document.getElementById("chat-foot").style.display = "none";
-  refreshUnread();
-}
-
-async function renderInbox() {
-  _chatPumpAlive = false;
-  _chatOpenThreadId = null;
-  document.getElementById("chat-title").textContent = "Buyer Messages";
-  document.getElementById("chat-foot").style.display = "none";
-  const body = document.getElementById("chat-body");
-  body.innerHTML = '<div style="color:var(--muted); font-size:12px;">Loading threads…</div>';
-  const res = await jget("/chat/threads");
-  if (res.error) { body.innerHTML = '<div style="color:var(--bad);">Could not load messages.</div>'; return; }
-  const threads = res.threads || [];
-  if (!threads.length) {
-    body.innerHTML = '<div style="color:var(--muted); font-size:12px; padding:8px 0;">No buyer messages yet. They\'ll appear here when a buyer opens a chat from one of your listings.</div>';
-    return;
-  }
-  body.innerHTML = threads.map(t => `
-    <div class="chat-thread-row" onclick="renderConvo('${t.id}')">
-      <div class="ct-name">${escapeHtml(t.buyer_name || t.buyer_id)}${t.unread ? `<span class="ct-unread">${t.unread}</span>` : ""}</div>
-      <div class="ct-preview">${escapeHtml((t.last_preview || "No messages yet.").slice(0,120))}</div>
-    </div>
-  `).join("");
-}
-
-function renderBubble(msg) {
-  const mine = msg.sender_role === "farmer" && msg.sender_id === farmId;
-  const cls = mine ? "chat-bubble-farmer" : "chat-bubble-buyer";
-  const when = fmtDate(msg.created_at);
-  return `<div class="chat-bubble ${cls}">${escapeHtml(msg.body)}<div class="b-meta">${when}</div></div>`;
-}
-
-async function renderConvo(threadId) {
-  _chatOpenThreadId = threadId;
-  _chatLastTs = 0;
-  document.getElementById("chat-title").textContent = "Conversation";
-  const body = document.getElementById("chat-body");
-  body.innerHTML = '<button class="chat-back" onclick="renderInbox()">← Inbox</button><div class="chat-convo-flex" id="chat-convo"></div>';
-  document.getElementById("chat-foot").style.display = "flex";
-  // GET /messages auto-advances the read cursor server-side, so no separate /read call.
-  const res = await jget(`/chat/${threadId}/messages?since=0&wait=0`);
-  if (res.error) { body.innerHTML += `<div style="color:var(--bad);">Could not load conversation.</div>`; return; }
-  const msgs = res.messages || [];
-  if (msgs.length) {
-    _chatLastTs = msgs[msgs.length - 1].created_at;
-    document.getElementById("chat-convo").innerHTML = msgs.map(renderBubble).join("");
-    body.scrollTop = body.scrollHeight;
-  }
-  _chatPumpAlive = true;
-  pump(threadId);
-}
-
-async function pump(threadId) {
-  while (_chatPumpAlive && _chatOpenThreadId === threadId) {
-    const res = await jget(`/chat/${threadId}/messages?since=${_chatLastTs}&wait=25`);
-    if (!_chatPumpAlive || _chatOpenThreadId !== threadId) return;
-    if (res && !res.error && (res.messages || []).length) {
-      const convo = document.getElementById("chat-convo");
-      if (!convo) return;
-      for (const m of res.messages) {
-        convo.insertAdjacentHTML("beforeend", renderBubble(m));
-        _chatLastTs = m.created_at;
-      }
-      document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
-      // mark_read already happened inside the long-poll GET above.
-    }
-  }
-}
-
-async function sendChat() {
-  const threadId = _chatOpenThreadId;
-  const input = document.getElementById("chat-input");
-  const body = (input.value || "").trim();
-  if (!body || !threadId) return;
-  input.disabled = true;
-  const res = await jpost(`/chat/${threadId}/messages`, { body });
-  input.disabled = false;
-  if (res.error) {
-    if (res.error === "too_many_messages") toast("Please wait a moment before sending again.");
-    else toast("Message not sent: " + res.error);
-    return;
-  }
-  input.value = "";
-  const convo = document.getElementById("chat-convo");
-  if (convo) {
-    convo.insertAdjacentHTML("beforeend", renderBubble(res));
-    _chatLastTs = res.created_at;
-    document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
-  }
-  input.focus();
-}
-
+/* --- Notifications --- */
 async function refreshUnread() {
   const [cRes, nRes] = await Promise.all([jget("/chat/unread/count"), jget("/notifications")]);
-  
-  const msgDot = document.getElementById("msg-unread");
-  if (msgDot) {
-    const n = (cRes && !cRes.error) ? Number(cRes.count || 0) : 0;
-    if (n > 0) { msgDot.textContent = n > 99 ? "99+" : n; msgDot.classList.add("on"); }
-    else { msgDot.classList.remove("on"); }
-  }
-
-  const notifDot = document.getElementById("notif-unread");
-  if (notifDot) {
-    const unreadCount = (nRes && !nRes.error) ? nRes.notifications.filter(n => !n.read).length : 0;
-    if (unreadCount > 0) { notifDot.textContent = unreadCount > 99 ? "99+" : unreadCount; notifDot.classList.add("on"); }
-    else { notifDot.classList.remove("on"); }
-    renderNotifications(nRes.notifications || []);
-  }
+  const msgDot = document.getElementById("msg-unread"); if (msgDot) { const n = cRes.count || 0; if (n > 0) { msgDot.textContent = n; msgDot.classList.add("on"); } else msgDot.classList.remove("on"); }
+  const notifDot = document.getElementById("notif-unread"); if (notifDot) { const unread = (nRes.notifications || []).filter(n => !n.read).length; if (unread > 0) { notifDot.textContent = unread; notifDot.classList.add("on"); } else notifDot.classList.remove("on"); renderNotifications(nRes.notifications || []); }
 }
+function toggleNotifs() { const el = document.getElementById("notif-popover"); el.style.display = el.style.display === "none" ? "flex" : "none"; }
+function renderNotifications(notifs) { const el = document.getElementById("notif-list"); if (!el) return; el.innerHTML = notifs.map(n => `<div style="padding:12px; border-bottom:1px solid var(--line-soft); background:${n.read ? 'transparent' : 'var(--bg-alt)'};"><div style="font-weight:600; font-size:12px;">${escapeHtml(n.title)}</div><div style="font-size:11px; color:var(--ink-soft);">${escapeHtml(n.body)}</div></div>`).join(""); }
+async function markNotifsRead() { await jpost("/notifications/read"); refreshUnread(); }
 
-function toggleNotifs() {
-  const el = document.getElementById("notif-popover");
-  const isOpening = el.style.display === "none";
-  el.style.display = isOpening ? "flex" : "none";
-}
-
-function renderNotifications(notifs) {
-  const el = document.getElementById("notif-list");
-  if (!el) return;
-  if (!notifs.length) {
-    el.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted); font-size:11px;">No notifications.</div>';
-    return;
-  }
-  el.innerHTML = notifs.map(n => `
-    <div style="padding:12px; border-bottom:1px solid var(--line-soft); background:${n.read ? 'transparent' : 'var(--bg-alt)'}; position:relative;">
-      <div style="font-weight:600; font-size:12px; color:var(--ink);">${escapeHtml(n.title)}</div>
-      <div style="font-size:11px; color:var(--ink-soft); margin-top:4px;">${escapeHtml(n.body)}</div>
-      <div style="font-size:9px; color:var(--muted); margin-top:6px; text-transform:uppercase;">${fmtDate(n.created_at)}</div>
-      ${!n.read ? '<div style="position:absolute; top:12px; right:12px; width:6px; height:6px; background:var(--bad); border-radius:999px;"></div>' : ''}
-    </div>
-  `).join("");
-}
-
-async function markNotifsRead() {
-  await jpost("/notifications/read");
-  refreshUnread();
-}
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeChat();
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const ta = document.getElementById("chat-input");
-  if (ta) {
-    ta.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
-    });
-  }
-});
+function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); localStorage.setItem("mavuno-theme", t); document.getElementById("theme-toggle").textContent = t === "dark" ? "☀️" : "🌙"; }
+function escapeHtml(s) { return String(s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme(localStorage.getItem("mavuno-theme") || "light");
-  const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.onclick = () => {
-      const cur = document.documentElement.getAttribute("data-theme");
-      applyTheme(cur === "dark" ? "light" : "dark");
-    };
-  }
-  loadData();
-  refreshUnread();
-  setInterval(refreshUnread, 15000);
+  document.getElementById("theme-toggle").onclick = () => { const cur = document.documentElement.getAttribute("data-theme"); applyTheme(cur === "dark" ? "light" : "dark"); };
+  loadData(); refreshUnread(); setInterval(refreshUnread, 15000);
 });
 </script>
 </body>

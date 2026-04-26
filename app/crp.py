@@ -205,6 +205,33 @@ def _groq_advise(question: str, ctx: dict) -> str | None:
     except Exception:
         return None
 
+def logistics_advisor(pending_loads: list, market_context: str) -> str:
+    """Provides strategic logistics coordination advice using AI."""
+    key = os.getenv("GROQ_API_KEY")
+    if not key: return "AI Coordinator offline. Please check connectivity."
+    
+    system = (
+        "You are the Mavuno Logistics Coordinator AI. "
+        "Analyze the provided pending loads and market context to suggest optimal dispatch strategies. "
+        "Focus on fuel efficiency, load consolidation, and urgent pickups. Keep it under 250 characters."
+    )
+    prompt = f"Pending Loads: {json.dumps(pending_loads)}\nMarket Context: {market_context}"
+    
+    try:
+        with httpx.Client(timeout=4.0) as client:
+            r = client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}"},
+                json={
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+                    "max_tokens": 100, "temperature": 0.3
+                }
+            )
+            return r.json()["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        return f"Coordination AI temporarily unavailable. (Err: {str(e)[:20]})"
+
 def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
     conn = database.get_db()
     cur = conn.cursor()

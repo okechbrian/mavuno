@@ -215,6 +215,11 @@ def buyer_dash(buyer_id: str, user: dict = Depends(require_user("buyer", "agent"
     return FileResponse(database.ROOT / "app" / "static" / "buyer_dashboard.html")
 
 
+@app.get("/logistics", response_class=HTMLResponse)
+def logistics_dash(user: dict = Depends(require_user("logistics", "agent"))):
+    return FileResponse(database.ROOT / "app" / "static" / "logistics_dashboard.html")
+
+
 # ============================================================================
 # DATA / WRITE ENDPOINTS — all auth gated
 # ============================================================================

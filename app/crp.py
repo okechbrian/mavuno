@@ -51,6 +51,36 @@ def market_prices(crop: str, region: str) -> dict:
         "last7_avg": avg7, "trend": trend, "series": series
     }
 
+def check_price_fluctuations():
+    """System-wide check of market prices vs farmer crops. Generates notifications on trend changes."""
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id, crop, district FROM farms")
+    farms = cur.fetchall()
+    
+    notifications_sent = 0
+    for f in farms:
+        p = market_prices(f['crop'], f['district'])
+        if "error" in p: continue
+        
+        if p['trend'] != "flat":
+            title = "Price Alert: " + f['crop'].upper()
+            direction = "surged to" if p['trend'] == "up" else "dropped to"
+            msg = f"Market prices in {f['district']} have {direction} UGX {p['today']['ugx']}/kg. Average is UGX {p['last7_avg']}/kg."
+            
+            # Check if we already sent this specific alert today (optional for prototype, but good practice)
+            now = int(time.time())
+            cur.execute(
+                """INSERT INTO notifications (user_id, title, body, type, created_at)
+                   VALUES (?, ?, ?, 'price_alert', ?)""",
+                (f['id'], title, msg, now),
+            )
+            notifications_sent += 1
+            
+    conn.commit()
+    conn.close()
+    return {"ok": True, "notifications_sent": notifications_sent}
+
 def list_offer(farm_id: str, crop: str, kg: int, floor_ugx: int) -> dict:
     conn = database.get_db()
     cur = conn.cursor()

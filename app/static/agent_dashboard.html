@@ -189,6 +189,17 @@
 
   <div class="op-grid" id="farms"></div>
 
+  <!-- Verified Harvests Gallery -->
+  <div style="margin-top:60px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 class="display" style="font-size: 24px; margin:0;">Verified Harvests Gallery</h2>
+      <button class="btn" onclick="loadGallery()" style="font-size:10px;">Refresh Gallery</button>
+    </div>
+    <div id="harvest-gallery" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
   <div style="margin-top:60px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
     <div class="radar-card" style="background:var(--paper);">
       <span class="label">AI Agronomist Query</span>
@@ -458,10 +469,49 @@ async function askMavuno() {
   document.getElementById("ask-answer").textContent = r.answer;
 }
 
+async function loadGallery() {
+  const res = await jget("/feed/verified/gallery");
+  const el = document.getElementById("harvest-gallery");
+  if (!el || res.error) return;
+  
+  if (!res.posts || !res.posts.length) {
+    el.innerHTML = '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No verified harvests yet. Photos will appear here once farmers post them via the app.</div>';
+    return;
+  }
+
+  el.innerHTML = res.posts.map(p => `
+    <div style="background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; display:flex; flex-direction:column; gap:8px;">
+      <div style="aspect-ratio:1/1; position:relative; background:var(--bg);">
+        <img src="${p.photo_url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200?text=No+Photo'">
+        <div style="position:absolute; top:8px; right:8px; background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:9px; font-weight:700;">VERIFIED</div>
+      </div>
+      <div style="padding:12px;">
+        <div style="font-weight:600; font-size:11px;">${p.farmer_name}</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:2px;">${p.district} • ${p.crop}</div>
+        <div style="font-size:10px; color:var(--ink-soft); margin-top:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.body}</div>
+        <div style="font-size:9px; color:var(--muted); margin-top:8px;">${new Date(p.created_at*1000).toLocaleDateString()}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
 setInterval(() => { document.getElementById("fineprint-time").textContent = new Date().toLocaleString(); }, 1000);
 setInterval(refreshLedger, 5000);
 setInterval(loadFarms, 15000);
 setInterval(verifyIntegrity, 30000);
+setInterval(loadGallery, 30000);
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyTheme(localStorage.getItem("mavuno-theme") || "light");
+  const btn = document.getElementById("theme-toggle");
+  if (btn) {
+    btn.onclick = () => {
+      const cur = document.documentElement.getAttribute("data-theme");
+      applyTheme(cur === "dark" ? "light" : "dark");
+    };
+  }
+  loadFarms(); refreshLedger(); verifyIntegrity(); loadGallery();
+});
 </script>
 </body>
 </html>

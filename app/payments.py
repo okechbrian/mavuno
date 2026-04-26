@@ -105,6 +105,14 @@ def initiate(buyer_id: str, offer_id: str, msisdn: str, method: str) -> dict:
         "farm_id": offer["farm_id"], "amount_ugx": amount, "method": method,
     })
 
+    # Create notification for farmer
+    cur.execute(
+        """INSERT INTO notifications (user_id, title, body, type, created_at)
+           VALUES (?, ?, ?, 'payment_initiated', ?)""",
+        (offer["farm_id"], "New Procurement Bid", f"A buyer has initiated a payment of UGX {amount:,} for your {offer['crop']} listing.", now),
+    )
+    conn.commit()
+
     # Fire-and-forget the PSP callback. In production swap this for a real
     # provider HTTP call; the rest of the flow is unchanged.
     try:
@@ -160,6 +168,15 @@ def confirm(payment_id: str, success: bool) -> dict:
     )
     if success:
         cur.execute("UPDATE offers SET status='accepted' WHERE id=?", (row["offer_id"],))
+    
+    # Create notification for farmer
+    title = "Payment Settled" if success else "Payment Failed"
+    msg = f"Payment of UGX {row['amount_ugx']:,} for your {row['offer_id']} listing has been {new_status}."
+    cur.execute(
+        """INSERT INTO notifications (user_id, title, body, type, created_at)
+           VALUES (?, ?, ?, ?, ?)""",
+        (row["farm_id"], title, msg, f"payment_{new_status}", now),
+    )
     conn.commit()
     conn.close()
 

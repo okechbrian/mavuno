@@ -120,6 +120,7 @@ def init_db():
         cur.execute("ALTER TABLE posts ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 0")
     except sqlite3.OperationalError:
         pass # Column already exists
+
     cur.execute('''CREATE TABLE IF NOT EXISTS reactions (
         post_id TEXT NOT NULL,
         reactor_role TEXT NOT NULL,
@@ -128,16 +129,29 @@ def init_db():
         created_at INTEGER NOT NULL,
         PRIMARY KEY (post_id, reactor_role, reactor_id, emoji)
     )''')
+    
     cur.execute('''CREATE TABLE IF NOT EXISTS post_flags (
         post_id TEXT NOT NULL,
         flagger_role TEXT NOT NULL,
         flagger_id TEXT NOT NULL,
         reason TEXT,
         created_at INTEGER NOT NULL,
-        PRIMARY KEY (post_id, flagger_role, flagger_id)
+        PRIMARY KEY (post_id, flagger_id)
     )''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        type TEXT NOT NULL,
+        read INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL
+    )''')
+    
     cur.execute('CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC)')
     cur.execute('CREATE INDEX IF NOT EXISTS idx_reactions_post ON reactions(post_id)')
+    cur.execute('CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, created_at DESC)')
 
     conn.commit()
     conn.close()

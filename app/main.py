@@ -621,6 +621,45 @@ def feed_get(post_id: str, user: dict = Depends(require_user())):
     return p
 
 
+@app.get("/feed/verified/gallery")
+def feed_verified_gallery(user: dict = Depends(require_user())):
+    """Returns only posts with verified harvest photos."""
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM posts WHERE hidden = 0 AND is_verified = 1 AND photo_url IS NOT NULL ORDER BY created_at DESC LIMIT 20"
+    )
+    rows = cur.fetchall()
+    conn.close()
+    return {"posts": [social._hydrate(r) for r in rows]}
+
+
+@app.get("/notifications")
+def notifications_list(user: dict = Depends(require_user())):
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50",
+        (user["subject"],),
+    )
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return {"notifications": rows}
+
+
+@app.post("/notifications/read")
+def notifications_mark_read(user: dict = Depends(require_user())):
+    conn = database.get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE notifications SET read = 1 WHERE user_id = ?",
+        (user["subject"],),
+    )
+    conn.commit()
+    conn.close()
+    return {"ok": True}
+
+
 @app.post("/feed/{post_id}/react")
 def feed_react(post_id: str, req: ReactReq, user: dict = Depends(require_user("farmer", "buyer"))):
     res = social.react(post_id, user["role"], user["subject"], req.emoji)

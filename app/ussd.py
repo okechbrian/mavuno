@@ -16,18 +16,22 @@ def route(phone: str, text: str):
     lang = "en" if parts[0] == "1" else "lg"
     S = {
         "en": {
-            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Ask Mavuno\n7. Exit",
+            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Community\n7. Ask Mavuno\n8. Exit",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Enter question:",
             "sell": "Enter kg to sell:",
-            "price": "Enter floor price (UGX/kg):"
+            "price": "Enter floor price (UGX/kg):",
+            "feed": "{i}/{n} {u}:\n{b}\n0. Next",
+            "feed_empty": "Feed is empty."
         },
         "lg": {
-            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Buuza Mavuno\n7. Fuluma",
+            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Buuza Mavuno\n8. Fuluma",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Wandiika ekibuuzo kyo:",
             "sell": "Oyingize kilo:",
-            "price": "Omuwendo gwa wansi (UGX/kg):"
+            "price": "Omuwendo gwa wansi (UGX/kg):",
+            "feed": "{i}/{n} {u}:\n{b}\n0. Next",
+            "feed_empty": "Feed ekalu."
         }
     }[lang]
 
@@ -73,6 +77,25 @@ def route(phone: str, text: str):
                 return "END Invalid numbers."
                 
     if cmd == "6":
+        from . import social
+        # Handle simple paging via "0" input
+        page_depth = parts[2:].count("0")
+        posts = social.feed(limit=5)
+        if not posts:
+            return "END " + S["feed_empty"]
+        
+        idx = page_depth % len(posts)
+        p = posts[idx]
+        body = p['body'] if len(p['body']) <= 80 else p['body'][:77] + "..."
+        # If it's a public query, simplify for USSD
+        if body.startswith("🌱 Public Query:"):
+            body = body.replace("🌱 Public Query:\n", "Q: ")
+            
+        return "CON " + S["feed"].format(
+            i=idx + 1, n=len(posts), u=p['farmer_name'].split()[0], b=body
+        )
+
+    if cmd == "7":
         if len(parts) == 2:
             return "CON " + S["ask"]
         question = " ".join(parts[2:])

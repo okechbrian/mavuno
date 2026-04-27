@@ -32,6 +32,12 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
+    abstract fun bindHardwareScanner(
+        impl: HardwareScannerImpl
+    ): HardwareScanner
+
+    @Binds
+    @Singleton
     abstract fun bindEctBalanceRepository(
         impl: EctBalanceRepositoryImpl
     ): EctBalanceRepository
@@ -47,4 +53,16 @@ abstract class RepositoryModule {
     abstract fun bindMarketplaceRepository(
         impl: MarketplaceRepositoryImpl
     ): MarketplaceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSocialRepository(
+        impl: SocialRepositoryImpl
+    ): SocialRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTrainingRepository(
+        impl: TrainingRepositoryImpl
+    ): TrainingRepository
 }

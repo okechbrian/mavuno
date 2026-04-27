@@ -34,6 +34,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":core"))
+    implementation(project(":data"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation(platform("androidx.compose:compose-bom:2024.02.02"))
@@ -43,9 +44,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
     // CameraX
     val camerax_version = "1.4.2"
@@ -55,4 +59,15 @@ dependencies {
     implementation("androidx.camera:camera-view:$camerax_version")
     implementation("androidx.camera:camera-mlkit-vision:$camerax_version")
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    
+    // Image Loading
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Charting (Vico)
+    val vico_version = "2.0.0-alpha.18"
+    implementation("com.patrykandpatrick.vico:compose:$vico_version")
+    implementation("com.patrykandpatrick.vico:compose-m3:$vico_version")
+    implementation("com.patrykandpatrick.vico:core:$vico_version")
 }

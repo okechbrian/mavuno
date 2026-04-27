@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Store
@@ -23,6 +24,7 @@ import com.mavuno.features.auth.LoginScreen
 import com.mavuno.features.history.Transaction
 import com.mavuno.features.history.TransactionHistoryScreen
 import com.mavuno.features.marketplace.MarketplaceScreen
+import com.mavuno.features.social.SocialFeedScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.mavuno.core.R
 
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
 sealed class BuyerScreen(val route: String, val label: String, val icon: ImageVector) {
     object Marketplace : BuyerScreen("marketplace", "Market", Icons.Default.Store)
     object MyBids : BuyerScreen("my_bids", "My Bids", Icons.Default.ShoppingCart)
+    object Community : BuyerScreen("social", "Social", Icons.Default.Groups)
     object Inventory : BuyerScreen("inventory", "Inventory", Icons.Default.Inventory)
 }
 
@@ -82,6 +85,12 @@ fun BuyerMainScreen(buyerId: String) {
                     )
                 )
             }
+            composable(BuyerScreen.Community.route) {
+                SocialFeedScreen(
+                    viewModel = hiltViewModel(),
+                    userRole = "buyer"
+                )
+            }
             composable(BuyerScreen.Inventory.route) {
                 TransactionHistoryScreen(
                     title = "Procurement Inventory",
@@ -96,7 +105,7 @@ fun BuyerMainScreen(buyerId: String) {
 
 @Composable
 fun BuyerBottomBar(navController: NavHostController) {
-    val items = listOf(BuyerScreen.Marketplace, BuyerScreen.MyBids, BuyerScreen.Inventory)
+    val items = listOf(BuyerScreen.Marketplace, BuyerScreen.MyBids, BuyerScreen.Community, BuyerScreen.Inventory)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

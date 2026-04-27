@@ -53,15 +53,17 @@ class DatabaseSeeder @Inject constructor(
         )
 
         // Seed Buyers
-        val demoBuyer = BuyerEntity(
-            buyerId = "BUYER-MBL-001",
-            name = "Mbale Coffee SACCO",
+        val demoBuyer = BuyerProfileEntity(
+            id = "BUYER-MBL-001",
+            name = "John Off-taker",
+            company = "Mbale Coffee SACCO",
             region = "Mbale",
-            phoneNumber = "+256700111222",
-            cropsPurchased = listOf("Coffee", "Maize"),
-            floorPrice = 3500.0
+            isVerified = true,
+            totalVolumeKg = 12000,
+            activeContracts = 5,
+            ectSpent = 450.0
         )
-        buyerDao.insertBuyers(listOf(demoBuyer))
+        buyerDao.insertProfile(demoBuyer)
 
         // Seed Offers
         offerDao.insertOffers(listOf(

@@ -21,7 +21,9 @@ object DatabaseModule {
             app,
             MavunoDatabase::class.java,
             MavunoDatabase.DATABASE_NAME
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
@@ -47,4 +49,12 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideOfferDao(db: MavunoDatabase): OfferDao = db.offerDao
+
+    @Provides
+    @Singleton
+    fun provideSocialDao(db: MavunoDatabase): SocialDao = db.socialDao
+
+    @Provides
+    @Singleton
+    fun provideTrainingDao(db: MavunoDatabase): TrainingDao = db.trainingDao
 }

@@ -1,9 +1,11 @@
 package com.mavuno.domain.repository
 
-import com.mavuno.domain.model.Buyer
+import com.mavuno.domain.model.BatchPayment
+import com.mavuno.domain.model.BuyerProfile
 import kotlinx.coroutines.flow.Flow
 
 interface BuyerRepository {
-    fun getAllBuyers(): Flow<List<Buyer>>
-    suspend fun syncBuyers() // Placeholder for API sync
+    fun getBuyerProfile(buyerId: String): Flow<BuyerProfile?>
+    fun getBatchPayments(buyerId: String): Flow<List<BatchPayment>>
+    suspend fun syncBuyerData(buyerId: String)
 }

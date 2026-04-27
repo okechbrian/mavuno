@@ -1,4 +1,0 @@
-/ => 200
-/farms => ERROR: Response status code does not indicate success: 401 (Unauthorized).
-/score/UG-MBL-0001 => ERROR: Response status code does not indicate success: 401 (Unauthorized).
-/crp/offers => ERROR: Response status code does not indicate success: 401 (Unauthorized).

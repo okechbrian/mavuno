@@ -14,18 +14,26 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mavuno.core.R
 
 @Composable
 fun LoginScreen(
     role: String,
     logoResId: Int,
-    onLoginSuccess: (String) -> Unit
+    onLoginSuccess: (String) -> Unit,
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     var userId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
+    
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.successSubject) {
+        if (uiState.successSubject != null) {
+            onLoginSuccess(uiState.successSubject!!)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -68,7 +76,7 @@ fun LoginScreen(
             singleLine = true
         )
 
-        error?.let {
+        uiState.error?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
         }
@@ -77,19 +85,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                isLoading = true
-                // In a real app, this calls the MavunoApi login endpoint
-                // Mocking success for the demo based on web defaults
-                if (role == "Agent" && password == "mavuno2026") {
-                    onLoginSuccess("admin")
-                } else if (role == "Farmer" && (userId == "UG-MBL-0001" || userId == "+256700000001") && password == "1234") {
-                    onLoginSuccess("UG-MBL-0001")
-                } else if (role == "Buyer" && (userId == "BUYER-MBL-001" || userId == "+256700111222") && password == "1234") {
-                    onLoginSuccess("BUYER-MBL-001")
-                } else {
-                    error = "Invalid credentials. Please try again."
-                }
-                isLoading = false
+                viewModel.login(role, userId, password)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,7 +98,7 @@ fun LoginScreen(
                 }
             )
         ) {
-            if (isLoading) {
+            if (uiState.isLoading) {
                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
             } else {
                 Text("Login")

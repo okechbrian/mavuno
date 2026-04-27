@@ -4,183 +4,182 @@
 <meta charset="utf-8" />
 <title>Mavuno — USSD Simulator</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1f16;
-    --muted: #6b7566;
-    --paper: #f7f5ec;
-    --card: #ffffff;
-    --border: #e6e3d4;
-    --accent: #2d5016;
-    --accent-soft: #4a7a2a;
-    --screen: #a7c957;
-    --screen-ink: #0c1f10;
-    --phone: #1f2937;
-    --phone-edge: #111827;
-    --key: #2d3748;
-    --key-hi: #4a5568;
+    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
+    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --line-soft: #e6dfc9;
+    --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
+    --screen: #9eb68a; --screen-ink: #1c2416;
+    --phone-body: #1c2416;
   }
   :root[data-theme="dark"] {
-    --ink: #f0eee3;
-    --muted: #8d9387;
-    --paper: #0f1410;
-    --card: #191f1a;
-    --border: #262b24;
-    --accent: #9ac961;
-    --accent-soft: #7cb342;
-    --screen: #88b54a;
-    --screen-ink: #0a1a08;
-    --phone: #0f1419;
-    --phone-edge: #06090c;
-    --key: #1f2731;
-    --key-hi: #323a46;
+    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
+    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --line-soft: #242219;
+    --accent: #78a163; --accent-soft: #4a6b36; --clay: #c87a52; --gold: #d4a656; --bad: #d07668;
+    --screen: #3e4a2a; --screen-ink: #d4e0c8;
+    --phone-body: #0a0c08;
   }
   * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100vh; }
   body {
-    margin: 0; padding: 28px 16px;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: linear-gradient(180deg, var(--paper) 0%, var(--border) 100%);
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; gap: 20px;
-    transition: background 200ms, color 200ms;
+    background: var(--bg); color: var(--ink);
+    font-family: "Inter", sans-serif; font-size: 13px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; align-items: center;
   }
+  .display { font-family: "Fraunces", serif; }
+
+  /* Masthead */
   .topbar {
-    width: 100%; max-width: 980px; display: flex; justify-content: space-between; align-items: center;
+    width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center;
+    padding: 32px 24px; animation: fadeInUp 0.4s ease-out forwards;
   }
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .logo {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-    display: grid; place-items: center; color: white; font-size: 18px; font-weight: 700;
+  .mast-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .role-badge {
+    background: var(--line-soft); color: var(--muted);
+    padding: 4px 12px; border-radius: 999px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
   }
-  .brand h1 { margin: 0; font-size: 18px; }
-  .brand .sub { font-size: 11px; color: var(--muted); }
-  .topbar-actions { display: flex; gap: 10px; align-items: center; }
-  .theme-toggle {
-    background: transparent; border: 1px solid var(--border); color: var(--ink);
-    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 16px;
-    display: grid; place-items: center;
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    padding: 8px 14px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); border-radius: 999px;
+    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px; font-weight: 500;
   }
-  .theme-toggle:hover { background: var(--card); }
-  a.back-link {
-    color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 600;
-    padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
-  }
-  a.back-link:hover { background: var(--card); }
-  header.lede { text-align: center; max-width: 720px; }
-  header.lede h2 { margin: 0 0 4px; font-size: 20px; letter-spacing: -0.01em; }
-  header.lede p { margin: 0; color: var(--muted); font-size: 13px; }
+  .topbar-btn:hover { background: var(--bg-alt); }
+
+  header.lede { text-align: center; max-width: 600px; margin-bottom: 40px; animation: fadeInUp 0.5s ease-out 0.1s forwards; opacity: 0; }
+  header.lede h2 { margin: 0 0 8px; font-size: 32px; letter-spacing: -0.02em; }
+  header.lede p { margin: 0; color: var(--muted); font-size: 14px; }
+
   .stage {
-    display: grid; grid-template-columns: auto 1fr; gap: 40px;
-    align-items: start; max-width: 980px; width: 100%;
+    display: grid; grid-template-columns: auto 1fr; gap: 60px;
+    align-items: start; max-width: 1000px; width: 100%; padding: 0 24px 60px;
+    animation: fadeInUp 0.6s ease-out 0.2s forwards; opacity: 0;
   }
-  @media (max-width: 760px) { .stage { grid-template-columns: 1fr; } }
+
+  /* Phone Simulator */
   .phone {
-    width: 280px;
-    background: var(--phone);
-    border: 6px solid var(--phone-edge);
-    border-radius: 36px;
-    padding: 18px 18px 22px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.22), inset 0 2px 0 rgba(255,255,255,0.06);
+    width: 300px;
+    background: var(--phone-body);
+    border: 8px solid var(--ink);
+    border-radius: 40px;
+    padding: 24px 20px 28px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.05);
+    position: relative;
   }
   .phone-brand {
-    text-align: center; color: #cbd5e1; font-size: 11px; letter-spacing: 3px;
-    margin-bottom: 10px;
+    text-align: center; color: var(--muted); font-size: 9px; letter-spacing: 4px;
+    margin-bottom: 12px; font-weight: 700; opacity: 0.5;
   }
   .screen {
     background: var(--screen);
     color: var(--screen-ink);
-    border: 3px solid #0c1f10;
-    border-radius: 8px;
-    height: 230px;
-    padding: 10px 12px;
-    font-family: "Consolas", "Courier New", monospace;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+    height: 240px;
+    padding: 14px;
+    font-family: "JetBrains Mono", monospace;
     font-size: 13px;
-    line-height: 1.35;
+    line-height: 1.4;
     white-space: pre-wrap;
     overflow-y: auto;
     position: relative;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.1);
   }
-  .screen .signal { position: absolute; top: 4px; right: 8px; font-size: 10px; }
-  .screen .title { font-weight: 700; margin-bottom: 4px; }
-  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .screen .signal { position: absolute; top: 6px; right: 10px; font-size: 10px; opacity: 0.6; }
+  .screen .title { font-weight: 700; margin-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 4px; }
+
+  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
   .key {
-    background: var(--key);
-    color: #e5e7eb;
+    background: #2a3326;
+    color: #f4efe3;
     border: none;
-    border-radius: 10px;
-    padding: 10px 0 8px;
+    border-radius: 8px;
+    padding: 12px 0 10px;
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
     display: flex; flex-direction: column; align-items: center;
-    box-shadow: 0 2px 0 #0b0f19;
+    box-shadow: 0 3px 0 #151a12;
     transition: transform 60ms ease, background 100ms;
   }
-  .key small { font-size: 9px; color: #9ca3af; font-weight: 400; letter-spacing: 1px; }
-  .key:hover { background: var(--key-hi); }
-  .key:active { transform: translateY(1px); box-shadow: 0 1px 0 #0b0f19; }
-  .key.hot { background: var(--accent); color: white; }
-  .key.hot:hover { background: var(--accent-soft); }
+  .key small { font-size: 8px; color: #88967b; font-weight: 400; letter-spacing: 1px; margin-top: 2px; }
+  .key:hover { background: #3a4533; }
+  .key:active { transform: translateY(1px); box-shadow: 0 1px 0 #151a12; }
   .key.pulse { animation: keypulse 300ms ease-out; }
-  @keyframes keypulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.94); background: var(--accent-soft); }
-    100% { transform: scale(1); }
+
+  .soft { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .soft .key { padding: 10px 0; font-size: 11px; letter-spacing: 0.05em; font-weight: 700; }
+  .key.hot { background: var(--accent); color: white; box-shadow: 0 3px 0 #1a2a0d; }
+  .key.hot:hover { background: var(--accent-soft); }
+
+  /* Side Content */
+  .side { display: flex; flex-direction: column; gap: 32px; }
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
   }
-  .soft { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-  .soft .key { padding: 9px 0; font-size: 13px; }
-  .side {
-    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 20px; box-shadow: 0 2px 8px rgba(15,23,42,0.05);
-  }
-  .side h3 { margin: 0 0 8px; font-size: 15px; }
-  .side p { margin: 0 0 12px; font-size: 13px; color: var(--muted); }
-  .numbers { display: flex; flex-direction: column; gap: 6px; }
+  .card h3 { margin: 0 0 16px; font-size: 18px; font-family: "Fraunces", serif; }
+
+  .numbers { display: flex; flex-direction: column; gap: 8px; }
   .numbers button {
-    text-align: left; background: var(--paper); border: 1px solid var(--border);
-    border-radius: 10px; padding: 10px 12px; cursor: pointer; font-size: 13px;
-    color: var(--ink);
-    transition: all 120ms;
+    text-align: left; background: var(--bg-alt); border: 1px solid var(--line);
+    border-radius: 4px; padding: 14px 16px; cursor: pointer; color: var(--ink);
+    transition: all 150ms; display: flex; flex-direction: column; gap: 4px;
   }
-  .numbers button:hover { border-color: var(--accent-soft); background: var(--card); }
-  .numbers button.active { border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 2px var(--accent) inset; }
-  .numbers .who { font-weight: 600; color: var(--ink); display: block; }
-  .numbers .meta { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .numbers button:hover { border-color: var(--accent); background: var(--paper); }
+  .numbers button.active { border-color: var(--accent); background: var(--paper); box-shadow: inset 0 0 0 1px var(--accent); }
+  .numbers .who { font-weight: 600; font-size: 14px; }
+  .numbers .meta { font-size: 11px; color: var(--muted); font-weight: 500; }
+
   .menu-map {
-    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
-    font-size: 12px; color: var(--muted); line-height: 1.6;
+    font-size: 13px; color: var(--ink-soft); line-height: 1.8;
   }
-  .menu-map strong { color: var(--ink); }
-  .footer { font-size: 12px; color: var(--muted); max-width: 980px; text-align: center; line-height: 1.5; }
-  .footer code { background: var(--card); padding: 1px 5px; border-radius: 4px; font-size: 11px; border: 1px solid var(--border); }
+  .menu-map strong { color: var(--accent); font-weight: 600; }
+  .tip { font-size: 11px; color: var(--muted); margin-top: 12px; display: block; font-style: italic; }
+
+  .footer { font-size: 11px; color: var(--muted); max-width: 1000px; text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid var(--line-soft); }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .stage { grid-template-columns: 1fr; gap: 40px; }
+    .phone { margin: 0 auto; }
+    header.lede h2 { font-size: 24px; }
+  }
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div class="brand">
-    <div class="logo">M</div>
-    <div>
-      <h1>Mavuno</h1>
-      <div class="sub">Where soil becomes credit.</div>
-    </div>
+  <div class="mast-left">
+    <a href="/" class="logo display">Mavuno</a>
+    <span class="role-badge">Field Simulator</span>
   </div>
   <div class="topbar-actions">
-    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">🌙</button>
-    <a class="back-link" id="back-btn" href="/">← Dashboard</a>
+    <button class="topbar-btn" id="theme-toggle" style="font-size:14px;" aria-label="Toggle theme">🌙</button>
+    <a class="topbar-btn" id="back-btn" href="/">← Dashboard</a>
   </div>
 </div>
 
 <header class="lede">
-  <h2>USSD Simulator</h2>
-  <p>Select a farmer SIM, press <b>CALL</b>, then tap a menu digit. Syncs live with the dashboard ledger.</p>
+  <h2 class="display">USSD Simulator</h2>
+  <p>Select a farmer SIM, press <b>CALL</b>, and interact with the protocol. Live sync with regional ledger enabled.</p>
 </header>
 
 <div class="stage">
   <div class="phone">
     <div class="phone-brand">MAVUNO · GSM</div>
-    <div class="screen" id="screen"><div class="signal">📶 ▮▮▮▮</div><div class="title">Mavuno</div>Select a farmer, then press the green CALL key to dial *165*ACP#.</div>
+    <div class="screen" id="screen"><div class="signal">📶 ▮▮▮▮</div><div class="title">Mavuno Protocol</div>Select a farmer to the right, then press CALL to dial *165*ACP#.</div>
     <div class="keypad">
       <button class="key" data-k="1">1<small>_</small></button>
       <button class="key" data-k="2">2<small>ABC</small></button>
@@ -197,25 +196,31 @@
     </div>
     <div class="soft">
       <button class="key hot" id="call">📞 CALL</button>
-      <button class="key" id="end">✕ END</button>
+      <button class="key" id="end" style="background:#3a2626; color:#f4e3e3; box-shadow:0 3px 0 #1a1212;">✕ END</button>
     </div>
   </div>
 
   <div class="side">
-    <h3>Registered farmers</h3>
-    <p>Each SIM has 180 days of soil sensor history powering their YPS score.</p>
-    <div class="numbers" id="numbers">Loading…</div>
-    <div class="menu-map">
-      <strong>Step 1:</strong> Select Language (1. En, 2. Lg)<br/>
-      <strong>Menu map:</strong><br/>
-      <strong>1</strong> — Check YPS Score<br/>
-      <strong>2</strong> — Request Energy Credit<br/>
-      <strong>3</strong> — Check Balance<br/>
-      <strong>4</strong> — Live Market Price<br/>
-      <strong>5</strong> — Sell Produce<br/>
-      <strong>6</strong> — Ask Mavuno (AI)<br/>
-      <strong>7</strong> — Exit<br/>
-      <span style="font-size:11px;">Tip: press a digit and it auto-sends in 0.8s. Or press <code>#</code> to send immediately.</span>
+    <div class="card">
+      <h3 class="display">Registered Farmers</h3>
+      <p style="font-size:12px; color:var(--muted); margin-top:-8px; margin-bottom:16px;">SIM cards with 180 days of verified soil history.</p>
+      <div class="numbers" id="numbers">Loading…</div>
+    </div>
+
+    <div class="card">
+      <h3 class="display">Protocol Map</h3>
+      <div class="menu-map">
+        <strong>Step 1:</strong> Select Language (1. En, 2. Lg)<br/>
+        <strong>Menu map:</strong><br/>
+        <strong>1</strong> — Check YPS Score<br/>
+        <strong>2</strong> — Request Energy Credit<br/>
+        <strong>3</strong> — Check Balance<br/>
+        <strong>4</strong> — Live Market Price<br/>
+        <strong>5</strong> — Sell Produce<br/>
+        <strong>6</strong> — Ask Mavuno (AI)<br/>
+        <strong>7</strong> — Exit<br/>
+        <span class="tip">Tip: press a digit and it auto-sends in 0.8s. Or press # to send immediately.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -253,11 +258,15 @@ let pendingInput = "";
 let autoSendTimer = null;
 
 function renderScreen(lines, opts = {}) {
-  const title = opts.title ?? "Mavuno";
+  const title = opts.title ?? "Mavuno Protocol";
   screen.innerHTML =
     '<div class="signal">📶 ▮▮▮▮</div>' +
     '<div class="title">' + title + '</div>' +
-    lines;
+    '<div style="padding-top:4px;">' + escapeHtml(lines) + '</div>';
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 }
 
 async function loadFarms() {
@@ -268,8 +277,8 @@ async function loadFarms() {
     const f = farms[id];
     const btn = document.createElement("button");
     btn.innerHTML =
-      '<span class="who">' + f.farmer_name + '</span>' +
-      '<span class="meta">' + f.phone + ' · ' + f.district + '</span>';
+      '<span class="who">' + escapeHtml(f.farmer_name) + '</span>' +
+      '<span class="meta">' + escapeHtml(f.phone) + ' · ' + escapeHtml(f.district) + '</span>';
     btn.addEventListener("click", () => {
       if (currentBtn) currentBtn.classList.remove("active");
       btn.classList.add("active");
@@ -277,7 +286,7 @@ async function loadFarms() {
       currentPhone = f.phone;
       renderScreen(
         "SIM: " + f.farmer_name + "\n" + f.phone +
-        "\n\nPress 📞 CALL to dial Mavuno."
+        "\n\nPress CALL to dial *165#."
       );
     });
     numbers.appendChild(btn);

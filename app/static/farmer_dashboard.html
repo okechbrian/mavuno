@@ -284,8 +284,30 @@
     </div>
   </header>
 
-  <div class="greeting-row">
-    <h1 class="display" id="welcome-msg">Welcome</h1>
+  <div class="hero-section">
+    <div class="hero-main">
+      <div class="greeting-row">
+        <h1 class="display" id="welcome-msg" style="margin:0; font-size:42px;">Welcome</h1>
+      </div>
+      <p style="margin:16px 0 0; color:var(--muted); font-size:14px; max-width:480px;">
+        Your farm performance is tracked via live soil telemetry. 
+        Maintain a high YPS to unlock better credit rates and market matching.
+      </p>
+    </div>
+    <div class="hero-yps">
+      <div style="position:relative; width:100px; height:100px;">
+        <svg viewBox="0 0 36 36" style="width:100px; height:100px; transform: rotate(-90deg);">
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--line-soft)" stroke-width="2.5" />
+          <path id="yps-ring" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="0, 100" stroke-linecap="round" style="transition: stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1);" />
+        </svg>
+        <div class="display" id="yps-value" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700;">0</div>
+      </div>
+      <div>
+        <div class="display" id="yps-label" style="font-weight:700; color:var(--accent); font-size:20px; text-transform:uppercase; letter-spacing:0.02em;">Calculating...</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Yield Probability Score (YPS)</div>
+        <div style="font-size:9px; color:var(--muted-soft); margin-top:2px;">Calibrated on 7 live signals</div>
+      </div>
+    </div>
   </div>
 
   <div id="notif-popover" style="display:none; position:fixed; top:80px; right:48px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:4px; box-shadow:0 8px 32px rgba(0,0,0,0.1); z-index:1000; flex-direction:column; overflow:hidden;">

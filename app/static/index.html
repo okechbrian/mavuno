@@ -2,186 +2,497 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno — Where soil becomes credit</title>
+<title>Mavuno Protocol — Where soil becomes credit</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Mavuno: soil-backed energy credit and agricultural marketplace for Ugandan smallholder farms." />
-<meta property="og:title" content="Mavuno — Where soil becomes credit" />
-<meta property="og:description" content="Soil data replaces collateral. USSD-first credit, market matching, and AI agronomy." />
+<meta name="theme-color" content="#1B4332" />
+<meta name="description" content="Mavuno Protocol: soil-backed energy credit and agricultural marketplace for Ugandan smallholder farms. SOIL DATA · ENERGY CREDIT · FARMER PROSPERITY." />
+<meta property="og:title" content="Mavuno Protocol — Where soil becomes credit" />
+<meta property="og:description" content="Soil data replaces collateral. USSD-first credit, market matching, and AI agronomy for African smallholder farms." />
 <meta property="og:type" content="website" />
+<meta property="og:image" content="/static/img/mavuno-main.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Mavuno Protocol — Where soil becomes credit" />
+<meta name="twitter:description" content="Soil-backed energy credit and agricultural marketplace for Ugandan smallholder farms." />
+<meta name="twitter:image" content="/static/img/mavuno-main.png" />
+<link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
+<link rel="apple-touch-icon" href="/static/img/mavuno-mono.png" />
+<link rel="preload" as="image" href="/static/img/mavuno-main.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  // Initial theme — respect saved choice, else follow OS. Runs before paint to avoid flash.
+  (function() {
+    try {
+      var saved = localStorage.getItem("mavuno-theme");
+      var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var theme = saved || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    } catch (e) {}
+  })();
+</script>
 <style>
+  /* ============ DESIGN TOKENS — Mavuno Protocol ============ */
   :root {
-    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
-    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
-    --line: #d9d2bd; --line-soft: #e6dfc9;
-    --accent: #2e4d1f; --accent-soft: #4a6b37; --gold: #a17b2c; --clay: #a0542c; --bad: #8a2f24;
+    /* Brand */
+    --forest:        #1B4332;   /* primary deep forest green */
+    --forest-soft:   #2D5A3D;
+    --gold:          #D4AF37;   /* warm gold accent */
+    --gold-soft:     #E8C766;
+    --earth:         #5D4037;   /* earth brown */
+    --cream:         #FDF6E3;   /* cream paper */
+    --cream-deep:    #F2EAD0;
+
+    /* Light theme surfaces & text */
+    --bg:            #FDF6E3;
+    --bg-alt:        #F5EDD3;
+    --paper:         #FFFFFF;
+    --ink:           #1B4332;
+    --ink-soft:      #2D5A3D;
+    --muted:         #6B7566;
+    --muted-soft:    #9EA899;
+    --line:          #E5DDC5;
+    --line-soft:     #EFEAD9;
+
+    /* Semantic */
+    --accent:        var(--forest);
+    --accent-soft:   var(--forest-soft);
+    --bad:           #8A2F24;
+    --good:          #2F7D4F;
+
+    /* Logo swap (CSS-only) */
+    --logo-square:    url("/static/img/mavuno-main.png");
+    --logo-horizontal: url("/static/img/mavuno-horizontal.png");
+
+    /* Motion */
+    --ease:          cubic-bezier(0.22, 1, 0.36, 1);
+    --t-fast:        140ms;
+    --t-med:         260ms;
+    --t-slow:        420ms;
   }
   :root[data-theme="dark"] {
-    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
-    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
-    --line: #2d2b21; --line-soft: #242219;
-    --accent: #c4d19c; --accent-soft: #a7b87a; --gold: #d4a656; --clay: #c87a52; --bad: #d07668;
+    --bg:            #0F1611;
+    --bg-alt:        #141C16;
+    --paper:         #18211B;
+    --ink:           #F2EAD0;
+    --ink-soft:      #D9D3C4;
+    --muted:         #9EA899;
+    --muted-soft:    #6B7566;
+    --line:          #283228;
+    --line-soft:     #1F2820;
+
+    --accent:        var(--gold-soft);
+    --accent-soft:   var(--gold);
+
+    --logo-square:    url("/static/img/mavuno-dark.png");
   }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
     background: var(--bg); color: var(--ink);
     font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-size: 16px; line-height: 1.55;
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-    transition: background 250ms ease, color 250ms ease;
+    transition: background var(--t-med) var(--ease), color var(--t-med) var(--ease);
   }
   .display { font-family: "Fraunces", Georgia, serif; font-weight: 400; letter-spacing: -0.015em; }
 
-  header.masthead { border-bottom: 1px solid var(--line); background: var(--paper); }
+  /* ============ Sticky masthead with horizontal logo ============ */
+  header.masthead {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(150%) blur(12px);
+    -webkit-backdrop-filter: saturate(150%) blur(12px);
+    border-bottom: 1px solid var(--line);
+    transition: background var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+  }
   .masthead-inner {
-    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+    max-width: 1240px; margin: 0 auto; padding: 14px 32px;
     display: flex; align-items: center; justify-content: space-between; gap: 24px;
   }
-  .brand { display: flex; align-items: baseline; gap: 14px; }
-  .brand .mark { font-family: "Fraunces", serif; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; color: var(--ink); }
-  .brand .wordmark-sub {
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--muted); font-weight: 500; padding-left: 14px; border-left: 1px solid var(--line);
+  .brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit;
   }
-  nav.primary { display: flex; align-items: center; gap: 28px; }
+  .brand .logo-square {
+    width: 36px; height: 36px;
+    background: var(--logo-square) center/contain no-repeat;
+    border-radius: 8px;
+  }
+  .brand .wordmark { display: flex; flex-direction: column; gap: 0; line-height: 1.05; }
+  .brand .wordmark .name {
+    font-family: "Fraunces", serif; font-weight: 500; font-size: 22px;
+    letter-spacing: -0.01em; color: var(--forest);
+  }
+  :root[data-theme="dark"] .brand .wordmark .name { color: var(--cream); }
+  .brand .wordmark .sub {
+    font-family: "Inter", sans-serif; font-size: 9px; letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600;
+  }
+  nav.primary { display: flex; align-items: center; gap: 8px; }
+  .nav-link {
+    color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 500;
+    padding: 8px 14px; border-radius: 999px; transition: all var(--t-fast);
+  }
+  .nav-link:hover { color: var(--forest); background: var(--bg-alt); }
+  :root[data-theme="dark"] .nav-link:hover { color: var(--gold-soft); }
+
+  /* Demo badge — subtle hackathon marker */
+  .demo-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    background: color-mix(in srgb, var(--gold) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700;
+    color: var(--earth);
+  }
+  :root[data-theme="dark"] .demo-badge { color: var(--gold-soft); }
+  .demo-badge .pulse {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 0 var(--gold); animation: pulse 2.4s var(--ease) infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 60%, transparent); }
+    70%  { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) { .demo-badge .pulse { animation: none; } }
+
+  /* Skip link — keyboard accessibility */
+  .skip-link {
+    position: absolute; top: -100px; left: 16px; z-index: 100;
+    background: var(--forest); color: var(--cream); padding: 10px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;
+    transition: top var(--t-fast);
+  }
+  .skip-link:focus { top: 12px; outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* Universal focus-visible ring (keyboard users) */
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  .role-card:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
   .theme-toggle {
     background: transparent; border: 1px solid var(--line); color: var(--muted);
-    width: 44px; height: 44px; font-size: 18px;
-    font-family: "Inter", sans-serif; font-weight: 500; cursor: pointer;
-    border-radius: 50%; transition: all 160ms;
+    width: 40px; height: 40px; font-size: 16px; cursor: pointer;
+    border-radius: 50%; transition: all var(--t-fast);
     display: inline-flex; align-items: center; justify-content: center;
   }
-  .theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--ink); transform: rotate(15deg); }
 
+  /* ============ HERO ============ */
   .hero {
-    max-width: 1180px; margin: 0 auto; padding: 88px 40px 56px;
-    display: grid; grid-template-columns: 1fr 400px; gap: 80px; align-items: center;
+    max-width: 1240px; margin: 0 auto; padding: 72px 32px 40px;
+    display: grid; grid-template-columns: 1.15fr 420px; gap: 64px; align-items: center;
   }
-  .hero .lede .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--muted); margin-bottom: 22px; display: block; }
+  .hero .lede .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600;
+    color: var(--muted); margin-bottom: 22px;
+  }
+  .hero .eyebrow::before {
+    content: ""; display: inline-block; width: 24px; height: 1px; background: var(--gold);
+  }
   .hero h1 {
-    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(36px, 6vw, 72px);
-    line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 24px; color: var(--ink);
+    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(38px, 6.5vw, 76px);
+    line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 24px; color: var(--ink);
   }
-  .hero h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
+  .hero h1 em { font-style: italic; font-weight: 300; color: var(--forest); position: relative; }
+  :root[data-theme="dark"] .hero h1 em { color: var(--gold-soft); }
+  .hero h1 em::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 6px;
+    background: var(--gold); opacity: 0.35; border-radius: 2px;
+  }
   .hero p.standfirst {
     font-family: "Fraunces", serif; font-weight: 300; font-size: 19px;
-    line-height: 1.55; color: var(--ink-soft); max-width: 58ch; margin: 0;
+    line-height: 1.55; color: var(--ink-soft); max-width: 56ch; margin: 0 0 28px;
   }
+  .tagline-strip {
+    display: inline-flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+    color: var(--muted);
+  }
+  .tagline-strip .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
 
+  /* Login card */
   .login-card {
-    background: var(--paper); border: 1px solid var(--line); padding: 32px; border-radius: 4px;
-    display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 32px; border-radius: 14px;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 16px 48px rgba(27,67,50,0.10), 0 2px 6px rgba(27,67,50,0.05);
+    transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
   }
-  .login-card h2 { font-family: "Fraunces", serif; font-size: 24px; font-weight: 400; margin: 0; color: var(--ink); }
+  .login-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 60px rgba(27,67,50,0.14), 0 2px 6px rgba(27,67,50,0.06);
+  }
+  .login-card .card-logo {
+    width: 64px; height: 64px;
+    background: var(--logo-square) center/contain no-repeat;
+    margin: -8px 0 4px;
+  }
+  .login-card h2 {
+    font-family: "Fraunces", serif; font-size: 26px; font-weight: 400;
+    margin: 0; color: var(--ink); letter-spacing: -0.01em;
+  }
   .login-card .sub { font-size: 14px; color: var(--muted); margin: 0 0 8px; line-height: 1.5; }
   .login-card form { display: flex; flex-direction: column; gap: 12px; }
   .login-card label.fld {
     font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); font-weight: 500; margin: 0 0 -4px;
+    color: var(--muted); font-weight: 600; margin: 0 0 -4px;
   }
-  .login-card select, .login-card input[type="text"], .login-card input[type="password"] {
-    width: 100%; padding: 14px 16px; border: 1px solid var(--line); background: var(--bg);
-    font-family: "Inter", sans-serif; font-size: 16px; color: var(--ink); border-radius: 3px;
-    min-height: 48px;
+  .login-card select,
+  .login-card input[type="text"],
+  .login-card input[type="password"] {
+    width: 100%; padding: 14px 16px; border: 1px solid var(--line);
+    background: var(--bg); font-family: "Inter", sans-serif; font-size: 16px;
+    color: var(--ink); border-radius: 8px; min-height: 48px;
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
   }
-  .login-card select:focus, .login-card input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-
+  .login-card select:focus,
+  .login-card input:focus {
+    outline: none; border-color: var(--forest);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 30%, transparent);
+  }
   .btn {
-    font-family: "Inter", sans-serif; font-size: 13px; font-weight: 600;
+    font-family: "Inter", sans-serif; font-size: 13px; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 16px;
-    border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
-    cursor: pointer; border-radius: 3px; transition: background 150ms; width: 100%;
-    min-height: 48px;
+    border: 1px solid var(--forest); background: var(--forest); color: var(--cream);
+    cursor: pointer; border-radius: 8px;
+    transition: all var(--t-fast); width: 100%; min-height: 48px;
   }
-  .btn:hover { background: var(--accent); border-color: var(--accent); }
-  .btn:disabled { opacity: 0.6; cursor: wait; }
-
-  .consent {
-    font-size: 12px; color: var(--muted); text-align: center;
-    line-height: 1.5; margin: 4px 0 0;
+  .btn:hover {
+    background: var(--forest-soft); border-color: var(--forest-soft);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(27,67,50,0.20);
   }
-  .consent a { color: var(--accent); text-decoration: underline; }
-  .consent a:hover { color: var(--ink); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .consent { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; margin: 4px 0 0; }
+  .consent a { color: var(--forest); text-decoration: underline; }
+  :root[data-theme="dark"] .consent a { color: var(--gold-soft); }
 
+  /* ============ TRUST STRIP ============ */
+  .trust {
+    max-width: 1240px; margin: 0 auto; padding: 24px 32px 8px;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .trust .stat { text-align: left; }
+  .trust .stat .num {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 32px;
+    line-height: 1; color: var(--forest); letter-spacing: -0.02em;
+  }
+  :root[data-theme="dark"] .trust .stat .num { color: var(--gold-soft); }
+  .trust .stat .num small { font-size: 18px; color: var(--gold); margin-left: 2px; }
+  .trust .stat .lbl {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-top: 8px;
+  }
+
+  /* ============ ROLE SELECTION ============ */
+  .roles {
+    max-width: 1240px; margin: 0 auto; padding: 64px 32px 32px;
+  }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: ""; width: 36px; height: 1px; background: var(--gold);
+  }
+  .section-title {
+    font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -0.02em; margin: 12px 0 8px; color: var(--ink);
+  }
+  .section-title em { font-style: italic; color: var(--forest); }
+  :root[data-theme="dark"] .section-title em { color: var(--gold-soft); }
+  .section-sub { color: var(--muted); font-size: 15px; margin: 0 0 36px; max-width: 64ch; }
+
+  .role-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .role-card {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    padding: 28px; cursor: pointer; text-decoration: none; color: inherit;
+    transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+  }
+  .role-card::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(140deg, var(--forest) 0%, transparent 60%);
+    opacity: 0; transition: opacity var(--t-med) var(--ease);
+  }
+  .role-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--forest);
+    box-shadow: 0 24px 60px rgba(27,67,50,0.16), 0 2px 6px rgba(27,67,50,0.06);
+  }
+  .role-card .role-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 22px;
+    background: color-mix(in srgb, var(--gold) 15%, transparent);
+    color: var(--forest); margin-bottom: 18px;
+    transition: background var(--t-med), transform var(--t-med);
+  }
+  :root[data-theme="dark"] .role-card .role-icon { color: var(--gold-soft); }
+  .role-card:hover .role-icon {
+    background: var(--forest); color: var(--cream); transform: rotate(-6deg) scale(1.05);
+  }
+  .role-card h3 {
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 22px;
+    letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink);
+  }
+  .role-card p {
+    font-size: 14px; color: var(--muted); margin: 0 0 18px; line-height: 1.55;
+  }
+  .role-card .role-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+    color: var(--forest);
+  }
+  :root[data-theme="dark"] .role-card .role-cta { color: var(--gold-soft); }
+  .role-card .role-cta::after {
+    content: "→"; transition: transform var(--t-fast);
+  }
+  .role-card:hover .role-cta::after { transform: translateX(6px); }
+
+  /* ============ TOAST ============ */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: var(--bad); color: var(--paper); padding: 14px 28px;
-    border-radius: 4px; opacity: 0; transition: opacity 300ms;
+    background: var(--bad); color: var(--cream); padding: 14px 28px;
+    border-radius: 10px; opacity: 0; transition: opacity var(--t-med);
     font-size: 13px; font-weight: 500;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.18); pointer-events: none;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.22); pointer-events: none;
     max-width: calc(100vw - 32px); text-align: center;
   }
   .toast.show { opacity: 1; }
 
-  footer.colophon { border-top: 1px solid var(--line); margin-top: 48px; background: var(--paper); }
+  /* ============ FOOTER ============ */
+  footer.colophon {
+    border-top: 1px solid var(--line); margin-top: 64px;
+    background: var(--paper);
+  }
   .colophon-inner {
-    max-width: 1180px; margin: 0 auto; padding: 48px 40px;
-    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+    max-width: 1240px; margin: 0 auto; padding: 56px 32px 32px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+  }
+  .colophon .footer-logo {
+    width: 56px; height: 56px;
+    background: var(--logo-square) center/contain no-repeat;
+    border-radius: 12px; margin-bottom: 14px;
   }
   .colophon h4 {
     font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px;
+    text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 0 0 14px;
   }
   .colophon .mission {
-    font-family: "Fraunces", serif; font-size: 22px; font-weight: 300;
-    line-height: 1.35; letter-spacing: -0.01em; color: var(--ink); max-width: 34ch;
+    font-family: "Fraunces", serif; font-size: 20px; font-weight: 300;
+    line-height: 1.4; letter-spacing: -0.01em; color: var(--ink); max-width: 32ch;
   }
   .colophon ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--muted); line-height: 2; }
-  .colophon a.legal-link { color: var(--muted); text-decoration: none; font-size: 13px; }
-  .colophon a.legal-link:hover { color: var(--accent); }
-  .colophon .fineprint {
-    max-width: 1180px; margin: 0 auto; padding: 20px 40px;
+  .colophon a.legal-link { color: var(--muted); text-decoration: none; font-size: 13px; transition: color var(--t-fast); }
+  .colophon a.legal-link:hover { color: var(--forest); }
+  :root[data-theme="dark"] .colophon a.legal-link:hover { color: var(--gold-soft); }
+  .fineprint {
+    max-width: 1240px; margin: 0 auto; padding: 20px 32px;
     border-top: 1px solid var(--line-soft);
     display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
     font-size: 11px; color: var(--muted-soft);
     letter-spacing: 0.08em; text-transform: uppercase;
   }
 
-  /* ======================== MOBILE ======================== */
-  @media (max-width: 900px) {
-    .masthead-inner { padding: 16px 20px; }
+  /* ============ ENTRANCE ANIMATION ============ */
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise var(--t-slow) var(--ease) both; }
+  .rise.d1 { animation-delay: 60ms; }
+  .rise.d2 { animation-delay: 120ms; }
+  .rise.d3 { animation-delay: 180ms; }
+  .rise.d4 { animation-delay: 240ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 960px) {
+    .masthead-inner { padding: 12px 18px; gap: 8px; }
+    .brand .wordmark .sub { display: none; }
+    .nav-link { display: none; }
+    .nav-link.keep-mobile { display: inline-flex; padding: 8px 12px; font-size: 12px; }
+    .demo-badge { display: none; }
     .hero {
-      grid-template-columns: 1fr; gap: 32px;
-      padding: 32px 20px 24px;
+      grid-template-columns: 1fr; gap: 28px;
+      padding: 36px 18px 24px;
     }
-    /* Login card first on mobile so the call-to-action is above the fold */
     .hero > aside { order: -1; }
-    .hero h1 { font-size: clamp(32px, 8vw, 44px); }
+    .hero h1 { font-size: clamp(34px, 8vw, 48px); }
     .hero p.standfirst { font-size: 16px; }
     .login-card { padding: 24px; }
-    .colophon-inner { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; }
-    .colophon .fineprint { padding: 16px 20px; flex-direction: column; gap: 8px; }
+    .trust { grid-template-columns: repeat(2, 1fr); padding: 24px 18px 8px; gap: 18px; }
+    .roles { padding: 48px 18px 24px; }
+    .role-grid { grid-template-columns: 1fr; gap: 16px; }
+    .colophon-inner { grid-template-columns: 1fr 1fr; gap: 28px; padding: 40px 18px 24px; }
+    .fineprint { padding: 16px 18px; flex-direction: column; gap: 8px; }
+  }
+  @media (max-width: 520px) {
+    .colophon-inner { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#main">Skip to content</a>
+
 <header class="masthead">
   <div class="masthead-inner">
-    <div class="brand">
-      <span class="mark">Mavuno</span>
-      <span class="wordmark-sub">Soil · Credit · Solar</span>
-    </div>
-    <nav class="primary">
+    <a class="brand" href="/" aria-label="Mavuno Protocol home">
+      <div class="logo-square" role="img" aria-label="Mavuno mark"></div>
+      <div class="wordmark">
+        <span class="name">Mavuno</span>
+        <span class="sub">Protocol</span>
+      </div>
+      <span class="demo-badge" aria-label="Demo build">
+        <span class="pulse" aria-hidden="true"></span>
+        Hackathon Demo
+      </span>
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <a class="nav-link keep-mobile" href="#roles">Sign in</a>
+      <a class="nav-link" href="/phone">USSD demo</a>
+      <a class="nav-link" href="/feed-page">Mavuno Social</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
     </nav>
   </div>
 </header>
 
-<div class="hero">
-  <div class="lede">
+<main id="main">
+
+<section class="hero">
+  <div class="lede rise">
     <span class="eyebrow">Operations · Uganda</span>
     <h1 class="display">Where soil <em>becomes</em> credit.</h1>
     <p class="standfirst">
-      Mavuno is a unified agricultural operating system. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the same USSD session, the <strong>Community Resource Platform</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
+      Mavuno is the agricultural operating system for African smallholder farms. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the same USSD session, the <strong>Community Resource Platform</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
     </p>
+    <div class="tagline-strip">
+      <span>Soil Data</span><span class="dot"></span>
+      <span>Energy Credit</span><span class="dot"></span>
+      <span>Farmer Prosperity</span>
+    </div>
   </div>
 
-  <aside>
+  <aside class="rise d1">
     <div class="login-card">
+      <div class="card-logo" role="img" aria-label="Mavuno"></div>
       <h2 class="display">Sign in</h2>
       <p class="sub">Choose your role to access your dashboard.</p>
       <form id="login-form" onsubmit="handleLogin(event)" autocomplete="off">
@@ -200,7 +511,7 @@
         <label class="fld" for="login-pin">PIN or password</label>
         <input type="password" id="login-pin" placeholder="Enter PIN or password" required autocomplete="current-password" inputmode="text">
 
-        <button type="submit" class="btn" id="submit-btn">Sign in</button>
+        <button type="submit" class="btn" id="submit-btn">Sign in as Farmer</button>
       </form>
       <p class="consent">
         By signing in you agree to our
@@ -209,21 +520,81 @@
       </p>
     </div>
   </aside>
-</div>
+</section>
+
+<section class="trust" aria-label="Coverage at a glance">
+  <div class="stat rise d2">
+    <div class="num">12<small>+</small></div>
+    <div class="lbl">Cash crops covered</div>
+  </div>
+  <div class="stat rise d2">
+    <div class="num">5</div>
+    <div class="lbl">Ugandan regions</div>
+  </div>
+  <div class="stat rise d3">
+    <div class="num">7</div>
+    <div class="lbl">Live soil signals</div>
+  </div>
+  <div class="stat rise d3">
+    <div class="num">USSD<small>·</small></div>
+    <div class="lbl">No-smartphone first</div>
+  </div>
+</section>
+
+<section class="roles" id="roles" aria-label="Choose your role">
+  <span class="section-eyebrow">Choose your dashboard</span>
+  <h2 class="section-title">Three doors, <em>one ledger</em>.</h2>
+  <p class="section-sub">
+    Every role sees a different lens on the same hash-chained source of truth. Farmers see soil and credit; agents see queues and approvals; buyers see open offers and matched produce.
+  </p>
+
+  <div class="role-grid">
+    <a class="role-card rise d1" href="#" onclick="quickPick('farmer'); return false;" aria-label="Farmer sign-in shortcut">
+      <div class="role-icon" aria-hidden="true">🌱</div>
+      <h3>Farmer</h3>
+      <p>Check your YPS score, request an Energy Credit, list produce, and ask the AI agronomist — all on USSD or the dashboard.</p>
+      <span class="role-cta">Sign in as farmer</span>
+    </a>
+    <a class="role-card rise d2" href="#" onclick="quickPick('agent'); return false;" aria-label="Agent sign-in shortcut">
+      <div class="role-icon" aria-hidden="true">⚖️</div>
+      <h3>SACCO Agent</h3>
+      <p>Onboard farmers and buyers, approve credit requests, and audit every event in the hash-chained ledger.</p>
+      <span class="role-cta">Sign in as agent</span>
+    </a>
+    <a class="role-card rise d3" href="#" onclick="quickPick('buyer'); return false;" aria-label="Buyer sign-in shortcut">
+      <div class="role-icon" aria-hidden="true">📦</div>
+      <h3>Institutional Buyer</h3>
+      <p>Browse live offers, set per-region floor prices, auto-match with verified farms, and settle through Mavuno Pay.</p>
+      <span class="role-cta">Sign in as buyer</span>
+    </a>
+  </div>
+</section>
+
+</main>
 
 <footer class="colophon">
   <div class="colophon-inner">
     <div>
-      <h4>Mavuno</h4>
+      <div class="footer-logo" role="img" aria-label="Mavuno"></div>
+      <h4>Mavuno Protocol</h4>
       <p class="mission">Replacing collateral with soil data, and connecting smallholder farms to guaranteed markets and energy.</p>
     </div>
     <div>
-      <h4>Protocol &amp; CRP</h4>
+      <h4>Protocol</h4>
       <ul>
         <li>Yield Probability Score</li>
         <li>Energy Credit Token</li>
-        <li>Live Marketplace &amp; Matching</li>
-        <li>AI Agronomist via USSD</li>
+        <li>Hash-chained ledger</li>
+        <li>USSD-first delivery</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Marketplace</h4>
+      <ul>
+        <li>Live price oracle</li>
+        <li>Buyer auto-match</li>
+        <li>AI agronomist</li>
+        <li>Mavuno Pay settlement</li>
       </ul>
     </div>
     <div>
@@ -231,6 +602,7 @@
       <ul>
         <li><a class="legal-link" href="/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a></li>
         <li><a class="legal-link" href="/phone">USSD Field Simulator</a></li>
+        <li><a class="legal-link" href="/feed-page">Mavuno Social</a></li>
         <li><a class="legal-link" href="https://github.com/okechbrian/mavuno" target="_blank" rel="noopener">Source on GitHub</a></li>
       </ul>
     </div>
@@ -250,8 +622,10 @@ function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
   themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "dark" ? "#0F1611" : "#1B4332");
 }
-applyTheme(localStorage.getItem(THEME_KEY) || "light");
+// Initial theme already applied by inline pre-paint script — just sync the button glyph.
+applyTheme(document.documentElement.getAttribute("data-theme") || "light");
 themeBtn.onclick = () => {
   const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
   localStorage.setItem(THEME_KEY, next);
@@ -264,11 +638,13 @@ function tick() {
 }
 tick(); setInterval(tick, 30000);
 
+const ROLE_LABELS = { farmer: "Farmer", buyer: "Buyer", agent: "Agent" };
 function updateRole() {
   const role = document.getElementById("login-role").value;
   const idWrap = document.getElementById("id-field-wrap");
   const idInput = document.getElementById("login-id");
   const pinInput = document.getElementById("login-pin");
+  const submitBtn = document.getElementById("submit-btn");
 
   if (role === "agent") {
     idWrap.style.display = "none";
@@ -286,6 +662,19 @@ function updateRole() {
     idInput.placeholder = "e.g. BY-001 or +256...";
     pinInput.placeholder = "PIN";
   }
+  submitBtn.textContent = "Sign in as " + (ROLE_LABELS[role] || "user");
+}
+
+// Role-card shortcut: pre-select role, scroll login into view, focus first input.
+function quickPick(role) {
+  document.getElementById("login-role").value = role;
+  updateRole();
+  const card = document.querySelector(".login-card");
+  card.scrollIntoView({behavior:"smooth", block:"center"});
+  setTimeout(() => {
+    if (role === "agent") document.getElementById("login-pin").focus();
+    else document.getElementById("login-id").focus();
+  }, 380);
 }
 
 function toast(msg) {
@@ -321,7 +710,8 @@ async function handleLogin(e) {
     toast("Network error — please retry");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Sign in";
+    const role = document.getElementById("login-role").value;
+    btn.textContent = "Sign in as " + (ROLE_LABELS[role] || "user");
   }
 }
 </script>

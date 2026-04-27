@@ -4,12 +4,21 @@
 <meta charset="utf-8" />
 <title>Terms & Conditions — Mavuno</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
+<link rel="apple-touch-icon" href="/static/img/mavuno-mono.png" />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f;
-    --bg: #f4efe3; --paper: #fbf8ee;
-    --line: #d9d2bd; --accent: #2e4d1f;
+    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
+    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --line-soft: #e6dfc9;
+    --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
+    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --line-soft: #242219;
+    --accent: #78a163; --accent-soft: #4a6b36; --clay: #c87a52; --gold: #d4a656; --bad: #d07668;
   }
   * { box-sizing: border-box; }
   body {

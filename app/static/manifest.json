@@ -1,0 +1,17 @@
+{
+  "name": "Mavuno Protocol",
+  "short_name": "Mavuno",
+  "description": "Where soil becomes credit. Agricultural OS for smallholder farmers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF6E3",
+  "theme_color": "#1B4332",
+  "icons": [
+    {
+      "src": "/static/img/mavuno-mono.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,30 +1,30 @@
-package com.mavuno.data.repository
+﻿package com.mavuno.data.repository
 
-import com.mavuno.data.local.dao.EctBalanceDao
-import com.mavuno.data.local.entity.EctBalanceEntity
+import com.mavuno.data.local.dao.YieldValueDao
+import com.mavuno.data.local.entity.YieldValueEntity
 import com.mavuno.data.local.entity.toDomain
 import com.mavuno.data.remote.MavunoApi
-import com.mavuno.domain.model.EctBalance
-import com.mavuno.domain.repository.EctBalanceRepository
+import com.mavuno.domain.model.YieldValue
+import com.mavuno.domain.repository.YieldValueRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class EctBalanceRepositoryImpl @Inject constructor(
-    private val dao: EctBalanceDao,
+class YieldValueRepositoryImpl @Inject constructor(
+    private val dao: YieldValueDao,
     private val api: MavunoApi
-) : EctBalanceRepository {
-    override fun getBalanceForFarm(farmId: String): Flow<EctBalance?> {
+) : YieldValueRepository {
+    override fun getBalanceForFarm(farmId: String): Flow<YieldValue?> {
         return dao.getBalanceForFarm(farmId).map { it?.toDomain() }
     }
 
     override suspend fun syncBalance(farmId: String) {
         try {
-            val response = api.getEctBalance(farmId)
+            val response = api.getYieldValue(farmId)
             if (response.isSuccessful) {
                 response.body()?.let { remote ->
                     dao.insertBalance(
-                        EctBalanceEntity(
+                        YieldValueEntity(
                             farmId = remote.farm_id,
                             balance = remote.balance,
                             lastUpdated = System.currentTimeMillis()
@@ -37,3 +37,4 @@ class EctBalanceRepositoryImpl @Inject constructor(
         }
     }
 }
+

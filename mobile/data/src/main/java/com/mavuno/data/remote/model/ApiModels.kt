@@ -1,4 +1,4 @@
-package com.mavuno.data.remote.model
+﻿package com.mavuno.data.remote.model
 
 data class LoginRequest(
     val role: String,
@@ -27,12 +27,12 @@ data class ScoreResponse(
     val farm_id: String,
     val yps: Int,
     val credit_health: String,
-    val kwh_allocated: Int,
+    val kg_allocated: Int,
     val credit_ceiling_ugx: Int,
     val diagnostics: List<String>
 )
 
-data class EctBalanceResponse(
+data class YieldValueResponse(
     val farm_id: String,
     val balance: Double
 )
@@ -153,3 +153,4 @@ data class BatchPaymentResponse(
     val total_ugx: Int,
     val payment_ids: List<String>
 )
+

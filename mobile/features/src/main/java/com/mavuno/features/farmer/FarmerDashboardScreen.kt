@@ -1,4 +1,4 @@
-package com.mavuno.features.farmer
+﻿package com.mavuno.features.farmer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -77,7 +77,7 @@ fun FarmerDashboardScreen(
                         QuickStatsRow(
                             totalHarvests = uiState.totalHarvestsCount,
                             activeOffers = uiState.activeOffersCount,
-                            ectBalance = uiState.ectBalance?.balance ?: 0.0
+                            yieldValue = uiState.yieldValue?.balance ?: 0.0
                         )
                     }
 
@@ -197,7 +197,7 @@ fun TopGreeting(name: String, farmId: String, ypsScore: Int) {
 }
 
 @Composable
-fun QuickStatsRow(totalHarvests: Int, activeOffers: Int, ectBalance: Double) {
+fun QuickStatsRow(totalHarvests: Int, activeOffers: Int, yieldValue: Double) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -218,8 +218,8 @@ fun QuickStatsRow(totalHarvests: Int, activeOffers: Int, ectBalance: Double) {
         )
         StatCard(
             modifier = Modifier.weight(1f),
-            title = "ECT Bal",
-            value = String.format("%.1f", ectBalance),
+            title = "Trade Priority Bal",
+            value = String.format("%.1f", yieldValue),
             icon = Icons.Default.Bolt,
             color = Color(0xFF2E7D32)
         )
@@ -331,7 +331,7 @@ fun MarketInsightCard(marketPrices: com.mavuno.domain.model.MarketPrices) {
             }
             
             val trendColor = if (marketPrices.trend == "up") Color(0xFF2E7D32) else if (marketPrices.trend == "down") Color(0xFFC62828) else Color.Gray
-            Text("7d Avg: UGX ${marketPrices.last7Avg} • ${marketPrices.trend.uppercase()}", fontSize = 12.sp, color = trendColor, fontWeight = FontWeight.Medium)
+            Text("7d Avg: UGX ${marketPrices.last7Avg} â€¢ ${marketPrices.trend.uppercase()}", fontSize = 12.sp, color = trendColor, fontWeight = FontWeight.Medium)
             
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -355,7 +355,7 @@ fun RecentActivitySection() {
         Column(modifier = Modifier.padding(0.dp)) {
             ActivityRow(icon = Icons.Default.CheckCircle, title = "Offer Accepted", desc = "500 KG Coffee by NABASUMBA", time = "2 hrs ago", color = Color(0xFF2E7D32))
             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
-            ActivityRow(icon = Icons.Default.Bolt, title = "ECT Issued", desc = "+12.5 kWh based on YPS", time = "1 day ago", color = Color(0xFFD35400))
+            ActivityRow(icon = Icons.Default.Bolt, title = "Trade Priority Issued", desc = "+12.5 KG based on YPS", time = "1 day ago", color = Color(0xFFD35400))
             HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
             ActivityRow(icon = Icons.Default.Verified, title = "Certification", desc = "Regenerative Cultivation", time = "3 days ago", color = Color(0xFF1565C0))
         }
@@ -377,3 +377,4 @@ fun ActivityRow(icon: androidx.compose.ui.graphics.vector.ImageVector, title: St
         Text(text = time, fontSize = 10.sp, color = Color.Gray)
     }
 }
+

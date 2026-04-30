@@ -1,7 +1,8 @@
-package com.mavuno.domain.model
+﻿package com.mavuno.domain.model
 
-data class EctBalance(
+data class YieldValue(
     val farmId: String,
     val balance: Double,
     val lastUpdated: Long
 )
+

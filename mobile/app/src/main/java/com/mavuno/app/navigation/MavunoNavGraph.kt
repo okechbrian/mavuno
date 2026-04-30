@@ -1,4 +1,4 @@
-package com.mavuno.app.navigation
+﻿package com.mavuno.app.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -91,7 +91,7 @@ fun MavunoNavGraph(
                 TransactionHistoryScreen(
                     title = "Farmer History",
                     transactions = listOf(
-                        Transaction("1", "ECT Disbursed", "+25.00 ECT", System.currentTimeMillis() - 86400000, "Settled"),
+                        Transaction("1", "Trade Priority Disbursed", "+25.00 Trade Priority", System.currentTimeMillis() - 86400000, "Settled"),
                         Transaction("2", "Crop Offer", "500 KG", System.currentTimeMillis() - 172800000, "Open")
                     )
                 )
@@ -124,3 +124,4 @@ fun BottomNavigationBar(navController: NavHostController) {
         }
     }
 }
+

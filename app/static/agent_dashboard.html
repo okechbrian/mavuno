@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno Cockpit — Mavuno</title>
+<title>Mavuno Yield — Agent Cockpit</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
 <link rel="apple-touch-icon" href="/static/img/mavuno-mono.png" />
@@ -197,16 +197,16 @@
   <div style="display:flex; flex-direction:column; gap:20px;">
     <button class="btn primary" style="width:100%" onclick="showOnboard()">+ Onboard Farmer</button>
     <button class="btn" style="width:100%; border-color: var(--accent); color: var(--accent);" onclick="showOnboardBuyer()">+ Onboard Buyer</button>
-    <button class="btn" style="width:100%" onclick="bulkIssue()">Bulk Issue Credits</button>
+    <button class="btn" style="width:100%" onclick="bulkVerify()">Bulk Verify Signals</button>
   </div>
 
   <div class="radar-card" style="background:rgba(46, 77, 31, 0.05); margin-top:20px;">
-    <span class="label">Buyer Network</span>
+    <span class="label">CRP Buyer Network</span>
     <div id="buyer-list" style="font-size: 11px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
       <!-- Populated by JS -->
     </div>
     <span style="font-size: 9px; color: var(--muted); margin-top: 10px; display: block; line-height: 1.3;">
-      Institutional off-takers pre-verified for regional trade.
+      Institutional off-takers pre-verified for CRP marketplace trade.
     </span>
   </div>
 
@@ -222,11 +222,11 @@
   <header class="masthead">
     <div class="mast-left">
       <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" onclick="openSidebar()">☰</button>
-      <a href="/" class="logo display">Mavuno</a>
-      <span class="role-badge">SACCO Agent</span>
+      <a href="/" class="logo display">Mavuno Yield</a>
+      <span class="role-badge">Agent / Supervisor</span>
     </div>
     <div class="topbar-actions">
-      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌾 Social</a>
+      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌱 Social</a>
       <button class="topbar-btn" id="theme-toggle" style="font-size:14px;" aria-label="Toggle theme">🌙</button>
       <a href="/logout" class="topbar-btn logout-btn">Sign out</a>
     </div>
@@ -236,17 +236,17 @@
     <div class="hero-main">
       <h1 class="display" style="margin:0; font-size:42px;">Agent Cockpit</h1>
       <p style="margin:16px 0 0; color:var(--muted); font-size:14px; max-width:480px;">
-        Real-time oversight of regional soil integrity, credit velocity, and hash-chained transaction logs.
+        Real-time oversight of regional soil integrity, YPS trends, and hash-chained CRP transaction logs.
       </p>
     </div>
     <div class="hero-stats">
       <div class="radar-card" style="border:none; background:transparent; padding:0; margin:0;">
-        <span class="label">Credit Velocity</span>
+        <span class="label">Trade Velocity</span>
         <div class="value" id="radar-velocity">—</div>
-        <span style="font-size:10px; color:var(--accent);">UGX/hr issued</span>
+        <span style="font-size:10px; color:var(--accent);">UGX/hr verified</span>
       </div>
       <div class="radar-card" style="border:none; background:transparent; padding:0; margin:0;">
-        <span class="label">Chain Integrity</span>
+        <span class="label">Protocol Integrity</span>
         <div class="value" id="radar-ledger" style="font-size: 16px; font-family: 'JetBrains Mono'; color:var(--accent);">Verifying...</div>
         <span id="radar-risk-label" style="font-size:10px; color:var(--muted);">Block-level audit</span>
       </div>
@@ -272,9 +272,9 @@
 
   <div style="margin-top:64px; display:grid; grid-template-columns: 1fr 1fr; gap:40px; margin-bottom:60px; animation: fadeInUp 0.7s ease-out 0.3s forwards; opacity:0;">
     <div class="radar-card" style="background:var(--paper); display:flex; flex-direction:column;">
-      <span class="label">AI Agronomist Cockpit</span>
-      <p style="font-size:12px; color:var(--muted); margin:4px 0 16px;">Cross-reference regional telemetry with CRP historical data.</p>
-      <textarea id="ask-q" style="width:100%; height:100px; margin-bottom:16px; padding:16px; border:1px solid var(--line); background:var(--bg-alt); color:var(--ink); font-family:inherit; border-radius:4px; resize:none;" placeholder="Analyze potential coffee wilt risk in Mbale..."></textarea>
+      <span class="label">Regional YPS Analytics</span>
+      <p style="font-size:12px; color:var(--muted); margin:4px 0 16px;">Cross-reference regional telemetry with CRP historical trade data.</p>
+      <textarea id="ask-q" style="width:100%; height:100px; margin-bottom:16px; padding:16px; border:1px solid var(--line); background:var(--bg-alt); color:var(--ink); font-family:inherit; border-radius:4px; resize:none;" placeholder="Analyze potential crop yield risk in Mbale..."></textarea>
       <div style="display:flex; gap:12px;">
         <select id="ask-farm" style="flex:1; border:1px solid var(--line); background:var(--bg-alt); color:var(--ink); padding:0 12px; border-radius:4px; font-weight:500;"></select>
         <button class="btn primary" style="padding:0 24px;" onclick="askMavuno()">Run Diagnostic</button>
@@ -283,7 +283,7 @@
     </div>
 
     <div class="terminal-card" style="flex:1; display:flex; flex-direction:column;">
-      <div class="label">Hash-Chained Audit Logs (Regional Ledger)</div>
+      <div class="label">Protocol Ledger (Regional SHA-256 Chain)</div>
       <div id="ledger" style="flex:1; overflow-y:auto; margin-top:12px;"></div>
     </div>
   </div>
@@ -349,7 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function _onAuthFail() {
-  // Session expired or missing — go back to sign-in
   window.location.href = "/";
 }
 
@@ -417,7 +416,7 @@ async function loadFarms() {
 
   const ids = Object.keys(farms);
   const scores = await Promise.all(ids.map(id => jget("/score/" + id)));
-  const balances = await Promise.all(ids.map(id => jget("/ect/balance/" + id)));
+  const balances = await Promise.all(ids.map(id => jget("/finance/status/" + id)));
 
   const container = document.getElementById("farms");
   container.innerHTML = "";
@@ -425,16 +424,16 @@ async function loadFarms() {
 
   ids.forEach((id, i) => {
     const f = farms[id], s = scores[i], b = balances[i];
-    totalCeiling += (s.credit_ceiling_ugx || 0);
+    totalCeiling += (s.trade_ceiling_ugx || 0);
     totalN += (s.nutrients?.n?.slice(-1)[0] || 0);
 
-    const hClass = `b-${(s.credit_health || "poor").toLowerCase()}`;
+    const hClass = `b-${(s.trade_health || "poor").toLowerCase()}`;
     const card = document.createElement("div");
     card.className = "farm-card";
     card.innerHTML = `
       <div class="f-head">
         <div><h3 class="display">${f.farmer_name}</h3><span style="color:var(--muted); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">${id} · ${f.district}</span></div>
-        <span class="badge ${hClass}">${s.credit_health || "N/A"}</span>
+        <span class="badge ${hClass}">${s.trade_health || "N/A"}</span>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-alt); padding:16px; border-radius:4px;">
         <div>
@@ -442,8 +441,8 @@ async function loadFarms() {
            <div class="display" style="font-size:32px;">${s.yps || 0}<span style="font-size:12px; color:var(--muted);">/1000</span></div>
         </div>
         <div style="text-align:right;">
-          <div style="font-weight:700; color:var(--accent); font-size:16px;">${s.kwh_allocated || 0} kWh</div>
-          <div style="font-size:10px; color:var(--muted); font-weight:500;">Cap: UGX ${(s.credit_ceiling_ugx || 0).toLocaleString()}</div>
+          <div style="font-weight:700; color:var(--accent); font-size:16px;">${s.kg_allocated || 0} KG</div>
+          <div style="font-size:10px; color:var(--muted); font-weight:500;">Cap: UGX ${(s.trade_ceiling_ugx || 0).toLocaleString()}</div>
         </div>
       </div>
       <div class="spark-row">
@@ -452,20 +451,20 @@ async function loadFarms() {
         <div class="spark-box"><span>Potass</span>${nutrientSpark(s.nutrients?.k, "var(--clay)")}</div>
       </div>
       <div style="background:var(--paper); border:1px solid var(--line-soft); border-radius:2px; padding:12px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
-        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">AI Diagnostic</strong><br>
+        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">YPS Signal Diagnostic</strong><br>
         ${(s.diagnostics || []).join('<br>')}
       </div>
       <div style="display:flex; gap:8px;">
         <button class="btn primary" style="flex:1" onclick="runCycle('${id}')">Execute Cycle</button>
         <button class="btn" style="flex:1; border-color:var(--gold); color:var(--gold);" onclick="pingSensor('${id}')">Ping Sensor</button>
       </div>
-      <div style="text-align:center; font-size:10px; color:var(--muted); font-weight:500;">Current Balance: <b style="color:var(--ink);">${b.kwh_remaining || 0} kWh</b></div>
+      <div style="text-align:center; font-size:10px; color:var(--muted); font-weight:500;">Verified for CRP: <b style="color:var(--ink);">${b.kg_remaining || 0} KG</b></div>
     `;
     container.appendChild(card);
   });
 
   document.getElementById("radar-velocity").textContent = Math.round(totalCeiling/168).toLocaleString();
-  document.getElementById("radar-risk-label").textContent = "Avg Nitrogen Integrity: " + Math.round(totalN/(ids.length || 1)) + "%";
+  document.getElementById("radar-risk-label").textContent = "Avg Soil Confidence: " + Math.round(totalN/(ids.length || 1)) + "%";
   document.getElementById("ask-farm").innerHTML = ids.map(id => `<option value="${id}">${farms[id].farmer_name}</option>`).join("");
 }
 
@@ -499,7 +498,6 @@ async function submitOnboardBuyer() {
 }
 
 async function runCycle(id) { toast(`Cycling ${id}...`); await jpost("/demo/cycle", {farm_id:id}); loadFarms(); refreshLedger(); }
-async function agentAlert(id, type) { await jpost("/agent/alert", {farm_id:id, type}); toast("Field alert dispatched"); refreshLedger(); }
 
 async function refreshLedger() {
   const data = await jget("/ledger");

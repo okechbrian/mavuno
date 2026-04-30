@@ -1,0 +1,28 @@
+{
+  "project_info": {
+    "project_number": "123456789012",
+    "project_id": "mavuno-yield-prod",
+    "storage_bucket": "mavuno-yield-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123456789012:android:buyer",
+        "android_client_info": {
+          "package_name": "com.mavuno.buyer"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "MOCK_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

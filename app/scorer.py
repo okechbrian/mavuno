@@ -1,4 +1,4 @@
-"""Yield Probability Scorer for Prototype."""
+﻿"""Yield Probability Scorer for Prototype."""
 import math
 import statistics
 from functools import lru_cache
@@ -61,26 +61,27 @@ def score_farm(farm_id: str):
     
     diagnostics = []
     if sm_avg < 20:
-        diagnostics.append("💧 Moisture deficit. Immediate irrigation required to stabilize YPS.")
+        diagnostics.append("ðŸ’§ Moisture deficit. Immediate irrigation required to stabilize YPS.")
     elif sm_avg > 35:
-        diagnostics.append("⚠️ Waterlogging risk. Suspend irrigation to prevent root rot.")
+        diagnostics.append("âš ï¸ Waterlogging risk. Suspend irrigation to prevent root rot.")
         
     if n_avg < 25:
-        diagnostics.append("🌱 Severe Nitrogen depletion. Apply Urea/NPK to restore vegetative growth.")
+        diagnostics.append("ðŸŒ± Severe Nitrogen depletion. Apply Urea/NPK to restore vegetative growth.")
     if p_avg < 12:
-        diagnostics.append("🌱 Phosphorus low. Root development is currently stunted.")
+        diagnostics.append("ðŸŒ± Phosphorus low. Root development is currently stunted.")
     if k_avg < 150:
-        diagnostics.append("🛡️ Potassium deficit. Crop drought-resilience is compromised.")
+        diagnostics.append("ðŸ›¡ï¸ Potassium deficit. Crop drought-resilience is compromised.")
         
     if not diagnostics:
-        diagnostics.append("✅ All 7 biological signals are nominal. Maintain current regimen.")
+        diagnostics.append("âœ… All 7 biological signals are nominal. Maintain current regimen.")
     
     tier = 2 if yps > 700 else 1 if yps > 400 else 0
     health = "Excellent" if yps > 750 else "Good" if yps > 500 else "Fair" if yps > 300 else "Poor"
     
     return {
-        "farm_id": farm_id, "yps": yps, "tier": tier, "credit_health": health,
-        "kwh_allocated": [0, 25, 60][tier], "credit_ceiling_ugx": [0, 75000, 200000][tier],
+        "farm_id": farm_id, "yps": yps, "tier": tier, "trade_health": health,
+        "kg_allocated": [0, 25, 60][tier], "trade_ceiling_ugx": [0, 75000, 200000][tier],
         "nutrients": nutrients,
         "diagnostics": diagnostics
     }
+

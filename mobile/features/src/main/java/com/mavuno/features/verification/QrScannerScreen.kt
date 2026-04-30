@@ -25,7 +25,7 @@ import java.util.concurrent.Executors
 
 @Composable
 fun QrScannerScreen(
-    onTokenScanned: (String) -> Unit,
+    onPriorityScanned: (String) -> Unit,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -53,12 +53,12 @@ fun QrScannerScreen(
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(title = { Text("Scan Token QR") })
+            CenterAlignedTopAppBar(title = { Text("Scan Priority QR") })
         }
     ) { padding ->
         if (hasCameraPermission) {
             Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-                CameraPreview(onBarcodeDetected = onTokenScanned)
+                CameraPreview(onBarcodeDetected = onPriorityScanned)
                 
                 // Scanner Overlay
                 Box(

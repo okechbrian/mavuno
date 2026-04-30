@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno — Where soil becomes credit</title>
+<title>Mavuno Yield — Verified Soil Intelligence</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +133,7 @@
     color: var(--ink); letter-spacing: -0.02em; line-height: 1.1;
     font-variant-numeric: tabular-nums;
   }
-  .hero aside .value .unit { font-size: 14px; color: var(--muted); margin-left: 4px; font-family: "Inter", sans-serif; }
+  .hero aside .value .unit { font-size: 14px; color: var(--muted); margin-left: 4px; font-family: "Inter", sans-serif; font-weight: 400; }
   .hero aside .divider { height: 1px; background: var(--line); margin: 18px 0; }
 
   /* Stat strip */
@@ -464,7 +464,7 @@
   <div class="masthead-inner">
     <div class="brand">
       <span class="mark">Mavuno</span>
-      <span class="wordmark-sub">Soil · Credit · Solar</span>
+      <span class="wordmark-sub">Verified Soil Intelligence</span>
     </div>
     <nav class="primary">
       <a href="/">Operations</a>
@@ -478,17 +478,17 @@
 <div class="hero">
   <div class="lede">
     <span class="eyebrow">Operations · Uganda</span>
-    <h1 class="display">Where soil <em>becomes</em> credit.</h1>
+    <h1 class="display">Verified soil <em>becomes</em> trusted trade.</h1>
     <p class="standfirst">
-      A yield-probability score, calibrated on seven soil signals, replaces collateral as the gateway to irrigation finance. Each approved farm receives a GPS-locked energy credit — non-cashable, redeemable only at its dedicated solar pump. On the same USSD session: live market prices, a buyer-matching marketplace, and an AI agronomist.
+      Mavuno Yield uses a Yield Probability Score (YPS), calibrated on seven live soil signals, to replace traditional collateral. This unlocks priority access to the <strong>Community Resource Platform (CRP)</strong> marketplace and premium buyer matching. On the same USSD session: live market prices, verified trade listing, and an AI agronomist.
     </p>
   </div>
   <aside>
-    <div class="label">Ceiling deployed</div>
+    <div class="label">Verified Trade Volume</div>
     <div class="value" id="hero-ceiling">—<span class="unit">UGX</span></div>
     <div class="divider"></div>
-    <div class="label">Credits active</div>
-    <div class="value" id="hero-active">—<span class="unit">kWh</span></div>
+    <div class="label">Matched Harvests</div>
+    <div class="value" id="hero-active">—<span class="unit">KG</span></div>
     <div class="divider"></div>
     <div class="label">Chain integrity</div>
     <div class="value" id="hero-integrity" style="font-size: 20px;">Verifying…</div>
@@ -510,8 +510,8 @@
     <div class="num" id="stat-entries">—</div>
   </div>
   <div class="stat">
-    <div class="label">Regions</div>
-    <div class="num">3<span class="unit">districts</span></div>
+    <div class="label">Active Regions</div>
+    <div class="num">5<span class="unit">districts</span></div>
   </div>
 </div>
 
@@ -519,14 +519,14 @@
 <section class="sect">
   <div class="section-head">
     <div>
-      <span class="eyebrow">Field partners</span>
-      <h2 class="title">Active smallholders</h2>
-      <p class="desc">Three farms, three profiles. Each profile tells the panel a different story about discipline, climate exposure, and readiness for credit.</p>
+      <span class="eyebrow">Verified field partners</span>
+      <h2 class="title">Production smallholders</h2>
+      <p class="desc">Live farm profiles with real-time soil signal monitoring. YPS scores determine CRP marketplace priority and trade verification tiers.</p>
     </div>
     <div class="tools">
       <button class="btn ghost" id="refresh">Refresh</button>
       <button class="btn ghost" id="verify">Verify ledger</button>
-      <button class="btn primary" id="run-all">Run full cycle</button>
+      <button class="btn primary" id="run-all">Run verification cycle</button>
     </div>
   </div>
   <div class="farms" id="farms"><div class="empty">Loading field data…</div></div>
@@ -538,8 +538,8 @@
     <div class="layout">
       <div>
         <span class="eyebrow">Geography</span>
-        <h2 class="display">Three districts.<br>One protocol.</h2>
-        <p class="map-desc">Mbale's coffee belt, Mbarara's bean plateau, and Gulu's drought-pressed maize corridor anchor the pilot. Each location runs identical software; each tells the model a different story.</p>
+        <h2 class="display">Strategic regions.<br>One protocol.</h2>
+        <p class="map-desc">From Mbale's coffee belt to Gulu's maize corridor, the Mavuno Protocol provides a unified soil intelligence layer for regional agricultural trade coordination.</p>
         <div class="map-legend" id="map-legend">
           <!-- populated by JS -->
         </div>
@@ -554,17 +554,17 @@
           <g class="dot" data-farm="UG-MBL-0001">
             <circle cx="305" cy="165" r="6" fill="var(--accent)"/>
             <text x="316" y="162">Mbale</text>
-            <text x="316" y="176" class="label-sub">Coffee · Full</text>
+            <text x="316" y="176" class="label-sub">Coffee · Verified</text>
           </g>
           <g class="dot" data-farm="UG-GUL-0002">
             <circle cx="185" cy="70" r="6" fill="var(--bad)"/>
             <text x="196" y="67">Gulu</text>
-            <text x="196" y="81" class="label-sub">Maize · Denied</text>
+            <text x="196" y="81" class="label-sub">Maize · Pending</text>
           </g>
           <g class="dot" data-farm="UG-MBR-0003">
             <circle cx="150" cy="228" r="6" fill="var(--gold)"/>
             <text x="80" y="225" text-anchor="end">Mbarara</text>
-            <text x="80" y="239" class="label-sub" text-anchor="end">Beans · Partial</text>
+            <text x="80" y="239" class="label-sub" text-anchor="end">Beans · Review</text>
           </g>
         </svg>
       </div>
@@ -576,9 +576,9 @@
 <section class="sect">
   <div class="section-head">
     <div>
-      <span class="eyebrow">Market pulse · today</span>
-      <h2 class="title">What the farmgate pays.</h2>
-      <p class="desc">Indicative daily crop prices for the three pilot regions, refreshed from a committed snapshot. The same numbers reach the farmer's feature phone on USSD menu 4 — no kiosk, no co-op noticeboard, no twelve-hour bus ride.</p>
+      <span class="eyebrow">CRP Marketplace · today</span>
+      <h2 class="title">Institutional floor prices.</h2>
+      <p class="desc">Daily crop price oracle for premium buyers, matched with YPS-verified harvests. The same prices are accessible to farmers via USSD menu 4.</p>
     </div>
   </div>
   <div class="crp-grid" id="crp-grid">
@@ -592,9 +592,9 @@
 <section class="sect">
   <div class="section-head">
     <div>
-      <span class="eyebrow">Live marketplace</span>
-      <h2 class="title">Open offers.</h2>
-      <p class="desc">When a farmer dials USSD menu 5 and lists produce at a floor price, the engine auto-matches up to three buyers inside the region. Every offer and every match lands in the ledger chain below.</p>
+      <span class="eyebrow">Live CRP marketplace</span>
+      <h2 class="title">YPS-Verified offers.</h2>
+      <p class="desc">When a farmer lists produce at a floor price, the CRP engine auto-matches verified buyers. Every transaction is secured on the protocol ledger.</p>
     </div>
   </div>
   <div class="offers-list" id="offers-list">
@@ -608,7 +608,7 @@
     <div>
       <span class="eyebrow">AI advisor</span>
       <h2 class="title">Ask Mavuno.</h2>
-      <p class="desc">An agronomy co-pilot conditioned on the selected farm's live soil readings, crop, and tier. Runs on Groq's hosted Llama 3.3 with a two-second hard timeout and a rule-based fallback, so the advice keeps flowing when the network doesn't.</p>
+      <p class="desc">An agronomy co-pilot conditioned on the selected farm's live soil signals and crop profile. Powered by Groq for real-time agronomic intelligence.</p>
     </div>
   </div>
   <div class="ask-box">
@@ -632,8 +632,8 @@
   <div class="section-head">
     <div>
       <span class="eyebrow">Audit trail</span>
-      <h2 class="title">Live ledger</h2>
-      <p class="desc">Every issuance, redemption, rejection, and expiry is written to an append-only SHA-256 hash chain. Tamper with one row and every subsequent row fails verification.</p>
+      <h2 class="title">Protocol Ledger</h2>
+      <p class="desc">Every YPS update, trade listing, and settlement is written to an append-only SHA-256 hash chain for immutable agricultural trade records.</p>
     </div>
   </div>
   <div class="ledger-box">
@@ -641,36 +641,37 @@
       <span class="live-badge">Streaming</span>
       <span class="count" id="ledger-count">0 entries</span>
     </div>
-    <div class="ledger" id="ledger"><div class="empty">No activity yet. Run a field cycle to populate the chain.</div></div>
+    <div class="ledger" id="ledger"><div class="empty">No activity yet. Run a verification cycle to populate the chain.</div></div>
   </div>
 </section>
 
 <footer class="colophon">
   <div class="colophon-inner">
     <div>
-      <h4>Mavuno</h4>
-      <p class="mission">Replacing collateral with soil data, so smallholder farms can reach the sun.</p>
+      <h4>Mavuno Yield</h4>
+      <p class="mission">Replacing uncertainty with soil intelligence, and connecting smallholder farms to trusted trade.</p>
     </div>
     <div>
       <h4>Protocol</h4>
       <ul>
-        <li>Yield Probability Score</li>
-        <li>Energy Credit Token</li>
-        <li>Hash-chain ledger</li>
+        <li>Yield Probability Score (YPS)</li>
+        <li>Soil Signal Verification</li>
+        <li>Hash-chained ledger</li>
         <li>USSD-first interface</li>
       </ul>
     </div>
     <div>
-      <h4>Field</h4>
+      <h4>CRP Marketplace</h4>
       <ul>
-        <li>Mbale · Coffee</li>
-        <li>Mbarara · Beans</li>
-        <li>Gulu · Maize</li>
+        <li>Institutional Matchmaking</li>
+        <li>Regional Price Oracle</li>
+        <li>AI Agronomist</li>
+        <li>Mavuno Pay Settlement</li>
       </ul>
     </div>
   </div>
   <div class="fineprint">
-    <span>Mavuno Protocol · Uganda</span>
+    <span>Mavuno Yield · Uganda</span>
     <span id="fineprint-time">—</span>
   </div>
 </footer>
@@ -703,8 +704,8 @@ function toast(msg) {
   setTimeout(() => t.classList.remove("show"), 2600);
 }
 
-const TIER_LABEL = ["denied","partial","full"];
-function tierClass(t) { return "tier-" + (TIER_LABEL[t] || "denied"); }
+const TIER_LABEL = ["pending","review","verified"];
+function tierClass(t) { return "tier-" + (TIER_LABEL[t] === "verified" ? "full" : TIER_LABEL[t] === "review" ? "partial" : "denied"); }
 function fmtUGX(n) { return (n || 0).toLocaleString(); }
 function tagClass(type) {
   const t = type.toUpperCase();
@@ -727,7 +728,7 @@ async function loadFarms() {
   lastFarms = farms;
   const ids = Object.keys(farms);
   const scores = await Promise.all(ids.map(id => jget("/score/" + id)));
-  const balances = await Promise.all(ids.map(id => jget("/ect/balance/" + id)));
+  const balances = await Promise.all(ids.map(id => jget("/finance/status/" + id)));
 
   const container = document.getElementById("farms");
   container.innerHTML = "";
@@ -738,8 +739,8 @@ async function loadFarms() {
     lastScores[id] = score; lastBalances[id] = bal;
     const tier = score.tier ?? 0;
     const yps = score.yps ?? 0;
-    totalCeiling += score.credit_ceiling_ugx || 0;
-    totalActive += bal.kwh_remaining || 0;
+    totalCeiling += score.trade_ceiling_ugx || 0;
+    totalActive += bal.kg_remaining || 0;
     totalYps += yps;
 
     const card = document.createElement("div");
@@ -748,25 +749,25 @@ async function loadFarms() {
       <div class="index">0${i+1}</div>
       <div class="who">
         <h3>${f.farmer_name}</h3>
-        <div class="meta">${f.district}<span class="sep">·</span>${f.phone}<span class="sep">·</span>${f.acres} acres<span class="sep">·</span>pump ${f.pump.name}</div>
+        <div class="meta">${f.district}<span class="sep">·</span>${f.phone}<span class="sep">·</span>${f.acres} acres<span class="sep">·</span>sensor ID ${f.pump.name}</div>
         <div class="crop">${f.crop}</div>
       </div>
       <div class="gauge">
         <div class="score">${yps}<span class="of">/1000</span></div>
-        <div class="tier-line ${tierClass(tier)}"><span class="tier-mark"></span>${TIER_LABEL[tier] || "denied"} tier</div>
-        <div class="alloc">${score.kwh_allocated || 0} kWh · UGX ${fmtUGX(score.credit_ceiling_ugx)}</div>
+        <div class="tier-line ${tierClass(tier)}"><span class="tier-mark"></span>${TIER_LABEL[tier] || "pending"} tier</div>
+        <div class="alloc">YPS Confidence: ${Math.round(yps/10)}% · Market Ceiling: UGX ${fmtUGX(score.trade_ceiling_ugx)}</div>
       </div>
       <div class="actions-col">
-        <button class="btn primary" data-id="${id}" data-act="cycle">Run cycle</button>
-        <button class="btn" data-id="${id}" data-act="issue">Issue credit</button>
-        <div class="balance-line">Active: <b>${bal.kwh_remaining || 0} kWh</b> · ${bal.active_tokens || 0} token${(bal.active_tokens||0)===1?'':'s'}</div>
+        <button class="btn primary" data-id="${id}" data-act="cycle">Run signal cycle</button>
+        <button class="btn" data-id="${id}" data-act="issue">Verify trade data</button>
+        <div class="balance-line">Matched: <b>${bal.kg_remaining || 0} KG</b> · ${bal.active_tokens || 0} active offer${(bal.active_tokens||0)===1?'':'s'}</div>
       </div>`;
     container.appendChild(card);
   });
 
   // hero + stat updates
   document.getElementById("hero-ceiling").innerHTML = fmtUGX(totalCeiling) + '<span class="unit">UGX</span>';
-  document.getElementById("hero-active").innerHTML = totalActive + '<span class="unit">kWh</span>';
+  document.getElementById("hero-active").innerHTML = totalActive + '<span class="unit">KG</span>';
   document.getElementById("stat-farms").textContent = ids.length;
   document.getElementById("stat-yps").innerHTML = (ids.length ? Math.round(totalYps / ids.length) : 0) + '<span class="unit">/ 1000</span>';
 
@@ -795,11 +796,11 @@ async function onAction(e) {
     if (act === "cycle") {
       const r = await jpost("/demo/cycle", {farm_id: id});
       if (r.error) toast("Error · " + r.error);
-      else if (r.ect && r.ect.error) toast("ECT · " + r.ect.error);
-      else toast("Cycle complete · " + id);
+      else if (r.priority && r.priority.error) toast("Trade Verification · " + r.priority.error);
+      else toast("Signal cycle complete · " + id);
     } else if (act === "issue") {
-      const r = await jpost("/ect/issue", {farm_id: id});
-      toast(r.error ? ("Issue error · " + r.error) : ("Issued · " + r.token_id));
+      const r = await jpost("/finance/approve", {farm_id: id});
+      toast(r.error ? ("Verification error · " + r.error) : ("Verified · " + r.token_id));
     }
   } finally {
     b.disabled = false;
@@ -812,10 +813,10 @@ let knownHashes = new Set();
 async function refreshLedger() {
   const data = await jget("/ledger?limit=30");
   const el = document.getElementById("ledger");
-  document.getElementById("ledger-count").textContent = `${data.length} ${data.length === 1 ? "entry" : "entries"}`;
-  document.getElementById("stat-entries").textContent = data.length;
+  document.getElementById("ledger-count").textContent = `${data.rows.length} ${data.rows.length === 1 ? "entry" : "entries"}`;
+  document.getElementById("stat-entries").textContent = data.rows.length;
   if (!data.rows.length) {
-    el.innerHTML = '<div class="empty">No activity yet. Run a field cycle to populate the chain.</div>';
+    el.innerHTML = '<div class="empty">No activity yet. Run a verification cycle to populate the chain.</div>';
     return;
   }
   el.innerHTML = data.rows.slice().reverse().map(r => {
@@ -846,7 +847,7 @@ async function verifyIntegrity() {
 document.getElementById("run-all").onclick = async () => {
   const farms = await jget("/farms");
   for (const id in farms) await jpost("/demo/cycle", {farm_id: id});
-  toast("Cycle complete · all farms");
+  toast("Cycle complete · all farms verified");
   loadFarms(); refreshLedger(); verifyIntegrity();
 };
 document.getElementById("refresh").onclick = () => { loadFarms(); refreshLedger(); verifyIntegrity(); };
@@ -900,7 +901,7 @@ async function loadPrices() {
     const grid = document.getElementById("crp-grid");
     grid.innerHTML = results.map(r => {
       if (r.error) return `<div class="pulse-card"><div class="crop">${r.error}</div></div>`;
-      const arrow = r.trend === "up" ? "\u2191" : r.trend === "down" ? "\u2193" : "=";
+      const arrow = r.trend === "up" ? "↑" : r.trend === "down" ? "↓" : "=";
       const sparkline = sparkSvg(r.series.slice(-14), r.trend);
       return `<div class="pulse-card">
         <div class="region">${r.region}</div>
@@ -958,7 +959,7 @@ async function askMavuno() {
   try {
     const r = await jpost("/crp/ask", {farm_id: sel.value, question: q});
     if (r.error) { ansEl.textContent = "Error · " + r.error; return; }
-    ansEl.innerHTML = `"${r.answer}"<span class="cite">Mavuno · ${r.source === 'groq' ? 'Llama 3.3 · live' : 'offline fallback'} · ${r.context.crop} · YPS ${r.context.yps}</span>`;
+    ansEl.innerHTML = `"${r.answer}"<span class="cite">Mavuno AI · ${r.source === 'groq' ? 'Llama 3.3 · live' : 'offline fallback'} · ${r.context.crop} · YPS ${r.context.yps}</span>`;
   } catch (e) {
     ansEl.textContent = "Network error.";
   }

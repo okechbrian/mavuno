@@ -10,15 +10,15 @@ import com.mavuno.data.local.entity.*
     entities = [
         FarmerEntity::class,
         HardwarePingEntity::class,
-        EctBalanceEntity::class,
-        TokenEntity::class,
+        YieldValueEntity::class,
+        YieldPriorityEntity::class,
         OfferEntity::class,
         SocialPostEntity::class,
         TrainingModuleEntity::class,
         BuyerProfileEntity::class,
         BatchPaymentEntity::class
     ],
-    version = 4,
+    version = 5, // Increment version due to schema change
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -26,8 +26,8 @@ abstract class MavunoDatabase : RoomDatabase() {
     abstract val farmerDao: FarmerDao
     abstract val buyerDao: BuyerDao
     abstract val hardwarePingDao: HardwarePingDao
-    abstract val ectBalanceDao: EctBalanceDao
-    abstract val tokenDao: TokenDao
+    abstract val yieldValueDao: YieldValueDao
+    abstract val yieldPriorityDao: YieldPriorityDao
     abstract val offerDao: OfferDao
     abstract val socialDao: SocialDao
     abstract val trainingDao: TrainingDao

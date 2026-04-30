@@ -2,42 +2,42 @@ package com.mavuno.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mavuno.domain.model.Token
+import com.mavuno.domain.model.YieldPriority
 
-@Entity(tableName = "tokens")
-data class TokenEntity(
+@Entity(tableName = "yield_priorities")
+data class YieldPriorityEntity(
     @PrimaryKey val id: String,
     val farmId: String,
     val yps: Int,
-    val kwhAllocated: Int,
-    val kwhRemaining: Int,
-    val pumpNode: String,
+    val kgAllocated: Int,
+    val kgRemaining: Int,
+    val aggregationPoint: String,
     val status: String,
     val createdAt: Long,
     val expiresAt: Long,
     val signature: String
 )
 
-fun TokenEntity.toDomain() = Token(
+fun YieldPriorityEntity.toDomain() = YieldPriority(
     id = id,
     farmId = farmId,
     yps = yps,
-    kwhAllocated = kwhAllocated,
-    kwhRemaining = kwhRemaining,
-    pumpNode = pumpNode,
+    kgAllocated = kgAllocated,
+    kgRemaining = kgRemaining,
+    aggregationPoint = aggregationPoint,
     status = status,
     createdAt = createdAt,
     expiresAt = expiresAt,
     signature = signature
 )
 
-fun Token.toEntity() = TokenEntity(
+fun YieldPriority.toEntity() = YieldPriorityEntity(
     id = id,
     farmId = farmId,
     yps = yps,
-    kwhAllocated = kwhAllocated,
-    kwhRemaining = kwhRemaining,
-    pumpNode = pumpNode,
+    kgAllocated = kgAllocated,
+    kgRemaining = kgRemaining,
+    aggregationPoint = aggregationPoint,
     status = status,
     createdAt = createdAt,
     expiresAt = expiresAt,

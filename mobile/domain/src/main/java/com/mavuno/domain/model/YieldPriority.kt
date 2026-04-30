@@ -1,12 +1,12 @@
 package com.mavuno.domain.model
 
-data class Token(
+data class YieldPriority(
     val id: String,
     val farmId: String,
     val yps: Int,
-    val kwhAllocated: Int,
-    val kwhRemaining: Int,
-    val pumpNode: String,
+    val kgAllocated: Int,
+    val kgRemaining: Int,
+    val aggregationPoint: String,
     val status: String, // 'active', 'expired', 'voided'
     val createdAt: Long,
     val expiresAt: Long,

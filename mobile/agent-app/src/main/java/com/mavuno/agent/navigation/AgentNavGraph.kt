@@ -1,4 +1,4 @@
-package com.mavuno.agent.navigation
+﻿package com.mavuno.agent.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +27,7 @@ import com.mavuno.domain.repository.HardwarePingRepository
 import com.mavuno.features.biometrics.AgentAuditScreen
 import com.mavuno.features.biometrics.AgentDashboardScreen
 import com.mavuno.domain.repository.HardwareScanner
-import com.mavuno.features.disbursement.EctDisbursementScreen
+import com.mavuno.features.disbursement.TradeFinancingApprovalScreen
 import com.mavuno.features.social.SocialFeedScreen
 
 sealed class Screen(val route: String, val label: String = "", val icon: ImageVector? = null) {
@@ -97,7 +97,7 @@ fun AgentNavGraph(
 
             composable(Screen.Disbursement.route) {
                 if (selectedFarmId != null) {
-                    EctDisbursementScreen(
+                    TradeFinancingApprovalScreen(
                         viewModel = hiltViewModel(),
                         farmId = selectedFarmId!!,
                         onBack = { navController.popBackStack() }
@@ -146,3 +146,4 @@ fun BottomNavigationBar(navController: NavHostController) {
         }
     }
 }
+

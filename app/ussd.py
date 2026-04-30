@@ -1,6 +1,6 @@
 """USSD State Machine for Prototype (Multi-language & Marketplace)."""
 from .database import get_db
-from . import scorer, ect, crp
+from . import scorer, finance, crp
 
 def route(phone: str, text: str):
     conn = get_db()
@@ -16,7 +16,7 @@ def route(phone: str, text: str):
     lang = "en" if parts[0] == "1" else "lg"
     S = {
         "en": {
-            "wel": "Welcome {n}\n1. Score\n2. Credit\n3. Bal\n4. Price\n5. Sell\n6. Community\n7. Market\n8. Ask Mavuno\n9. Exit",
+            "wel": "Welcome {n}\n1. Score\n2. Trade Priority\n3. Status\n4. Price\n5. Sell\n6. Community\n7. Market\n8. Ask Mavuno\n9. Exit",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Enter question:",
             "sell": "Enter kg to sell:",
@@ -27,7 +27,7 @@ def route(phone: str, text: str):
             "mkt_empty": "Market is empty."
         },
         "lg": {
-            "wel": "Kulaba {n}\n1. Ekibalo\n2. Ebibanja\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Akatale\n8. Buuza Mavuno\n9. Fuluma",
+            "wel": "Kulaba {n}\n1. Ekibalo\n2. Yield Priority\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Akatale\n8. Buuza Mavuno\n9. Fuluma",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Wandiika ekibuuzo kyo:",
             "sell": "Oyingize kilo:",
@@ -49,14 +49,14 @@ def route(phone: str, text: str):
         
     if cmd == "2":
         s = scorer.score_farm(farm['id'])
-        t = ect.issue(farm['id'], s['yps'], s['kwh_allocated'])
+        t = finance.issue(farm['id'], s['yps'], s['kg_allocated'])
         if "error" in t:
             return f"END Issue failed: {t['error']}"
-        return f"END Token: {t.get('token_id')}\nkWh: {t.get('kwh')}\nPump: {t.get('pump')}"
+        return f"END Priority: {t.get('priority_id')}\nKG: {t.get('kg')}\nHub: {t.get('hub')}"
         
     if cmd == "3":
-        b = ect.farm_balance(farm['id'])
-        return f"END Bal: {b['kwh_remaining']} kWh\nTokens: {b['active_tokens']}"
+        b = finance.farm_balance(farm['id'])
+        return f"END Bal: {b['kg_remaining']} KG\nActive: {b['active_priorities']}"
         
     if cmd == "4":
         p = crp.market_prices(farm['crop'], farm['district'])

@@ -1,4 +1,4 @@
-package com.mavuno.data.local.entity
+﻿package com.mavuno.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -13,7 +13,7 @@ data class BuyerProfileEntity(
     val isVerified: Boolean,
     val totalVolumeKg: Int,
     val activeContracts: Int,
-    val ectSpent: Double
+    val prioritypent: Double
 ) {
     fun toDomain() = BuyerProfile(
         id = id,
@@ -23,7 +23,7 @@ data class BuyerProfileEntity(
         isVerified = isVerified,
         totalVolumeKg = totalVolumeKg,
         activeContracts = activeContracts,
-        ectSpent = ectSpent
+        prioritypent = prioritypent
     )
 }
 
@@ -35,5 +35,6 @@ fun BuyerProfile.toEntity() = BuyerProfileEntity(
     isVerified = isVerified,
     totalVolumeKg = totalVolumeKg,
     activeContracts = activeContracts,
-    ectSpent = ectSpent
+    prioritypent = prioritypent
 )
+

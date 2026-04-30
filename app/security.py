@@ -1,4 +1,4 @@
-"""Security & Cryptography for Mavuno Prototype."""
+﻿"""Security & Cryptography for Mavuno Prototype."""
 import hmac
 import hashlib
 import time
@@ -8,9 +8,9 @@ import json
 # Prototype Secret - In production, this would be an env var
 HMAC_SECRET = b"future-makers-hackathon-2026-secret-key"
 
-def sign_token(token_id: str, farm_id: str, kwh: int) -> str:
-    """Signs an Energy Credit Token with HMAC-SHA256."""
-    msg = f"{token_id}:{farm_id}:{kwh}:{time.time()}"
+def sign_token(token_id: str, farm_id: str, kg: int) -> str:
+    """Signs an Yield Priority with HMAC-SHA256."""
+    msg = f"{token_id}:{farm_id}:{kg}:{time.time()}"
     return hmac.new(HMAC_SECRET, msg.encode(), hashlib.sha256).hexdigest()
 
 def hash_payload(payload_dict: dict) -> str:
@@ -21,3 +21,4 @@ def hash_payload(payload_dict: dict) -> str:
 def chain_hash(prev_hash: str, payload_hash: str) -> str:
     """Creates a chained hash for the audit ledger."""
     return hashlib.sha256(f"{prev_hash}{payload_hash}".encode()).hexdigest()
+

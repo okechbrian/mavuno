@@ -30,7 +30,15 @@ _hmac_raw = os.getenv("HMAC_SECRET", "prototype-dev-key")
 HMAC_SECRET = _hmac_raw.encode()
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")
 
-# ECT policy
-ECT_EXPIRY_HOURS = 72
-TIER_KWH = {0: 0, 1: 25, 2: 60}
+# Default local SQLite path
+DB_PATH = DATA_DIR / "mavuno.db"
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")
+
+# Fix for Heroku/Render/Fly.io using 'postgres://' instead of 'postgresql://'
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Yield Priority policy
+PRIORITY_EXPIRY_HOURS = 72
+TIER_KG = {0: 0, 1: 25, 2: 60}
 TIER_CEILING_UGX = {0: 0, 75000: 75_000, 200000: 200_000}

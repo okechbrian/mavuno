@@ -40,11 +40,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideEctBalanceDao(db: MavunoDatabase): EctBalanceDao = db.ectBalanceDao
+    fun provideYieldValueDao(db: MavunoDatabase): YieldValueDao = db.yieldValueDao
 
     @Provides
     @Singleton
-    fun provideTokenDao(db: MavunoDatabase): TokenDao = db.tokenDao
+    fun provideYieldPriorityDao(db: MavunoDatabase): YieldPriorityDao = db.yieldPriorityDao
 
     @Provides
     @Singleton

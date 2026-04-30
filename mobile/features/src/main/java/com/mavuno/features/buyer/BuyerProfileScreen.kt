@@ -1,4 +1,4 @@
-package com.mavuno.features.buyer
+﻿package com.mavuno.features.buyer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -182,8 +182,8 @@ fun BuyerStatsRow(profile: BuyerProfile) {
         )
         ProfileStatCard(
             modifier = Modifier.weight(1f),
-            title = "ECT Spent",
-            value = String.format("%.1f", profile.ectSpent),
+            title = "Trade Priority Spent",
+            value = String.format("%.1f", profile.prioritypent),
             icon = Icons.Default.Bolt,
             color = Color(0xFFD35400)
         )
@@ -295,3 +295,4 @@ fun SupplierRow(name: String, crop: String) {
         Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray)
     }
 }
+

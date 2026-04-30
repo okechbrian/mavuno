@@ -259,13 +259,13 @@
   </div>
 
   <div class="radar-card">
-    <span class="label">Active Energy Balance</span>
+    <span class="label">CRP Priority Balance</span>
     <div class="value" id="disp-bal">—</div>
-    <span style="font-size:10px; color:var(--accent);">kWh remaining</span>
+    <span style="font-size:10px; color:var(--accent);">KG verified for trade</span>
   </div>
 
   <div style="margin-top:auto;">
-    <a href="/phone" style="text-decoration:none; color:var(--accent); font-weight:600; display:block; padding:8px 0;">📱 Field Simulator</a>
+    <a href="/phone" style="text-decoration:none; color:var(--accent); font-weight:600; display:block; padding:8px 0;">📱 USSD Simulator</a>
   </div>
 </div>
 
@@ -275,11 +275,11 @@
   <header class="masthead">
     <div class="mast-left">
       <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" onclick="openSidebar()">☰</button>
-      <a href="/" class="logo display">Mavuno</a>
+      <a href="/" class="logo display">Mavuno Yield</a>
       <span class="role-badge">Farmer</span>
     </div>
     <div class="topbar-actions">
-      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌾 Social</a>
+      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌱 Social</a>
       <button class="topbar-btn" id="notif-btn" onclick="toggleNotifs()" title="Notifications">🔔<span class="unread-dot" id="notif-unread">0</span></button>
       <button class="topbar-btn" id="messages-btn" onclick="openChat()" aria-label="Buyer messages">💬 Messages<span class="unread-dot" id="msg-unread">0</span></button>
       <button class="topbar-btn" id="theme-toggle" style="font-size:14px;" aria-label="Toggle theme">🌙</button>
@@ -294,7 +294,7 @@
       </div>
       <p style="margin:16px 0 0; color:var(--muted); font-size:14px; max-width:480px;">
         Your farm performance is tracked via live soil telemetry. 
-        Maintain a high YPS to unlock better credit rates and market matching.
+        Maintain a high YPS score to unlock premium CRP marketplace access and verified trade tiers.
       </p>
     </div>
     <div class="hero-yps">
@@ -325,8 +325,8 @@
 
   <div style="margin-top:40px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
     <div class="radar-card" style="background:var(--paper);">
-      <span class="label">List Produce for Sale</span>
-      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer. Buyers within range and budget see it instantly.</p>
+      <span class="label">List Produce for Sale (CRP)</span>
+      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer to the Community Resource Platform. Institutional buyers see verified listings instantly.</p>
       <form id="list-form" onsubmit="return postOffer(event)">
         <div class="list-form-row">
           <div>
@@ -342,14 +342,14 @@
             <input type="number" id="of-price" required placeholder="e.g. 1500">
           </div>
         </div>
-        <button class="btn" type="submit" style="width:100%; margin-top:20px;">List Offer</button>
+        <button class="btn" type="submit" style="width:100%; margin-top:20px;">List on CRP Marketplace</button>
       </form>
     </div>
     <div class="radar-card" style="background:var(--paper);">
-      <span class="label">Ask Mavuno AI</span>
-      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Agricultural advisor available 24/7 via CRP logic.</p>
+      <span class="label">Ask Mavuno AI Agronomist</span>
+      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Agricultural advisor conditioned on your farm's live soil data.</p>
       <div style="margin-top:16px;">
-        <textarea id="ask-q" placeholder="How can I improve my coffee yield?" style="width:100%; padding:10px; background:var(--bg-alt); border:1px solid var(--line); color:var(--ink); border-radius:2px; font-family:inherit; font-size:13px; min-height:80px; resize:none;"></textarea>
+        <textarea id="ask-q" placeholder="How can I improve my coffee yield?" style="width:100%; padding:10px; background:var(--bg-alt); border:1px solid var(--line); color:var(--ink); -webkit-text-fill-color: var(--ink); caret-color: var(--ink); border-radius:2px; font-family:inherit; font-size:13px; min-height:80px; resize:none;"></textarea>
         <button class="btn outline" style="width:100%; margin-top:12px; background:transparent; color:var(--ink);" onclick="askMavuno()">Ask AI Advisor</button>
       </div>
       <div id="ask-answer" style="margin-top:16px; padding:12px; background:var(--bg); border-radius:2px; font-size:12px; line-height:1.5; color:var(--ink-soft); border-left: 3px solid var(--gold);">Waiting for question...</div>
@@ -358,23 +358,12 @@
 
   <div style="margin-top:40px; display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
     <div>
-      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">My Listings</h2>
+      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">My CRP Listings</h2>
       <div id="my-listings" class="crop-grid"></div>
     </div>
     <div>
-      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">Recent Payments</h2>
+      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">Trade Settlements</h2>
       <div id="payments-feed"></div>
-    </div>
-  </div>
-
-  <div style="margin-top:40px; display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
-    <div class="radar-card" style="background:var(--bg-alt);">
-      <span class="label">Local Market Insights</span>
-      <div id="market-insight"></div>
-    </div>
-    <div class="radar-card" style="background:var(--bg-alt);">
-      <span class="label">3-Day Weather Planner</span>
-      <div id="weather-planner"></div>
     </div>
   </div>
 
@@ -502,21 +491,21 @@ async function loadData() {
   document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
 
   const score = await jget("/score/" + farmId);
-  const bal = await jget("/ect/balance/" + farmId);
-  document.getElementById("disp-bal").textContent = bal.kwh_remaining || 0;
+  const bal = await jget("/finance/status/" + farmId);
+  document.getElementById("disp-bal").textContent = bal.kg_remaining || 0;
   
   // Update YPS Meter
   const yps = score.yps || 0;
   document.getElementById("yps-value").textContent = yps;
   document.getElementById("yps-ring").style.strokeDasharray = `${(yps/1000)*100}, 100`;
-  document.getElementById("yps-label").textContent = score.credit_health || "Calculating...";
+  document.getElementById("yps-label").textContent = score.trade_health || "Calculating...";
 
-  const hClass = `b-${(score.credit_health || "poor").toLowerCase()}`;
+  const hClass = `b-${(score.trade_health || "poor").toLowerCase()}`;
   document.getElementById("farm-content").innerHTML = `
     <div class="farm-card">
       <div class="f-head">
         <div><h3>${farm.farmer_name}</h3><span style="color:var(--muted); font-size:10px;">${farm.district} · ${farm.crop}</span></div>
-        <span class="badge ${hClass}">${score.credit_health || "N/A"}</span>
+        <span class="badge ${hClass}">${score.trade_health || "N/A"}</span>
       </div>
       <div class="spark-row">
         <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(score.nutrients?.n, "var(--accent)")}</div>
@@ -524,7 +513,7 @@ async function loadData() {
         <div class="spark-box"><span>Potass</span>${nutrientSpark(score.nutrients?.k, "var(--clay)")}</div>
       </div>
       <div style="background:var(--bg); border:1px solid var(--line); border-radius:2px; padding:12px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
-        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">AI Diagnostic</strong><br>
+        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">YPS Signal Diagnostic</strong><br>
         ${(score.diagnostics || []).join('<br>')}
       </div>
       <div class="signal-strip" onclick="pingSensor()">
@@ -552,7 +541,7 @@ async function askMavuno() {
   const q = document.getElementById("ask-q").value; if (!q.trim()) return toast("Please enter a question.");
   document.getElementById("ask-answer").innerHTML = 'Thinking...';
   const r = await jpost("/crp/ask", {farm_id: farmId, question: q});
-  document.getElementById("ask-answer").innerHTML = r.error ? "Error" : `"${r.answer}"<br><span style="font-size:9px; color:var(--muted-soft);">Source: ${r.source}</span>`;
+  document.getElementById("ask-answer").innerHTML = r.error ? "Error" : `"${r.answer}"<br><span style="font-size:9px; color:var(--muted-soft);">Source: ${r.source === 'groq' ? 'Mavuno AI' : 'Rule Bank'}</span>`;
 }
 
 /* --- Training & Certifications --- */

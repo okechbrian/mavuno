@@ -1,14 +1,14 @@
-package com.mavuno.features.farmer
+﻿package com.mavuno.features.farmer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mavuno.data.remote.MavunoApi
 import com.mavuno.data.remote.model.AskRequest
 import com.mavuno.data.remote.model.TelemetryRequest
-import com.mavuno.domain.model.EctBalance
+import com.mavuno.domain.model.YieldValue
 import com.mavuno.domain.model.Farmer
 import com.mavuno.domain.model.MarketPrices
-import com.mavuno.domain.repository.EctBalanceRepository
+import com.mavuno.domain.repository.YieldValueRepository
 import com.mavuno.domain.repository.FarmerRepository
 import com.mavuno.domain.repository.MarketplaceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 data class FarmerDashboardUiState(
     val isLoading: Boolean = true,
     val farmer: Farmer? = null,
-    val ectBalance: EctBalance? = null,
+    val yieldValue: YieldValue? = null,
     val marketPrices: MarketPrices? = null,
     val activeOffersCount: Int = 2,
     val totalHarvestsCount: Int = 14,
@@ -33,7 +33,7 @@ data class FarmerDashboardUiState(
 @HiltViewModel
 class FarmerDashboardViewModel @Inject constructor(
     private val farmerRepository: FarmerRepository,
-    private val ectBalanceRepository: EctBalanceRepository,
+    private val yieldValueRepository: YieldValueRepository,
     private val marketplaceRepository: MarketplaceRepository,
     private val api: MavunoApi
 ) : ViewModel() {
@@ -47,7 +47,7 @@ class FarmerDashboardViewModel @Inject constructor(
             
             combine(
                 farmerRepository.getFarmerById(farmId),
-                ectBalanceRepository.getBalanceForFarm(farmId)
+                yieldValueRepository.getBalanceForFarm(farmId)
             ) { farmer, balance ->
                 var mktPrices: MarketPrices? = null
                 if (farmer != null) {
@@ -61,7 +61,7 @@ class FarmerDashboardViewModel @Inject constructor(
                 _uiState.value.copy(
                     isLoading = false,
                     farmer = farmer,
-                    ectBalance = balance,
+                    yieldValue = balance,
                     marketPrices = mktPrices
                 )
             }.collect { state ->
@@ -111,3 +111,4 @@ class FarmerDashboardViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(aiAnswer = null)
     }
 }
+

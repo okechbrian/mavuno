@@ -1,4 +1,4 @@
-package com.mavuno.data.local
+﻿package com.mavuno.data.local
 
 import com.mavuno.data.local.dao.*
 import com.mavuno.data.local.entity.*
@@ -10,7 +10,7 @@ class DatabaseSeeder @Inject constructor(
     private val farmerDao: FarmerDao,
     private val buyerDao: BuyerDao,
     private val hardwarePingDao: HardwarePingDao,
-    private val ectBalanceDao: EctBalanceDao,
+    private val yieldValueDao: YieldValueDao,
     private val offerDao: OfferDao
 ) {
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
@@ -26,8 +26,8 @@ class DatabaseSeeder @Inject constructor(
         farmerDao.insertFarmers(listOf(demoFarmer))
 
         // Seed Balance
-        ectBalanceDao.insertBalance(
-            EctBalanceEntity(
+        yieldValueDao.insertBalance(
+            YieldValueEntity(
                 farmId = "UG-MBL-0001",
                 balance = 150.75,
                 lastUpdated = System.currentTimeMillis()
@@ -61,7 +61,7 @@ class DatabaseSeeder @Inject constructor(
             isVerified = true,
             totalVolumeKg = 12000,
             activeContracts = 5,
-            ectSpent = 450.0
+            prioritypent = 450.0
         )
         buyerDao.insertProfile(demoBuyer)
 
@@ -82,3 +82,4 @@ class DatabaseSeeder @Inject constructor(
         ))
     }
 }
+

@@ -38,15 +38,15 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindEctBalanceRepository(
-        impl: EctBalanceRepositoryImpl
-    ): EctBalanceRepository
+    abstract fun bindYieldValueRepository(
+        impl: YieldValueRepositoryImpl
+    ): YieldValueRepository
 
     @Binds
     @Singleton
-    abstract fun bindTokenRepository(
-        impl: TokenRepositoryImpl
-    ): TokenRepository
+    abstract fun bindYieldPriorityRepository(
+        impl: YieldPriorityRepositoryImpl
+    ): YieldPriorityRepository
 
     @Binds
     @Singleton

@@ -1,4 +1,4 @@
-package com.mavuno.domain.model
+﻿package com.mavuno.domain.model
 
 data class BuyerProfile(
     val id: String,
@@ -8,5 +8,6 @@ data class BuyerProfile(
     val isVerified: Boolean,
     val totalVolumeKg: Int,
     val activeContracts: Int,
-    val ectSpent: Double
+    val prioritypent: Double
 )
+

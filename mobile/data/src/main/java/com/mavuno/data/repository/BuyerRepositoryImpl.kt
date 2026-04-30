@@ -1,4 +1,4 @@
-package com.mavuno.data.repository
+﻿package com.mavuno.data.repository
 
 import com.mavuno.data.local.dao.BuyerDao
 import com.mavuno.data.local.entity.BatchPaymentEntity
@@ -40,7 +40,7 @@ class BuyerRepositoryImpl @Inject constructor(
                 isVerified = true,
                 totalVolumeKg = 4500,
                 activeContracts = 3,
-                ectSpent = 125.5
+                prioritypent = 125.5
             )
             buyerDao.insertProfile(mockProfile.toEntity())
 
@@ -56,3 +56,4 @@ class BuyerRepositoryImpl @Inject constructor(
         }
     }
 }
+

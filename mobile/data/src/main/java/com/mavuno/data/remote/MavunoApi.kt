@@ -1,4 +1,4 @@
-package com.mavuno.data.remote
+﻿package com.mavuno.data.remote
 
 import com.mavuno.data.remote.model.*
 import com.mavuno.domain.model.Offer
@@ -13,8 +13,8 @@ interface MavunoApi {
     @GET("score/{farmId}")
     suspend fun getScore(@Path("farmId") farmId: String): Response<ScoreResponse>
 
-    @GET("ect/balance/{farmId}")
-    suspend fun getEctBalance(@Path("farmId") farmId: String): Response<EctBalanceResponse>
+    @GET("priority/balance/{farmId}")
+    suspend fun getYieldValue(@Path("farmId") farmId: String): Response<YieldValueResponse>
 
     @POST("sensor/telemetry")
     suspend fun sendTelemetry(@Body request: TelemetryRequest): Response<Unit>
@@ -55,3 +55,4 @@ interface MavunoApi {
     @POST("farms/onboard")
     suspend fun onboardFarm(@Body request: OnboardRequest): Response<OnboardResponse>
 }
+

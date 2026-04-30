@@ -1,4 +1,4 @@
-"""SQLite-backed Community Resource Platform (CRP) with restored AI Advisor."""
+﻿"""SQLite-backed Community Resource Platform (CRP) with restored AI Advisor."""
 from __future__ import annotations
 import json
 import math
@@ -259,7 +259,7 @@ def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
         if not answer:
             crop = ctx.get('crop', 'crop')
             if 'water' in q or 'irrigate' in q or 'dry' in q:
-                answer = f"Based on your YPS {ctx.get('yps')}, {crop} needs consistent moisture. Use your ECT to power the pump early morning."
+                answer = f"Based on your YPS {ctx.get('yps')}, {crop} needs consistent moisture. Use your Trade Priority to power the pump early morning."
             elif 'fertilizer' in q or 'npk' in q or 'grow' in q:
                 answer = f"Your {crop} health is {ctx.get('health')}. Consider adding organic compost to boost Nitrogen and improve yield."
             elif 'harvest' in q or 'yield' in q:
@@ -272,8 +272,9 @@ def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
     if make_public:
         from . import social
         safe_q = _redact_pii(question)
-        post_body = f"🌱 Public Query:\nQ: {safe_q}\nA: {answer}"
+        post_body = f"ðŸŒ± Public Query:\nQ: {safe_q}\nA: {answer}"
         social.create_post(farm_id, post_body)
 
     ledger.write("ADVISE", {"farm_id": farm_id, "source": source, "public": make_public})
     return {"farm_id": farm_id, "answer": answer, "source": source, "context": ctx}
+

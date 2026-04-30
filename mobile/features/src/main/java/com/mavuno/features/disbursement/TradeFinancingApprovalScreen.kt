@@ -17,14 +17,14 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EctDisbursementScreen(
-    viewModel: EctDisbursementViewModel,
+fun TradeFinancingApprovalScreen(
+    viewModel: TradeFinancingApprovalViewModel,
     farmId: String,
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var kwhAmount by remember { mutableStateOf("25") }
-    var pumpNode by remember { mutableStateOf("PUMP-MBL-01") }
+    var kgAmount by remember { mutableStateOf("25") }
+    var aggregationPoint by remember { mutableStateOf("HUB-MBL-01") }
 
     LaunchedEffect(farmId) {
         viewModel.loadFarmer(farmId)
@@ -33,7 +33,7 @@ fun EctDisbursementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Disburse ECT Tokens") },
+                title = { Text("Approve Trade Financing") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -60,18 +60,18 @@ fun EctDisbursementScreen(
             }
 
             OutlinedTextField(
-                value = kwhAmount,
-                onValueChange = { kwhAmount = it },
-                label = { Text("Allocation (kWh)") },
+                value = kgAmount,
+                onValueChange = { kgAmount = it },
+                label = { Text("Allocation (KG)") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIcon = { Icon(Icons.Default.Bolt, contentDescription = null) }
             )
 
             OutlinedTextField(
-                value = pumpNode,
-                onValueChange = { pumpNode = it },
-                label = { Text("Pump Node ID") },
+                value = aggregationPoint,
+                onValueChange = { aggregationPoint = it },
+                label = { Text("Aggregation Point ID") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -79,7 +79,7 @@ fun EctDisbursementScreen(
 
             if (uiState.isSuccess) {
                 Text(
-                    "Token Disbursed Successfully!",
+                    "Financing Approved Successfully!",
                     color = Color(0xFF2E7D32),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -93,8 +93,8 @@ fun EctDisbursementScreen(
             } else {
                 Button(
                     onClick = {
-                        val amount = kwhAmount.toIntOrNull() ?: 0
-                        viewModel.disburseEct(farmId, uiState.farmer?.ypsScore ?: 0, amount, pumpNode)
+                        val amount = kgAmount.toIntOrNull() ?: 0
+                        viewModel.approveFinancing(farmId, uiState.farmer?.ypsScore ?: 0, amount, aggregationPoint)
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     enabled = !uiState.isLoading,
@@ -103,7 +103,7 @@ fun EctDisbursementScreen(
                     if (uiState.isLoading) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                     } else {
-                        Text("Authorize Disbursement")
+                        Text("Approve Priority Financing")
                     }
                 }
             }

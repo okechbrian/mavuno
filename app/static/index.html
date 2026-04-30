@@ -2,18 +2,18 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno Protocol — Where soil becomes credit</title>
+<title>Mavuno Yield — Verified Soil Intelligence for Trusted Agricultural Trade</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#1B4332" />
-<meta name="description" content="Mavuno Protocol: Where soil becomes credit. A soil-backed energy credit and agricultural marketplace for African smallholder farmers." />
-<meta property="og:title" content="Mavuno Protocol — Where Soil Becomes Credit" />
-<meta property="og:description" content="Unlocking credit for the last mile. Soil data replaces collateral for African smallholder farms. SOIL DATA · ENERGY CREDIT · FARMER PROSPERITY." />
+<meta name="description" content="Mavuno Yield: Verified Soil Intelligence for Trusted Agricultural Trade. Where soil data becomes trusted trade using YPS and CRP." />
+<meta property="og:title" content="Mavuno Yield — Verified Soil Intelligence" />
+<meta property="og:description" content="Unlocking trusted trade for the last mile. Soil data replaces collateral for African smallholder farms. SOIL SIGNALS · YPS SCORE · CRP ACCESS." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://mavuno-prototype.vercel.app/" />
 <meta property="og:image" content="https://mavuno-prototype.vercel.app/static/img/mavuno-main.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Mavuno Protocol — Where Soil Becomes Credit" />
-<meta name="twitter:description" content="Unlocking credit for African smallholder farms using soil data instead of collateral." />
+<meta name="twitter:title" content="Mavuno Yield — Verified Soil Intelligence" />
+<meta name="twitter:description" content="Unlocking trusted agricultural trade using soil data instead of collateral." />
 <meta name="twitter:image" content="https://mavuno-prototype.vercel.app/static/img/mavuno-main.png" />
 <link rel="manifest" href="/static/manifest.json" />
 <link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
@@ -141,26 +141,19 @@
   .nav-link:hover { color: var(--forest); background: var(--bg-alt); }
   :root[data-theme="dark"] .nav-link:hover { color: var(--gold-soft); }
 
-  /* Demo badge — subtle hackathon marker */
-  .demo-badge {
+  /* Production Ready badge */
+  .prod-badge {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px; border-radius: 999px;
-    background: color-mix(in srgb, var(--gold) 18%, transparent);
-    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700;
-    color: var(--earth);
+    background: color-mix(in srgb, var(--good) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--good) 30%, transparent);
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+    color: var(--good);
   }
-  :root[data-theme="dark"] .demo-badge { color: var(--gold-soft); }
-  .demo-badge .pulse {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
-    box-shadow: 0 0 0 0 var(--gold); animation: pulse 2.4s var(--ease) infinite;
+  :root[data-theme="dark"] .prod-badge { color: var(--good); border-color: var(--good); }
+  .prod-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--good);
   }
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 60%, transparent); }
-    70%  { box-shadow: 0 0 0 8px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
-  }
-  @media (prefers-reduced-motion: reduce) { .demo-badge .pulse { animation: none; } }
 
   /* Skip link — keyboard accessibility */
   .skip-link {
@@ -320,12 +313,12 @@
   .section-sub { color: var(--muted); font-size: 15px; margin: 0 0 36px; max-width: 64ch; }
 
   .role-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
   }
   .role-card {
     position: relative; overflow: hidden; isolation: isolate;
     background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
-    padding: 28px; cursor: pointer; text-decoration: none; color: inherit;
+    padding: 24px; cursor: pointer; text-decoration: none; color: inherit;
     transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
   }
   .role-card::before {
@@ -339,10 +332,10 @@
     box-shadow: 0 24px 60px rgba(27,67,50,0.16), 0 2px 6px rgba(27,67,50,0.06);
   }
   .role-card .role-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    display: grid; place-items: center; font-size: 22px;
+    width: 44px; height: 44px; border-radius: 10px;
+    display: grid; place-items: center; font-size: 20px;
     background: color-mix(in srgb, var(--gold) 15%, transparent);
-    color: var(--forest); margin-bottom: 18px;
+    color: var(--forest); margin-bottom: 16px;
     transition: background var(--t-med), transform var(--t-med);
   }
   :root[data-theme="dark"] .role-card .role-icon { color: var(--gold-soft); }
@@ -350,15 +343,15 @@
     background: var(--forest); color: var(--cream); transform: rotate(-6deg) scale(1.05);
   }
   .role-card h3 {
-    font-family: "Fraunces", serif; font-weight: 400; font-size: 22px;
+    font-family: "Fraunces", serif; font-weight: 400; font-size: 20px;
     letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink);
   }
   .role-card p {
-    font-size: 14px; color: var(--muted); margin: 0 0 18px; line-height: 1.55;
+    font-size: 13px; color: var(--muted); margin: 0 0 16px; line-height: 1.5;
   }
   .role-card .role-cta {
     display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
     color: var(--forest);
   }
   :root[data-theme="dark"] .role-card .role-cta { color: var(--gold-soft); }
@@ -425,12 +418,15 @@
   }
 
   /* ============ MOBILE ============ */
+  @media (max-width: 1100px) {
+    .role-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   @media (max-width: 960px) {
     .masthead-inner { padding: 12px 18px; gap: 8px; }
     .brand .wordmark .sub { display: none; }
     .nav-link { display: none; }
     .nav-link.keep-mobile { display: inline-flex; padding: 8px 12px; font-size: 12px; }
-    .demo-badge { display: none; }
+    .prod-badge { display: none; }
     .hero {
       grid-template-columns: 1fr; gap: 28px;
       padding: 36px 18px 24px;
@@ -456,20 +452,20 @@
 
 <header class="masthead">
   <div class="masthead-inner">
-    <a class="brand" href="/" aria-label="Mavuno Protocol home">
+    <a class="brand" href="/" aria-label="Mavuno Yield home">
       <div class="logo-square" role="img" aria-label="Mavuno mark"></div>
       <div class="wordmark">
         <span class="name">Mavuno</span>
-        <span class="sub">Protocol</span>
+        <span class="sub">Yield</span>
       </div>
-      <span class="demo-badge" aria-label="Demo build">
-        <span class="pulse" aria-hidden="true"></span>
-        Hackathon Demo
+      <span class="prod-badge" aria-label="Production build">
+        <span class="dot" aria-hidden="true"></span>
+        v2.0 Stable
       </span>
     </a>
     <nav class="primary" aria-label="Primary">
       <a class="nav-link keep-mobile" href="#roles">Sign in</a>
-      <a class="nav-link" href="/phone">USSD demo</a>
+      <a class="nav-link" href="/phone">USSD simulator</a>
       <a class="nav-link" href="/feed-page">Mavuno Social</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
     </nav>
@@ -480,29 +476,29 @@
 
 <section class="hero">
   <div class="lede rise">
-    <span class="eyebrow">Operations · Uganda</span>
-    <h1 class="display">Where soil <em>becomes</em> credit.</h1>
+    <span class="eyebrow">Production · Uganda</span>
+    <h1 class="display">Where soil data <em>becomes</em> trusted trade.</h1>
     <p class="standfirst">
-      Mavuno is the agricultural operating system for African smallholder farms. A yield-probability score, calibrated on seven live soil signals, replaces collateral as the gateway to irrigation finance via GPS-locked Energy Credits. On the same USSD session, the <strong>Community Resource Platform</strong> delivers live market prices, auto-matches farmers with institutional buyers, and provides AI-driven agronomy advice.
+      Mavuno Yield is the verified intelligence layer for African agricultural trade. A Yield Probability Score (YPS), calibrated on seven soil signals, unlocks access to the <strong>Community Resource Platform (CRP)</strong> — matching farmers with premium buyers and providing AI-driven agronomy advice.
     </p>
     <div class="tagline-strip">
-      <span>Soil Data</span><span class="dot"></span>
-      <span>Energy Credit</span><span class="dot"></span>
-      <span>Farmer Prosperity</span>
+      <span>Soil Signals</span><span class="dot"></span>
+      <span>YPS Score</span><span class="dot"></span>
+      <span>CRP Priority Access</span>
     </div>
   </div>
 
   <aside class="rise d1">
     <div class="login-card">
-      <div class="card-logo" role="img" aria-label="Mavuno"></div>
       <h2 class="display">Sign in</h2>
-      <p class="sub">Choose your role to access your dashboard.</p>
+      <p class="sub">Access your role-based YPS + CRP dashboard.</p>
       <form id="login-form" onsubmit="handleLogin(event)" autocomplete="off">
         <label class="fld" for="login-role">Role</label>
         <select id="login-role" required onchange="updateRole()" autocomplete="off">
           <option value="farmer" selected>Farmer</option>
           <option value="buyer">Institutional Buyer</option>
-          <option value="agent">SACCO Agent</option>
+          <option value="agent">Agent / Supervisor</option>
+          <option value="supervisor">Regional Coordinator</option>
         </select>
 
         <div id="id-field-wrap">
@@ -518,7 +514,6 @@
       <p class="consent">
         By signing in you agree to our
         <a href="/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a>
-        and acknowledge our data practices.
       </p>
     </div>
   </aside>
@@ -538,36 +533,42 @@
     <div class="lbl">Live soil signals</div>
   </div>
   <div class="stat rise d3">
-    <div class="num">USSD<small>·</small></div>
-    <div class="lbl">No-smartphone first</div>
+    <div class="num">YPS<small>·</small></div>
+    <div class="lbl">Verification engine</div>
   </div>
 </section>
 
 <section class="roles" id="roles" aria-label="Choose your role">
   <span class="section-eyebrow">Choose your dashboard</span>
-  <h2 class="section-title">Three doors, <em>one ledger</em>.</h2>
+  <h2 class="section-title">Verified data, <em>global trade</em>.</h2>
   <p class="section-sub">
-    Every role sees a different lens on the same hash-chained source of truth. Farmers see soil and credit; agents see queues and approvals; buyers see open offers and matched produce.
+    Every role accesses the same hash-chained source of truth. Farmers see soil signals and YPS; Agents verify and onboard; Buyers match with verified harvests; Supervisors monitor regional risk.
   </p>
 
   <div class="role-grid">
     <a class="role-card rise d1" href="#" onclick="quickPick('farmer'); return false;" aria-label="Farmer sign-in shortcut">
       <div class="role-icon" aria-hidden="true">🌱</div>
       <h3>Farmer</h3>
-      <p>Check your YPS score, request an Energy Credit, list produce, and ask the AI agronomist — all on USSD or the dashboard.</p>
-      <span class="role-cta">Sign in as farmer</span>
+      <p>Check your YPS score, list harvests for CRP Priority, and ask the AI agronomist — all on USSD or Web.</p>
+      <span class="role-cta">Sign in</span>
     </a>
     <a class="role-card rise d2" href="#" onclick="quickPick('agent'); return false;" aria-label="Agent sign-in shortcut">
       <div class="role-icon" aria-hidden="true">⚖️</div>
-      <h3>SACCO Agent</h3>
-      <p>Onboard farmers and buyers, approve credit requests, and audit every event in the hash-chained ledger.</p>
-      <span class="role-cta">Sign in as agent</span>
+      <h3>Agent</h3>
+      <p>Verify farm data, onboard new members, and manage the local CRP ledger entries.</p>
+      <span class="role-cta">Sign in</span>
     </a>
     <a class="role-card rise d3" href="#" onclick="quickPick('buyer'); return false;" aria-label="Buyer sign-in shortcut">
       <div class="role-icon" aria-hidden="true">📦</div>
-      <h3>Institutional Buyer</h3>
-      <p>Browse live offers, set per-region floor prices, auto-match with verified farms, and settle through Mavuno Pay.</p>
-      <span class="role-cta">Sign in as buyer</span>
+      <h3>Buyer</h3>
+      <p>Browse live YPS-verified offers, set floor prices, and settle regional trade via Mavuno Pay.</p>
+      <span class="role-cta">Sign in</span>
+    </a>
+    <a class="role-card rise d4" href="#" onclick="quickPick('supervisor'); return false;" aria-label="Supervisor sign-in shortcut">
+      <div class="role-icon" aria-hidden="true">📈</div>
+      <h3>Supervisor</h3>
+      <p>Aggregate YPS trends, monitor regional credit risk, and export coordinator reports.</p>
+      <span class="role-cta">Sign in</span>
     </a>
   </div>
 </section>
@@ -578,25 +579,25 @@
   <div class="colophon-inner">
     <div>
       <div class="footer-logo" role="img" aria-label="Mavuno"></div>
-      <h4>Mavuno Protocol</h4>
-      <p class="mission">Replacing collateral with soil data, and connecting smallholder farms to guaranteed markets and energy.</p>
+      <h4>Mavuno Yield</h4>
+      <p class="mission">Replacing uncertainty with soil intelligence, and connecting smallholder farms to trusted global markets.</p>
     </div>
     <div>
       <h4>Protocol</h4>
       <ul>
-        <li>Yield Probability Score</li>
-        <li>Energy Credit Token</li>
+        <li>Yield Probability Score (YPS)</li>
+        <li>Soil Signal Intelligence</li>
         <li>Hash-chained ledger</li>
         <li>USSD-first delivery</li>
       </ul>
     </div>
     <div>
-      <h4>Marketplace</h4>
+      <h4>CRP Engine</h4>
       <ul>
-        <li>Live price oracle</li>
-        <li>Buyer auto-match</li>
-        <li>AI agronomist</li>
-        <li>Mavuno Pay settlement</li>
+        <li>Premium Buyer Matching</li>
+        <li>Regional Price Oracle</li>
+        <li>AI Agronomist</li>
+        <li>Mavuno Pay Settlement</li>
       </ul>
     </div>
     <div>
@@ -610,7 +611,7 @@
     </div>
   </div>
   <div class="fineprint">
-    <span>Mavuno Protocol · Uganda · Future Makers Hackathon 2026</span>
+    <span>Mavuno Yield · Production Release · Uganda</span>
     <span id="fineprint-time">—</span>
   </div>
 </footer>
@@ -640,7 +641,7 @@ function tick() {
 }
 tick(); setInterval(tick, 30000);
 
-const ROLE_LABELS = { farmer: "Farmer", buyer: "Buyer", agent: "Agent" };
+const ROLE_LABELS = { farmer: "Farmer", buyer: "Buyer", agent: "Agent", supervisor: "Supervisor" };
 function updateRole() {
   const role = document.getElementById("login-role").value;
   const idWrap = document.getElementById("id-field-wrap");
@@ -648,11 +649,11 @@ function updateRole() {
   const pinInput = document.getElementById("login-pin");
   const submitBtn = document.getElementById("submit-btn");
 
-  if (role === "agent") {
+  if (role === "agent" || role === "supervisor") {
     idWrap.style.display = "none";
     idInput.required = false;
     idInput.value = "";
-    pinInput.placeholder = "Agent password";
+    pinInput.placeholder = (role === "agent" ? "Agent" : "Supervisor") + " password";
   } else if (role === "farmer") {
     idWrap.style.display = "";
     idInput.required = true;
@@ -674,7 +675,7 @@ function quickPick(role) {
   const card = document.querySelector(".login-card");
   card.scrollIntoView({behavior:"smooth", block:"center"});
   setTimeout(() => {
-    if (role === "agent") document.getElementById("login-pin").focus();
+    if (role === "agent" || role === "supervisor") document.getElementById("login-pin").focus();
     else document.getElementById("login-id").focus();
   }, 380);
 }
@@ -690,7 +691,7 @@ function toast(msg) {
 async function handleLogin(e) {
   e.preventDefault();
   const role = document.getElementById("login-role").value;
-  const id_or_phone = role === "agent" ? "admin" : document.getElementById("login-id").value.trim();
+  const id_or_phone = (role === "agent" || role === "supervisor") ? "admin" : document.getElementById("login-id").value.trim();
   const pin_or_password = document.getElementById("login-pin").value;
   const btn = document.getElementById("submit-btn");
   btn.disabled = true;

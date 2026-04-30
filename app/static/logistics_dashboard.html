@@ -2,22 +2,24 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno Logistics Hub</title>
+<title>Mavuno Yield — Logistics Hub</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
+<link rel="apple-touch-icon" href="/static/img/mavuno-mono.png" />
+<link rel="manifest" href="/static/manifest.json" />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
-    --accent: #a0542c; --accent-soft: #c87a52; --gold: #a17b2c; --bad: #8a2f24;
-    --brand-green: #1B4332;
+    --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
     --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
     --line: #2d2b21; --line-soft: #242219;
-    --accent: #c87a52; --accent-soft: #d4a656; --gold: #d4a656; --bad: #d07668;
+    --accent: #78a163; --accent-soft: #4a6b36; --clay: #c87a52; --gold: #d4a656; --bad: #d07668;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
@@ -42,7 +44,7 @@
   .r-head { display: flex; justify-content: space-between; align-items: center; }
   .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
   .s-pending { background: var(--bg-alt); color: var(--muted); }
-  .s-optimized { background: rgba(46, 67, 50, 0.1); color: var(--brand-green); }
+  .s-optimized { background: rgba(46, 77, 31, 0.1); color: var(--accent); }
   
   .btn {
     padding: 12px 20px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
@@ -62,24 +64,24 @@
 
 <div class="sidebar">
   <div>
-    <div class="display" style="font-size: 24px; font-weight: 600;">Mavuno</div>
-    <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted);">Logistics Hub</div>
+    <div class="display" style="font-size: 24px; font-weight: 600;">Mavuno Yield</div>
+    <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted);">Logistics Coordination</div>
   </div>
 
   <div class="radar-card" style="background:var(--bg-alt); padding:20px; border:1px solid var(--line); border-radius:4px;">
-    <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">Pending Loads</span>
+    <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">CRP Loads Pending</span>
     <div class="display" style="font-size:32px;" id="pending-count">0</div>
   </div>
 
   <div class="radar-card" style="background:rgba(212, 166, 86, 0.05); padding:16px; border:1px solid var(--gold); border-radius:4px;">
-    <span style="font-size:9px; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:8px; font-weight:700;">AI Strategy Advisor</span>
+    <span style="font-size:9px; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:8px; font-weight:700;">CRP Dispatch Advisor</span>
     <div id="ai-advice" style="font-size:11px; font-style:italic; line-height:1.4; color:var(--ink-soft);">
-      Click below to generate a dispatch strategy based on current loads.
+      Generating harvest collection strategies based on regional YPS-verified trade.
     </div>
     <button class="btn outline" style="width:100%; margin-top:12px; font-size:9px; border-color:var(--gold); color:var(--gold);" id="ai-btn" onclick="askAI()">Generate Strategy</button>
   </div>
 
-  <button class="btn" style="background:var(--brand-green); border-color:var(--brand-green); color:white;" onclick="optimizeRoutes()">✨ Optimize Routes</button>
+  <button class="btn" style="background:var(--accent); border-color:var(--accent); color:white;" onclick="optimizeRoutes()">✨ Optimize Collection</button>
 
   <div style="margin-top:auto;">
     <a href="/logout" style="text-decoration:none; color:var(--bad); font-weight:600; display:block;">← Logout</a>
@@ -125,7 +127,7 @@ async function loadData() {
     container.innerHTML = pending.map(p => `
       <div class="route-card">
         <div class="r-head">
-          <strong style="font-size:16px;">Collection: ${p.payment_id}</strong>
+          <strong style="font-size:16px;">Verified Harvest: ${p.payment_id}</strong>
           <span class="status-pill s-pending">Pending Pickup</span>
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; font-size:12px;">
@@ -139,7 +141,7 @@ async function loadData() {
             <strong>${p.crop.toUpperCase()}</strong>
           </div>
           <div>
-            <span style="color:var(--muted); text-transform:uppercase; font-size:9px;">Settled At</span><br>
+            <span style="color:var(--muted); text-transform:uppercase; font-size:9px;">CRP Settlement</span><br>
             <strong>${new Date(p.settled_at*1000).toLocaleTimeString()}</strong>
           </div>
         </div>
@@ -150,7 +152,7 @@ async function loadData() {
       </div>
     `).join("");
   } else {
-    container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No active settlements for collection.</div>';
+    container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No active CRP settlements for collection.</div>';
   }
 }
 
@@ -167,13 +169,13 @@ async function optimizeRoutes() {
 
   container.innerHTML = `
     <div style="margin-bottom:24px; display:flex; align-items:center; gap:12px;">
-      <span class="status-pill s-optimized">Showing Optimized Clusters</span>
+      <span class="status-pill s-optimized">Showing Optimized Collection Clusters</span>
       <button class="btn outline" style="font-size:9px; padding:6px 12px;" onclick="isOptimizedView=false; loadData();">Reset View</button>
     </div>
   ` + routes.map(r => `
-    <div class="route-card" style="border-left: 6px solid var(--brand-green);">
+    <div class="route-card" style="border-left: 6px solid var(--accent);">
       <div class="r-head">
-        <strong style="font-size:18px; color:var(--brand-green);">Route ${r.id} (${r.district})</strong>
+        <strong style="font-size:18px; color:var(--accent);">Route ${r.id}</strong>
         <span class="status-pill s-optimized">${r.total_stops} Pickups Grouped</span>
       </div>
       <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
@@ -182,13 +184,13 @@ async function optimizeRoutes() {
             <span style="font-weight:800; color:var(--accent);">${idx+1}</span>
             <div style="flex:1;">
               <div style="font-weight:600;">${s.farmer_name}</div>
-              <div style="font-size:10px; color:var(--muted);">${s.crop.toUpperCase()} · ${s.pid}</div>
+              <div style="font-size:10px; color:var(--muted);">${s.crop.toUpperCase()} · Verified</div>
             </div>
             <button class="btn outline" style="font-size:9px; padding:4px 8px;" onclick="window.open('https://www.google.com/maps?q=${s.lat},${s.lng}')">MAP</button>
           </div>
         `).join("")}
       </div>
-      <button class="btn" style="margin-top:12px; background:var(--brand-green); border-color:var(--brand-green); color:white;">Dispatch Bulk Carrier</button>
+      <button class="btn" style="margin-top:12px; background:var(--accent); border-color:var(--accent); color:white;">Dispatch Bulk Carrier</button>
     </div>
   `).join("");
 }

@@ -33,7 +33,7 @@ The root address (`http://localhost:8001`) features a secure, multi-role landing
 - **Farmers** sign in with their Farm ID (or phone number) and PIN to access their personalized dashboard, YPS score, and the AI agronomist.
 - **Buyers** sign in with their Buyer ID (or phone number) and PIN to view a live, filtered marketplace of crops matching their pre-verified floor prices.
 
-All sessions use HMAC-signed, HttpOnly cookies (24h TTL). Dashboard, sensor, ECT, ledger, and CRP routes require an authenticated session; resource routes are owner-scoped (a farmer can only see their own farm; agents see all). Per-IP login throttling is applied on the sign-in endpoint. Default credentials are not displayed in the UI.
+All sessions use HMAC-signed, HttpOnly cookies (24h TTL). Dashboard, sensor, Trade Priority, ledger, and CRP routes require an authenticated session; resource routes are owner-scoped (a farmer can only see their own farm; agents see all). Per-IP login throttling is applied on the sign-in endpoint. Default credentials are not displayed in the UI.
 
 ### 2. The Agent Cockpit (Decision Support System)
 The main dashboard serves as an operations center for SACCOs and Co-ops. It features:
@@ -55,7 +55,7 @@ A complete payment state machine wired into the marketplace:
 - **Dashboards:** the buyer dashboard polls `GET /payments/status/{id}` every 1.5 s until settled/failed and shows a toast; the farmer dashboard's **Payments Received** feed renders `GET /payments/farmer/{id}`.
 - **PSP swap path:** `app/payments.py::_psp_initiate` is the one function to replace for production — wire it to Flutterwave or MTN MoMo and the rest of the flow (DB writes, ledger, receipts) is unchanged.
 
-### 2d. Mavuno Chat — offer-scoped buyer ↔ farmer messaging
+### 2d. Mavuno Chat — offer-scoped buyer → farmer messaging
 A long-poll chat layer that pins conversations to specific offers, so judges (and real users) can see the *"is this Robusta? what bag size? when harvested?"* exchange that closes a deal:
 - **`POST /chat/threads`** — buyer-initiated, idempotent on `(farm_id, buyer_id, offer_id)`. Writes `CHAT_OPEN` to the ledger.
 - **`POST /chat/{thread_id}/messages`** — body capped at 500 chars, **PII-redacted on write** (phone numbers and farm IDs replaced with `[redacted]`), rate-limited 1 msg / 2 s per `sender_id`. Writes `CHAT_MSG` to the ledger — **payload never carries the body**, only structural identifiers.
@@ -93,13 +93,13 @@ Mavuno is not just software; it is an IoT-integrated protocol. Real physical har
 7. **Rainfall (mm)**
 
 **How to deploy this practically and affordably?**
-Please read the [Hardware & Practical Deployment Strategy](docs/HARDWARE_DEPLOYMENT.md) document to see how we use **Sentinel Nodes** to drop the hardware cost to **~$4.00 per farmer**, and how we use shared solar hubs to distribute water without putting farmers in asset debt.
+Please read the [Hardware & Practical Deployment Strategy](docs/HARDWARE_DEPLOYMENT.md) document to see how we use **Sentinel Nodes** to drop the hardware cost to **~$4.00 per farmer**, and how we use shared collection hubs to distribute water without putting farmers in asset debt.
 
 
 ### 5. Cryptographic Security & Offline Verification
-Tokens are signed using HMAC-SHA256. To demonstrate that remote solar pumps can verify these tokens *without* an internet connection, run the offline verification script:
+Tokens are signed using HMAC-SHA256. To demonstrate that remote collection hubs can verify these tokens *without* an internet connection, run the offline verification script:
 ```bash
-python3 offline_pump_demo.py
+python3 offline_hub_demo.py
 ```
 This script proves that the system remains resilient to rural infrastructure failures.
 
@@ -116,7 +116,7 @@ See `.env.example`. Never commit a real `.env` file. The `.gitignore` excludes `
 
 | Variable | Purpose |
 |---|---|
-| `HMAC_SECRET` | Signs ECT tokens, sessions, payment receipts, and the ledger hash chain. Rotate to invalidate all sessions. |
+| `HMAC_SECRET` | Signs Trade Priority tokens, sessions, payment receipts, and the ledger hash chain. Rotate to invalidate all sessions. |
 | `AGENT_PASSWORD` | Override the default agent sign-in password. Set this in production. |
 | `GROQ_API_KEY` | Optional. Enables LLM-backed agronomy advice. Falls back to rule bank when absent. |
 | `PUBLIC_BASE_URL` | Used for cookie `Secure` flag detection, absolute links, and the mocked PSP callback URL. |

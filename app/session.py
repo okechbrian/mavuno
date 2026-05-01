@@ -12,7 +12,7 @@ import time
 import json
 from typing import Optional, List
 
-from fastapi import Cookie, HTTPException, Request, Response, status
+from fastapi import Cookie, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from .config import HMAC_SECRET, PUBLIC_BASE_URL
@@ -94,6 +94,17 @@ def issue_session(response: Response, role: str, subject: str) -> str:
 
 def clear_session(response: Response) -> None:
     response.delete_cookie(COOKIE_NAME, path="/")
+
+def current_user(request: Request) -> Optional[dict]:
+    cookie_token = request.cookies.get(COOKIE_NAME)
+    if cookie_token:
+        return decode_token(cookie_token)
+        
+    auth = request.headers.get("Authorization")
+    if auth and auth.startswith("Bearer "):
+        return decode_token(auth[7:])
+        
+    return None
 
 async def get_current_user(
     request: Request,

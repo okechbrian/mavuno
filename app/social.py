@@ -16,7 +16,8 @@ from .models import Post, Reaction, PostFlag, FarmerProfile
 BODY_MAX = 300
 ALLOWED_EMOJI = {"\U0001f331", "\U0001f525", "❤️", "\U0001f44f", "❤"}
 
-_BANNED_PATH = database.DATA_DIR / "banned_words.json"
+from .config import DATA_DIR
+_BANNED_PATH = DATA_DIR / "banned_words.json"
 try:
     _BANNED_WORDS = [
         w.lower() for w in json.loads(_BANNED_PATH.read_text()).get("banned", []) if w

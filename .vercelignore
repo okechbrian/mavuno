@@ -12,4 +12,5 @@ server.log
 .venv*
 .gradle/
 build/
+mobile/
 

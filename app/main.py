@@ -23,7 +23,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import crp, finance, ledger, scorer, ussd, database, payments, chat, social, pdf, training
-from .config import HMAC_SECRET
+from .config import HMAC_SECRET, ROOT
 from .schemas import (
     FarmerOnboardRequest, BuyerOnboardRequest, TelemetryRecord, ErrorResponse,
     PriorityApproveRequest, CRPAskRequest, PaymentBatchRequest, TrainingCompleteRequest,
@@ -66,7 +66,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"error": "validation_error", "detail": exc.errors(), "path": request.url.path}
     )
 
-app.mount("/static", StaticFiles(directory=database.ROOT / "app" / "static"), name="static")
+app.mount("/static", StaticFiles(directory=ROOT / "app" / "static"), name="static")
 
 # --- Demo credentials (overridable via env in production) -------------------
 import os as _os
@@ -133,15 +133,15 @@ def root(request: Request):
             return RedirectResponse(f"/buyer/{user['subject']}")
         if user["role"] == "logistics":
             return RedirectResponse("/logistics")
-    return FileResponse(database.ROOT / "app" / "static" / "index.html")
+    return FileResponse(ROOT / "app" / "static" / "index.html")
 
 
 @app.get("/terms", response_class=HTMLResponse)
-def terms(): return FileResponse(database.ROOT / "app" / "static" / "terms.html")
+def terms(): return FileResponse(ROOT / "app" / "static" / "terms.html")
 
 
 @app.get("/phone", response_class=HTMLResponse)
-def phone(): return FileResponse(database.ROOT / "app" / "static" / "phone.html")
+def phone(): return FileResponse(ROOT / "app" / "static" / "phone.html")
 
 
 @app.get("/crp/prices")
@@ -225,29 +225,29 @@ def me(user: dict = Depends(require_user())):
 
 @app.get("/agent", response_class=HTMLResponse)
 def agent_dash(user: dict = Depends(require_user("agent"))):
-    return FileResponse(database.ROOT / "app" / "static" / "agent_dashboard.html")
+    return FileResponse(ROOT / "app" / "static" / "agent_dashboard.html")
 
 
 @app.get("/farmer/{farm_id}", response_class=HTMLResponse)
 def farmer_dash(farm_id: str, user: dict = Depends(require_user("farmer", "agent"))):
     require_owner_or_agent("farmer", farm_id, user)
-    return FileResponse(database.ROOT / "app" / "static" / "farmer_dashboard.html")
+    return FileResponse(ROOT / "app" / "static" / "farmer_dashboard.html")
 
 
 @app.get("/buyer/{buyer_id}", response_class=HTMLResponse)
 def buyer_dash(buyer_id: str, user: dict = Depends(require_user("buyer", "agent"))):
     require_owner_or_agent("buyer", buyer_id, user)
-    return FileResponse(database.ROOT / "app" / "static" / "buyer_dashboard.html")
+    return FileResponse(ROOT / "app" / "static" / "buyer_dashboard.html")
 
 
 @app.get("/logistics", response_class=HTMLResponse)
 def logistics_dash(user: dict = Depends(require_user("logistics", "agent"))):
-    return FileResponse(database.ROOT / "app" / "static" / "logistics_dashboard.html")
+    return FileResponse(ROOT / "app" / "static" / "logistics_dashboard.html")
 
 
 @app.get("/supervisor", response_class=HTMLResponse)
 def supervisor_dash(user: dict = Depends(require_user("supervisor"))):
-    return FileResponse(database.ROOT / "app" / "static" / "supervisor_dashboard.html")
+    return FileResponse(ROOT / "app" / "static" / "supervisor_dashboard.html")
 
 
 # ============================================================================
@@ -697,7 +697,7 @@ class FlagReq(BaseModel):
 
 @app.get("/feed-page", response_class=HTMLResponse)
 def feed_page(user: dict = Depends(require_user())):
-    return FileResponse(database.ROOT / "app" / "static" / "feed.html")
+    return FileResponse(ROOT / "app" / "static" / "feed.html")
 
 
 @app.post("/feed")

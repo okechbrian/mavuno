@@ -9,7 +9,7 @@ def _load_model():
     """Optional model loader. Fallback to simple logic if dependencies or file missing."""
     try:
         import joblib
-        from .database import DATA_DIR
+        from .config import DATA_DIR
         path = DATA_DIR / "yps_model.pkl"
         if path.exists():
             return joblib.load(path)

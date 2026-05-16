@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Farmer Onboarding - Mavuno Protocol</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2416; --muted: #74705f; --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --accent: #2e4d1f; --gold: #a17b2c; --bad: #8a2f24;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: "Inter", sans-serif; font-size: 13px; margin: 0; display: flex; justify-content: center; padding: 40px 20px; }
+  .display { font-family: "Fraunces", serif; }
+  .card { background: var(--paper); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); width: 100%; max-width: 540px; padding: 40px; }
+  
+  .step-container { display: none; animation: fadeIn 0.3s; }
+  .step-container.active { display: block; }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .progress-bar { display: flex; justify-content: space-between; margin-bottom: 32px; position: relative; }
+  .progress-bar::before { content: ""; position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: var(--line); z-index: 1; }
+  
+  .step-indicator { display: flex; flex-direction: column; align-items: center; z-index: 2; gap: 8px; }
+  .step-circle { width: 26px; height: 26px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px; color: var(--muted); transition: all 0.3s; }
+  .step-label { font-size: 10px; text-transform: uppercase; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; }
+  
+  .step-indicator.active .step-circle { border-color: var(--accent); color: var(--accent); background: var(--paper); }
+  .step-indicator.active .step-label { color: var(--accent); }
+  .step-indicator.completed .step-circle { background: var(--accent); border-color: var(--accent); color: white; }
+  .step-indicator.completed .step-label { color: var(--accent); }
+  
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.05em; }
+  .form-group input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-alt); color: var(--ink); font-family: inherit; font-size: 14px; box-sizing: border-box; }
+  
+  .btn { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 4px; font-weight: 600; font-size: 14px; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.9; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  
+  .hardware-card { border: 1px solid var(--line); border-radius: 6px; padding: 20px; background: var(--bg-alt); display: flex; gap: 20px; align-items: center; margin-bottom: 24px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; padding: 12px 24px; border-radius: 4px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div style="text-align: center; margin-bottom: 32px;">
+    <h1 class="display" style="font-size: 28px; margin: 0 0 8px 0;">Complete Onboarding</h1>
+    <p style="color: var(--muted); margin: 0;">Follow these steps to unlock the Mavuno Protocol.</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="step-indicator" id="ind-kyc">
+      <div class="step-circle">1</div>
+      <div class="step-label">Identity</div>
+    </div>
+    <div class="step-indicator" id="ind-device">
+      <div class="step-circle">2</div>
+      <div class="step-label">Hardware</div>
+    </div>
+    <div class="step-indicator" id="ind-agent">
+      <div class="step-circle">3</div>
+      <div class="step-label">Verify</div>
+    </div>
+  </div>
+
+  <!-- Step 1: KYC -->
+  <div id="step-kyc" class="step-container">
+    <h2 style="font-size: 18px; margin-top: 0;">Upload National ID</h2>
+    <p style="color: var(--muted); margin-bottom: 24px;">To access the CRP marketplace, we require a valid government-issued ID to prevent fraud and ensure trust.</p>
+    
+    <div class="form-group">
+      <label>National ID Number (NIN)</label>
+      <input type="text" id="kyc-nin" placeholder="CM1234567890XX">
+    </div>
+    <div class="form-group">
+      <label>Upload ID Photo</label>
+      <div style="border: 2px dashed var(--line); padding: 32px; text-align: center; border-radius: 4px; background: var(--bg-alt); cursor: pointer;">
+        <span style="font-size: 24px;">📷</span><br>
+        <span style="font-size: 12px; color: var(--muted); font-weight: 600;">Tap to upload photo</span>
+      </div>
+    </div>
+    <button class="btn" onclick="submitKYC()" id="btn-kyc">Submit & Continue</button>
+  </div>
+
+  <!-- Step 2: Device Purchase -->
+  <div id="step-device" class="step-container">
+    <h2 style="font-size: 18px; margin-top: 0;">Get Your YPS Sensor</h2>
+    <p style="color: var(--muted); margin-bottom: 24px;">The Mavuno YPS Node tracks 7 live soil signals to generate your Yield Probability Score.</p>
+    
+    <div class="hardware-card">
+      <div style="width: 60px; height: 60px; background: var(--paper); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 32px; border: 1px solid var(--line);">📡</div>
+      <div>
+        <div style="font-weight: 600; font-size: 14px;">Mavuno Node v2.1</div>
+        <div style="color: var(--muted); font-size: 12px; margin-top: 4px;">Solar-powered NPK & Moisture telemetry.</div>
+        <div style="font-weight: 700; color: var(--accent); margin-top: 8px;">UGX 120,000</div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>Pay with Mobile Money (Mavuno Pay)</label>
+      <input type="tel" id="pay-phone" placeholder="256777000111">
+    </div>
+    <button class="btn" onclick="purchaseDevice()" id="btn-device">Pay UGX 120,000 & Order</button>
+  </div>
+
+  <!-- Step 3: Agent Verification -->
+  <div id="step-agent" class="step-container" style="text-align: center; padding: 20px 0;">
+    <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+    <h2 style="font-size: 22px; margin-top: 0;">Awaiting Field Agent</h2>
+    <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">Your hardware order is confirmed. A regional Field Agent will contact you shortly to visit your farm, install the sensor node, and verify your account.</p>
+    <div style="padding: 16px; background: var(--bg-alt); border-radius: 6px; border: 1px solid var(--line); font-size: 12px; color: var(--ink-soft);">
+      <strong>Next Steps:</strong> Prepare your land. Once the agent verifies your farm, your dashboard will automatically unlock.
+    </div>
+    <button class="btn" style="margin-top: 24px; background: var(--paper); color: var(--ink); border: 1px solid var(--line);" onclick="checkStatus()">Refresh Status</button>
+  </div>
+  
+  <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line-soft);">
+    <a href="/logout" style="color: var(--bad); font-weight: 600; text-decoration: none; font-size: 12px;">Sign Out</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentStatus = 'pending_kyc';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+async function jget(url) {
+  try {
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (res.status === 401) { window.location.href = '/login'; return; }
+    return await res.json();
+  } catch(e) { return {error: "network_error"}; }
+}
+
+async function jpost(url, body) {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(body || {})
+    });
+    if (res.status === 401) { window.location.href = '/login'; return; }
+    return await res.json();
+  } catch(e) { return {error: "network_error"}; }
+}
+
+function updateUI() {
+  document.querySelectorAll('.step-container').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.step-indicator').forEach(i => {
+    i.classList.remove('active');
+    i.classList.remove('completed');
+  });
+
+  if (currentStatus === 'pending_kyc') {
+    document.getElementById('step-kyc').classList.add('active');
+    document.getElementById('ind-kyc').classList.add('active');
+  } else if (currentStatus === 'pending_device') {
+    document.getElementById('step-device').classList.add('active');
+    document.getElementById('ind-kyc').classList.add('completed');
+    document.getElementById('ind-device').classList.add('active');
+  } else if (currentStatus === 'pending_agent') {
+    document.getElementById('step-agent').classList.add('active');
+    document.getElementById('ind-kyc').classList.add('completed');
+    document.getElementById('ind-device').classList.add('completed');
+    document.getElementById('ind-agent').classList.add('active');
+  } else if (currentStatus === 'verified') {
+    window.location.href = '/';
+  }
+}
+
+async function checkStatus() {
+  const res = await jget('/api/onboarding/status');
+  if (res && res.status) {
+    currentStatus = res.status;
+    updateUI();
+  }
+}
+
+async function submitKYC() {
+  const nin = document.getElementById('kyc-nin').value;
+  if (!nin) return showToast("Please enter your NIN.");
+  
+  const btn = document.getElementById('btn-kyc');
+  btn.disabled = true; btn.textContent = "Verifying...";
+  
+  const res = await jpost('/api/onboarding/kyc', { document_id: nin });
+  if (res.ok) {
+    currentStatus = res.status;
+    updateUI();
+  } else {
+    showToast(res.error || "Failed to submit KYC");
+  }
+  btn.disabled = false; btn.textContent = "Submit & Continue";
+}
+
+async function purchaseDevice() {
+  const phone = document.getElementById('pay-phone').value;
+  if (!phone) return showToast("Please enter mobile money number.");
+  
+  const btn = document.getElementById('btn-device');
+  btn.disabled = true; btn.textContent = "Processing Payment...";
+  
+  // Simulate payment delay
+  setTimeout(async () => {
+    const res = await jpost('/api/onboarding/purchase', {});
+    if (res.ok) {
+      currentStatus = res.status;
+      updateUI();
+    } else {
+      showToast(res.error || "Payment failed");
+    }
+    btn.disabled = false; btn.textContent = "Pay UGX 120,000 & Order";
+  }, 1500);
+}
+
+document.addEventListener('DOMContentLoaded', checkStatus);
+</script>
+</body>
+</html>

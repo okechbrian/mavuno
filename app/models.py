@@ -63,6 +63,8 @@ class FarmerProfile(Base, TimestampMixin):
     lat: Mapped[Optional[float]] = mapped_column(Float)
     lng: Mapped[Optional[float]] = mapped_column(Float)
     collection_hub: Mapped[str] = mapped_column(String(64), default="Aggregation-Hub-01")
+    current_stage: Mapped[str] = mapped_column(String(32), default="Land Prep")
+    verification_status: Mapped[str] = mapped_column(String(32), default="pending_kyc")
     
     # Protocol Specifics
     discipline: Mapped[float] = mapped_column(Float, default=1.0)

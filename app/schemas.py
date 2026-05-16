@@ -50,6 +50,9 @@ class LogisticsAdviseRequest(BaseModel):
 class DemoCycleRequest(BaseModel):
     farm_id: str = Field(..., max_length=64)
 
+class FarmStageUpdate(BaseModel):
+    current_stage: str = Field(..., description="E.g., Land Prep, Vegetative, Flowering, Harvesting")
+
 class ErrorResponse(BaseModel):
     error: str
     detail: Optional[str] = None

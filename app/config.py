@@ -26,11 +26,23 @@ try:
 except ImportError:
     pass
 
-_hmac_raw = os.getenv("HMAC_SECRET", "prototype-dev-key")
-HMAC_SECRET = _hmac_raw.encode()
+# Require HMAC secret in production
+_hmac_raw = os.getenv("HMAC_SECRET")
+if not _hmac_raw and os.getenv("VERCEL"):
+    raise RuntimeError("HMAC_SECRET is required in production.")
+HMAC_SECRET = (_hmac_raw or "prototype-dev-key").encode()
+
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")
 
+# Security Hardening: Enforce passwords in environment.
+AGENT_PASSWORD = os.getenv("AGENT_PASSWORD")
+SUPERVISOR_PASSWORD = os.getenv("SUPERVISOR_PASSWORD")
+
+if os.getenv("VERCEL") and (not AGENT_PASSWORD or not SUPERVISOR_PASSWORD):
+    raise RuntimeError("AGENT_PASSWORD and SUPERVISOR_PASSWORD are required in production.")
+
 # Default local SQLite path
+
 DB_PATH = DATA_DIR / "mavuno.db"
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")
 

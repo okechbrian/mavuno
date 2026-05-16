@@ -117,15 +117,14 @@ def initiate(db: Session, buyer_id: str, offer_id: str, msisdn: str, method: str
 
 
 def _create_farmer_notification(farm_id: str, title: str, body: str, now: int):
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute(
-        """INSERT INTO notifications (user_id, title, body, type, created_at)
-           VALUES (?, ?, ?, 'payment_alert', ?)""",
-        (farm_id, title, body, now),
-    )
-    conn.commit()
-    conn.close()
+    from sqlalchemy import text
+    with database.SessionLocal() as db:
+        db.execute(
+            text("""INSERT INTO notifications (user_id, title, body, type, created_at)
+               VALUES (:user_id, :title, :body, 'payment_alert', :created_at)"""),
+            {"user_id": farm_id, "title": title, "body": body, "created_at": now},
+        )
+        db.commit()
 
 
 async def _psp_initiate(payment_id: str, amount_ugx: int, offer_id: str) -> None:

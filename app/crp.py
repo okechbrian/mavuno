@@ -1,4 +1,4 @@
-﻿"""SQLite-backed Community Resource Platform (CRP) with restored AI Advisor."""
+"""SQLite-backed Community Resource Platform (CRP) with restored AI Advisor."""
 from __future__ import annotations
 import json
 import math
@@ -7,6 +7,7 @@ import re
 import secrets
 import time
 import httpx
+from sqlalchemy import text
 from . import ledger, scorer, database
 
 _PII_PATTERNS = (
@@ -53,79 +54,71 @@ def market_prices(crop: str, region: str) -> dict:
 
 def check_price_fluctuations():
     """System-wide check of market prices vs farmer crops. Generates notifications on trend changes."""
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id, crop, district FROM farms")
-    farms = cur.fetchall()
-    
-    notifications_sent = 0
-    for f in farms:
-        p = market_prices(f['crop'], f['district'])
-        if "error" in p: continue
+    with database.SessionLocal() as db:
+        farms = db.execute(text("SELECT user_id as id, crop, district FROM farmer_profiles")).fetchall()
         
-        if p['trend'] != "flat":
-            title = "Price Alert: " + f['crop'].upper()
-            direction = "surged to" if p['trend'] == "up" else "dropped to"
-            msg = f"Market prices in {f['district']} have {direction} UGX {p['today']['ugx']}/kg. Average is UGX {p['last7_avg']}/kg."
+        notifications_sent = 0
+        for f in farms:
+            f_dict = dict(f._mapping)
+            p = market_prices(f_dict['crop'], f_dict['district'])
+            if "error" in p: continue
             
-            # Check if we already sent this specific alert today (optional for prototype, but good practice)
-            now = int(time.time())
-            cur.execute(
-                """INSERT INTO notifications (user_id, title, body, type, created_at)
-                   VALUES (?, ?, ?, 'price_alert', ?)""",
-                (f['id'], title, msg, now),
-            )
-            notifications_sent += 1
-            
-    conn.commit()
-    conn.close()
+            if p['trend'] != "flat":
+                title = "Price Alert: " + f_dict['crop'].upper()
+                direction = "surged to" if p['trend'] == "up" else "dropped to"
+                msg = f"Market prices in {f_dict['district']} have {direction} UGX {p['today']['ugx']}/kg. Average is UGX {p['last7_avg']}/kg."
+                
+                # Check if we already sent this specific alert today (optional for prototype, but good practice)
+                now = int(time.time())
+                db.execute(
+                    text("""INSERT INTO notifications (user_id, title, body, type, created_at)
+                       VALUES (:user_id, :title, :body, 'price_alert', :created_at)"""),
+                    {"user_id": f_dict['id'], "title": title, "body": msg, "created_at": now},
+                )
+                notifications_sent += 1
+                
+        db.commit()
     return {"ok": True, "notifications_sent": notifications_sent}
 
 def list_offer(farm_id: str, crop: str, kg: int, floor_ugx: int) -> dict:
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT farmer_name, district, lat, lng FROM farms WHERE id = ?", (farm_id,))
-    farm = cur.fetchone()
-    if not farm:
-        conn.close()
-        return {"error": "unknown_farm"}
-    
-    offer_id = "OF-" + secrets.token_hex(3).upper()
-    ts = int(time.time())
-    cur.execute('''
-        INSERT INTO offers (id, farm_id, farmer_name, crop, kg, floor_ugx, region, lat, lng, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (offer_id, farm_id, farm['farmer_name'], crop.lower(), kg, floor_ugx, farm['district'], farm['lat'], farm['lng'], ts))
-    conn.commit()
-    conn.close()
+    with database.SessionLocal() as db:
+        farm = db.execute(text("SELECT farmer_name, district, lat, lng FROM farmer_profiles WHERE user_id = :id"), {"id": farm_id}).fetchone()
+        if not farm:
+            return {"error": "unknown_farm"}
+        farm_dict = dict(farm._mapping)
+        
+        offer_id = "OF-" + secrets.token_hex(3).upper()
+        ts = int(time.time())
+        db.execute(text('''
+            INSERT INTO market_offers (id, farm_id, crop, kg, floor_ugx, created_at)
+            VALUES (:id, :farm_id, :crop, :kg, :floor_ugx, :created_at)
+        '''), {"id": offer_id, "farm_id": farm_id, "crop": crop.lower(), "kg": kg, "floor_ugx": floor_ugx, "created_at": ts})
+        db.commit()
     
     ledger.write("OFFER", {"offer_id": offer_id, "farm_id": farm_id, "kg": kg})
     return {"offer_id": offer_id, "status": "open"}
 
 def match_buyers(offer_id: str) -> dict:
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM offers WHERE id = ?", (offer_id,))
-    offer = cur.fetchone()
-    if not offer:
-        conn.close()
-        return {"error": "not_found"}
-    
-    cur.execute("SELECT * FROM buyers")
-    buyers = cur.fetchall()
-    conn.close()
-    
+    with database.SessionLocal() as db:
+        offer = db.execute(text("SELECT o.*, f.farmer_name, f.district as region, f.lat, f.lng FROM market_offers o JOIN farmer_profiles f ON o.farm_id = f.user_id WHERE o.id = :id"), {"id": offer_id}).fetchone()
+        if not offer:
+            return {"error": "not_found"}
+        offer_dict = dict(offer._mapping)
+        
+        buyers = db.execute(text("SELECT user_id as id, name, crops_json, floor_ugx, radius_km, lat, lng, contact FROM buyer_profiles")).fetchall()
+        
     candidates = []
     for b in buyers:
-        crops = json.loads(b['crops_json'])
-        if offer['crop'] not in crops: continue
-        if b['floor_ugx'] < offer['floor_ugx']: continue
+        b_dict = dict(b._mapping)
+        crops = json.loads(b_dict['crops_json'])
+        if offer_dict['crop'] not in crops: continue
+        if b_dict['floor_ugx'] < offer_dict['floor_ugx']: continue
         
-        dist = _haversine_km(offer['lat'], offer['lng'], b['lat'], b['lng'])
-        if dist > b['radius_km'] * 2: continue
+        dist = _haversine_km(offer_dict['lat'], offer_dict['lng'], b_dict['lat'], b_dict['lng'])
+        if dist > b_dict['radius_km'] * 2: continue
         candidates.append({
-            "buyer_id": b['id'], "name": b['name'], "price_offered": b['floor_ugx'],
-            "distance_km": dist, "contact": b['contact']
+            "buyer_id": b_dict['id'], "name": b_dict['name'], "price_offered": b_dict['floor_ugx'],
+            "distance_km": dist, "contact": b_dict['contact']
         })
     candidates.sort(key=lambda x: x['distance_km'])
     top = candidates[:3]
@@ -142,35 +135,37 @@ def list_open_offers(limit: int = 10, farm_id: str | None = None,
     - include_closed: include accepted/closed offers (used by the farmer's
       own listings view so they can see history).
     """
-    conn = database.get_db()
-    cur = conn.cursor()
-    where = []
-    params: list = []
-    if not include_closed:
-        where.append("o.status = 'open'")
-    if farm_id:
-        where.append("o.farm_id = ?")
-        params.append(farm_id)
-    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
-    sql = f"""
-        SELECT o.*,
-               (SELECT status FROM payments p
-                  WHERE p.offer_id = o.id
-                  ORDER BY (CASE p.status WHEN 'settled' THEN 0
-                                          WHEN 'pending' THEN 1
-                                          ELSE 2 END), p.created_at DESC
-                  LIMIT 1) AS payment_status
-          FROM offers o
-          {where_sql}
-          ORDER BY o.created_at DESC LIMIT ?
-    """
-    params.append(limit)
-    cur.execute(sql, tuple(params))
-    rows = [dict(r) for r in cur.fetchall()]
-
-    cur.execute("SELECT count(*) as total FROM offers WHERE status = 'open'")
-    total = cur.fetchone()['total']
-    conn.close()
+    with database.SessionLocal() as db:
+        where = []
+        params = {}
+        if not include_closed:
+            where.append("o.status = 'open'")
+        if farm_id:
+            where.append("o.farm_id = :farm_id")
+            params["farm_id"] = farm_id
+        where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+        sql = f"""
+            SELECT o.id, o.farm_id, o.crop, o.kg, o.floor_ugx, o.status, o.created_at,
+                   f.farmer_name, f.district as region, f.lat, f.lng,
+                   (SELECT status FROM settlements p
+                      WHERE p.offer_id = o.id
+                      ORDER BY (CASE p.status WHEN 'settled' THEN 0
+                                              WHEN 'pending' THEN 1
+                                              ELSE 2 END), p.created_at DESC
+                      LIMIT 1) AS payment_status,
+                   (SELECT COALESCE(y.yps, 0) FROM yield_priorities y
+                      WHERE y.farm_id = o.farm_id
+                      ORDER BY y.created_at DESC LIMIT 1) AS yps
+              FROM market_offers o
+              JOIN farmer_profiles f ON o.farm_id = f.user_id
+              {where_sql}
+              ORDER BY o.created_at DESC LIMIT :limit
+        """
+        params["limit"] = limit
+        rows = [dict(r._mapping) for r in db.execute(text(sql), params).fetchall()]
+    
+        total = db.execute(text("SELECT count(*) as total FROM market_offers WHERE status = 'open'")).scalar()
+        
     return {"offers": rows, "total_open": total}
 
 _RULE_BANK = {
@@ -181,28 +176,48 @@ _RULE_BANK = {
     "maize": "Maize: side-dress N at knee-high, weed early."
 }
 
-def _groq_advise(question: str, ctx: dict) -> str | None:
-    key = os.getenv("GROQ_API_KEY")
+def _gemini_advise(question: str, ctx: dict) -> str | None:
+    key = os.getenv("GEMINI_API_KEY")
     if not key: return None
     safe_q = _redact_pii(question or "")[:500]
-    system = (
-        "You are Mavuno, a Ugandan smallholder farm advisor. "
-        "Answer in 1-2 short sentences, max 140 characters. "
-        f"Context: Farmer grows {ctx.get('crop')}, YPS {ctx.get('yps')}, Health {ctx.get('health')}, District {ctx.get('district')}."
+    system_instruction = (
+        "You are Mavuno, an expert Ugandan agronomist AI advisor. "
+        "Your goal is to provide high-quality, actionable, and specific advice to farmers based on their soil data. "
+        "Be helpful and professional. If the farmer's soil data shows deficits (like low NPK or moisture), prioritize fixing those. "
+        "Use basic markdown like **bolding** and bullet points to make your advice easy to read. "
+        f"Context: Farmer grows {ctx.get('crop')} in {ctx.get('district')}. Current Yield Probability Score (YPS) is {ctx.get('yps')}, Trade Health is {ctx.get('health')}."
     )
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={key}"
+    payload = {
+        "system_instruction": {
+            "parts": [{"text": system_instruction}]
+        },
+        "contents": [{
+            "parts": [{"text": safe_q}]
+        }],
+        "generationConfig": {
+            "temperature": 0.25,
+            "maxOutputTokens": 600,
+            "topP": 0.8,
+            "topK": 40
+        },
+        "safetySettings": [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"}
+        ]
+    }
+    
     try:
-        with httpx.Client(timeout=2.0) as client:
-            r = client.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {key}"},
-                json={
-                    "model": "llama-3.3-70b-versatile",
-                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": safe_q}],
-                    "max_tokens": 60, "temperature": 0.2
-                }
-            )
-            return r.json()["choices"][0]["message"]["content"].strip()[:140]
-    except Exception:
+        with httpx.Client(timeout=8.0) as client:
+            r = client.post(url, json=payload)
+            r.raise_for_status()
+            data = r.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+    except Exception as e:
+        print(f"Gemini API Error: {e}")
         return None
 
 def logistics_advisor(pending_loads: list, market_context: str) -> str:
@@ -233,21 +248,19 @@ def logistics_advisor(pending_loads: list, market_context: str) -> str:
         return f"Coordination AI temporarily unavailable. (Err: {str(e)[:20]})"
 
 def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
-    conn = database.get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT crop, district FROM farms WHERE id = ?", (farm_id,))
-    farm = cur.fetchone()
-    conn.close()
-    if not farm: return {"error": "unknown_farm"}
+    with database.SessionLocal() as db:
+        farm = db.execute(text("SELECT crop, district FROM farmer_profiles WHERE user_id = :id"), {"id": farm_id}).fetchone()
+        if not farm: return {"error": "unknown_farm"}
+        farm_dict = dict(farm._mapping)
     
     score = scorer.score_farm(farm_id)
     ctx = {
-        "crop": farm['crop'], "district": farm['district'],
-        "yps": score.get('yps'), "health": score.get('credit_health')
+        "crop": farm_dict['crop'], "district": farm_dict['district'],
+        "yps": score.get('yps'), "health": score.get('trade_health')
     }
     
-    answer = _groq_advise(question, ctx)
-    source = "groq" if answer else "ai-fallback"
+    answer = _gemini_advise(question, ctx)
+    source = "gemini" if answer else "ai-fallback"
     if not answer:
         q = (question or "").lower()
         # Advanced Fallback AI
@@ -277,4 +290,3 @@ def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
 
     ledger.write("ADVISE", {"farm_id": farm_id, "source": source, "public": make_public})
     return {"farm_id": farm_id, "answer": answer, "source": source, "context": ctx}
-

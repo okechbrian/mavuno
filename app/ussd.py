@@ -1,16 +1,16 @@
 """USSD State Machine for Prototype (Multi-language & Marketplace)."""
-from .database import get_db
+from .database import SessionLocal
+from sqlalchemy import text
 from . import scorer, finance, crp
 
-def route(phone: str, text: str):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM farms WHERE phone = ?", (phone,))
-    farm = cur.fetchone()
-    conn.close()
+def route(phone: str, text_input: str):
+    with SessionLocal() as db:
+        row = db.execute(text("SELECT * FROM farms WHERE phone = :phone"), {"phone": phone}).mappings().first()
+        farm = dict(row) if row else None
+    
     if not farm: return "END Number not registered."
 
-    parts = [p for p in text.split("*") if p]
+    parts = [p for p in text_input.split("*") if p]
     if not parts: return "CON Mavuno\n1. English\n2. Luganda"
     
     lang = "en" if parts[0] == "1" else "lg"

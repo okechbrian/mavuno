@@ -3,7 +3,6 @@
 This module handles both legacy connections and the new 
 SQLAlchemy 2.0 session management with support for PostgreSQL.
 """
-import sqlite3
 import json
 import time
 import random
@@ -35,21 +34,6 @@ def get_session() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
-
-def get_db():
-    """
-    Legacy connection provider. 
-    Note: For production PostgreSQL, raw SQL should ideally transition to SQLAlchemy.
-    If still using raw sqlite3, this only works when DATABASE_URL is sqlite.
-    """
-    if DATABASE_URL.startswith("sqlite"):
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        return conn
-    else:
-        # For Postgres, we return the underlying raw connection from the engine
-        # This is a bridge to keep legacy raw SQL working during the migration.
-        return engine.raw_connection()
 
 def init_db():
     """Initializes the database, creating all tables from SQLAlchemy models."""

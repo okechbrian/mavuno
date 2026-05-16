@@ -41,7 +41,7 @@
   
   /* Widgets */
   .radar-card {
-    background: var(--paper); padding: 20px; border: 1px solid var(--line); border-radius: 4px;
+    background: var(--paper); padding: 20px; border: none; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     margin-bottom: 20px;
   }
   .radar-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); display: block; margin-bottom: 8px; }
@@ -50,7 +50,7 @@
   /* Operations */
   .op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
   .farm-card {
-    background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: 4px;
+    background: var(--paper); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 24px; border-radius: 8px;
     display: flex; flex-direction: column; gap: 16px;
     transition: transform 200ms ease, box-shadow 200ms ease;
   }
@@ -166,28 +166,34 @@
   .hero-section { animation: fadeInUp 0.5s ease-out 0.15s forwards; opacity: 0; }
   .op-grid { animation: fadeInUp 0.5s ease-out 0.2s forwards; opacity: 0; }
 
-  @media (max-width: 900px) {
-    .hero-section { flex-direction: column; align-items: flex-start; padding: 32px; }
-    .hero-stats { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 32px; width: 100%; gap: 20px; justify-content: space-between; }
-  }
-  @media (max-width: 768px) {
-    html, body { height: auto; overflow: auto; }
+  @media (max-width: 1024px) {
+    html, body { height: auto !important; overflow: auto !important; }
     body { display: block; }
     .sidebar {
-      position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;
-      width: 86%; max-width: 340px;
-      transform: translateX(-100%); transition: transform 220ms ease;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+      position: fixed; top: 0; left: 0; height: 100vh; z-index: 2000;
+      width: 280px; max-width: 85vw;
+      transform: translateX(-100%); transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 10px 0 40px rgba(0,0,0,0.15);
+      animation: none !important; /* Prevent transform conflicts */
     }
     .sidebar.open { transform: translateX(0); }
-    .main { padding: 16px; min-height: 100vh; }
+    .main { padding: 20px; min-height: 100vh; overflow: visible; }
     .masthead {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--bg); margin: -16px -16px 24px;
-      padding: 16px !important; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--bg); margin: -20px -20px 24px;
+      padding: 16px 20px !important; border-bottom: 1px solid var(--line);
     }
-    .nav-toggle { display: inline-flex; }
+    .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .hero-section { flex-direction: column; align-items: stretch; padding: 24px; gap: 24px; }
+    .hero-stats { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 24px; width: 100%; justify-content: flex-start; gap: 20px; }
+    .display { font-size: 24px !important; }
     .op-grid { grid-template-columns: 1fr !important; }
+  }
+
+  @media (max-width: 600px) {
+    .hero-stats { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .t-row { grid-template-columns: 80px 1fr; }
+    .t-row div:nth-child(3) { display: none; }
   }
 </style>
 </head>
@@ -205,13 +211,15 @@
     <div id="buyer-list" style="font-size: 11px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
       <!-- Populated by JS -->
     </div>
-    <span style="font-size: 9px; color: var(--muted); margin-top: 10px; display: block; line-height: 1.3;">
-      Institutional off-takers pre-verified for CRP marketplace trade.
-    </span>
   </div>
 
-  <div style="margin-top:auto;">
-    <a href="/phone" style="text-decoration:none; color:var(--accent); font-weight:600; display:block; padding:8px 0;">📱 Field Simulator</a>
+  <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
+    <a href="/feed-page" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">🌱 Mavuno Social</a>
+    <a href="#" onclick="openChat(); return false;" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">💬 Messages <span class="unread-dot" id="msg-unread" style="margin-left:4px;">0</span></a>
+    <a href="/phone" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📱 Field Simulator</a>
+    <div style="height:1px; background:var(--line); margin:8px 0;"></div>
+    <button id="theme-toggle-side" style="background:transparent; border:none; color:var(--ink); font-weight:600; text-align:left; cursor:pointer; padding:8px 0; font-size:13px; font-family:inherit;">🌙 Theme</button>
+    <a href="/logout" style="text-decoration:none; color:var(--bad); font-weight:600; display:block; padding:8px 0;">Sign out</a>
     <div id="fineprint-time" style="font-size:10px; color:var(--muted); margin-top:12px;"></div>
   </div>
 </div>
@@ -226,11 +234,25 @@
       <span class="role-badge">Agent / Supervisor</span>
     </div>
     <div class="topbar-actions">
-      <a href="/feed-page" class="topbar-btn" title="Mavuno Social">🌱 Social</a>
-      <button class="topbar-btn" id="theme-toggle" style="font-size:14px;" aria-label="Toggle theme">🌙</button>
-      <a href="/logout" class="topbar-btn logout-btn">Sign out</a>
+      <button class="topbar-btn" style="background:var(--accent); color:white; border-color:var(--accent);" onclick="toggleAiDrawer()">✨ Regional AI</button>
+      <button class="topbar-btn" id="notif-btn" onclick="toggleNotifs()" title="Notifications">🔔<span class="unread-dot" id="notif-unread">0</span></button>
     </div>
   </header>
+
+  <!-- Verification Queue Section -->
+  <div id="verification-queue-card" class="radar-card" style="display:none; background:rgba(161,123,44,0.05); border-left:4px solid var(--gold); margin-bottom:32px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <span class="label" style="color:var(--gold);">Action Required</span>
+        <h2 class="display" style="font-size:24px; margin:4px 0;">Farmer Verification Queue</h2>
+        <p style="font-size:12px; color:var(--muted); margin:4px 0 0;">These farmers have completed KYC and hardware purchase. Visit farm to install Node and verify.</p>
+      </div>
+      <div id="queue-count" class="display" style="font-size:48px; color:var(--gold); opacity:0.5;">0</div>
+    </div>
+    <div id="queue-list" style="margin-top:20px; display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+      <!-- Pending farmers go here -->
+    </div>
+  </div>
 
   <div class="hero-section">
     <div class="hero-main">
@@ -326,26 +348,163 @@
   </div>
 </div>
 
+<div class="chat-drawer" id="chat-drawer" aria-hidden="true">
+  <div class="chat-head">
+    <button class="chat-back" id="chat-back" onclick="renderInbox()" style="display:none;">← Inbox</button>
+    <h3 id="chat-title">Messages</h3>
+    <button class="chat-close" onclick="closeChat()">×</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-foot" id="chat-foot" style="display:none;">
+    <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
+    <button class="btn" onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+</div>
+
+<div id="notif-popover" style="display:none; position:fixed; top:70px; right:20px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,0.15); z-index:1000; flex-direction:column; overflow:hidden; animation: fadeInUp 0.3s ease-out;">
+  <div style="padding:16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; background:var(--bg-alt);">
+    <strong style="font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Notifications</strong>
+    <button onclick="markNotifsRead()" style="background:transparent; border:none; color:var(--accent); font-size:10px; font-weight:700; cursor:pointer; text-transform:uppercase;">Clear All</button>
+  </div>
+  <div id="notif-list" style="flex:1; overflow-y:auto; min-height:100px;">
+    <div style="padding:40px; text-align:center; color:var(--muted); font-size:12px;">No new notifications</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+async function verifyFarm(id) {
+  const serial = prompt("Enter YPS Node Hardware Serial Number:", "YPS-MN-2.1-");
+  if (!serial) return;
+  toast("Activating Farm Protocol for " + id + "...");
+  const res = await jpost("/api/agent/verify-farm", { farm_id: id, serial: serial });
+  if (res.ok) {
+    toast("Farm Verified & Activated!");
+    loadFarms();
+  } else {
+    toast("Verification failed: " + (res.error || "Unknown error"));
+  }
+}
+
+async function loadFarms() {
+  const [farmsData, buyers] = await Promise.all([jget("/farms"), jget("/buyers")]);
+  if (!farmsData || farmsData.error) return;
+  
+  const ids = Object.keys(farmsData);
+  const farmsList = ids.map(id => ({...farmsData[id], id}));
+
+  // Update Verification Queue
+  // We need to fetch profiles directly to check verification_status if /farms doesn't return it
+  // But for now, let's assume /farms returns everything needed.
+  // Actually, /farms uses a join, so it should.
+  
+  // Filtering pending farmers
+  const pending = farmsList.filter(f => f.verification_status && f.verification_status !== 'verified');
+  const queueCard = document.getElementById("verification-queue-card");
+  const queueList = document.getElementById("queue-list");
+  
+  if (pending.length > 0) {
+    queueCard.style.display = "block";
+    document.getElementById("queue-count").textContent = pending.length;
+    queueList.innerHTML = pending.map(f => `
+      <div style="background:var(--paper); padding:16px; border-radius:4px; border:1px solid var(--line-soft); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:700; font-size:13px;">${f.farmer_name}</div>
+          <div style="font-size:10px; color:var(--muted); text-transform:uppercase;">${f.district} · ${f.verification_status.replace('_',' ')}</div>
+        </div>
+        <button class="btn" style="background:var(--gold); color:white; border:none; padding:6px 12px;" onclick="verifyFarm('${f.id}')">Visit & Verify</button>
+      </div>
+    `).join("");
+  } else {
+    queueCard.style.display = "none";
+  }
+
+  const bl = document.getElementById("buyer-list");
+  if (bl) {
+    bl.innerHTML = buyers.map(b => `
+      <div style="display:flex; justify-content:space-between; border-left:2px solid var(--accent); padding-left:8px;">
+        <span style="font-weight:600;">${b.name}</span>
+        <span style="color:var(--muted);">${b.region}</span>
+      </div>
+    `).join("") || 'No buyers found';
+  }
+
+  const verifiedFarms = farmsList.filter(f => f.verification_status === 'verified' || !f.verification_status);
+  const scores = await Promise.all(verifiedFarms.map(f => jget("/score/" + f.id)));
+  const balances = await Promise.all(verifiedFarms.map(f => jget("/finance/status/" + f.id)));
+
+  const container = document.getElementById("farms");
+  container.innerHTML = "";
+  let totalCeiling = 0, totalN = 0;
+
+  verifiedFarms.forEach((f, i) => {
+    const s = scores[i], b = balances[i];
+    totalCeiling += (s.trade_ceiling_ugx || 0);
+    totalN += (s.nutrients?.n?.slice(-1)[0] || 0);
+
+    const hClass = `b-${(s.trade_health || "poor").toLowerCase()}`;
+    const card = document.createElement("div");
+    card.className = "farm-card";
+    card.innerHTML = `
+      <div class="f-head">
+        <div><h3 class="display">${f.farmer_name}</h3><span style="color:var(--muted); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">${f.id} · ${f.district}</span></div>
+        <span class="badge ${hClass}">${s.trade_health || "N/A"}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-alt); padding:16px; border-radius:4px;">
+        <div>
+           <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">Yield Prob (YPS)</span>
+           <div class="display" style="font-size:32px;">${s.yps || 0}<span style="font-size:12px; color:var(--muted);">/1000</span></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700; color:var(--accent); font-size:16px;">${s.kg_allocated || 0} KG</div>
+          <div style="font-size:10px; color:var(--muted); font-weight:500;">Cap: UGX ${(s.trade_ceiling_ugx || 0).toLocaleString()}</div>
+        </div>
+      </div>
+      <div class="spark-row">
+        <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(s.nutrients?.n, "var(--accent)")}</div>
+        <div class="spark-box"><span>Phos</span>${nutrientSpark(s.nutrients?.p, "var(--gold)")}</div>
+        <div class="spark-box"><span>Potass</span>${nutrientSpark(s.nutrients?.k, "var(--clay)")}</div>
+      </div>
+      <div style="background:var(--paper); border:1px solid var(--line-soft); border-radius:2px; padding:12px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
+        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">YPS Signal Diagnostic</strong><br>
+        ${(s.diagnostics || []).join('<br>')}
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" style="flex:1; border-color:var(--gold); color:var(--gold);" onclick="pingSensor('${f.id}')">Ping Sensor</button>
+      </div>
+      <div style="text-align:center; font-size:10px; color:var(--muted); font-weight:500;">Verified for CRP: <b style="color:var(--ink);">${b.kg_remaining || 0} KG</b></div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById("radar-velocity").textContent = Math.round(totalCeiling/168).toLocaleString();
+  document.getElementById("radar-risk-label").textContent = "Avg Soil Confidence: " + Math.round(totalN/(verifiedFarms.length || 1)) + "%";
+  document.getElementById("ask-farm").innerHTML = verifiedFarms.map(f => `<option value="${f.id}">${f.farmer_name}</option>`).join("");
+}
+
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
-  const btn = document.getElementById("theme-toggle");
-  if (btn) btn.textContent = t === "dark" ? "☀️" : "🌙";
+  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
+  tgs.forEach(btn => {
+    if (btn) btn.textContent = t === "dark" ? "☀️" : "🌙";
+  });
   localStorage.setItem("mavuno-theme", t);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme(localStorage.getItem("mavuno-theme") || "light");
-  const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.onclick = () => {
+  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
+  tgs.forEach(btn => {
+    if (btn) btn.onclick = () => {
       const cur = document.documentElement.getAttribute("data-theme");
       applyTheme(cur === "dark" ? "light" : "dark");
     };
-  }
-  loadFarms(); refreshLedger(); verifyIntegrity();
+  });
+  loadFarms(); refreshLedger(); verifyIntegrity(); loadGallery(); refreshUnread();
+  setInterval(refreshUnread, 15000);
 });
 
 function _onAuthFail() {
@@ -390,6 +549,219 @@ function toast(msg) {
   setTimeout(() => t.classList.remove("show"), 2600);
 }
 
+/* --- Notifications & Unread --- */
+async function refreshUnread() {
+  const [cRes, nRes] = await Promise.all([jget("/chat/unread/count"), jget("/notifications")]);
+  const msgDot = document.getElementById("msg-unread"); 
+  if (msgDot) { 
+    const n = (cRes && !cRes.error) ? Number(cRes.count || 0) : 0; 
+    if (n > 0) { msgDot.textContent = n; msgDot.classList.add("on"); } else msgDot.classList.remove("on"); 
+  }
+  const notifDot = document.getElementById("notif-unread"); 
+  if (notifDot) { 
+    const unread = (nRes.notifications || []).filter(n => !n.read).length; 
+    if (unread > 0) { notifDot.textContent = unread; notifDot.classList.add("on"); } else notifDot.classList.remove("on"); 
+    renderNotifications(nRes.notifications || []); 
+  }
+}
+
+function toggleNotifs() { 
+  const el = document.getElementById("notif-popover"); 
+  el.style.display = (el.style.display === "none" || !el.style.display) ? "flex" : "none"; 
+}
+
+function renderNotifications(notifs) { 
+  const el = document.getElementById("notif-list"); 
+  if (!el) return; 
+  if (!notifs.length) { el.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); font-size:12px;">No new notifications</div>'; return; }
+  el.innerHTML = notifs.map(n => `<div style="padding:12px; border-bottom:1px solid var(--line-soft); background:${n.read ? 'transparent' : 'var(--bg-alt)'};"><div style="font-weight:600; font-size:12px;">${escapeHtml(n.title)}</div><div style="font-size:11px; color:var(--ink-soft);">${escapeHtml(n.body)}</div></div>`).join(""); 
+}
+
+async function markNotifsRead() { await jpost("/notifications/read"); refreshUnread(); }
+
+function escapeHtml(s) { return String(s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+
+function renderMarkdown(text) {
+  if (!text) return "";
+  let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  const lines = html.split('\n');
+  let inList = false;
+  let result = [];
+  for (let line of lines) {
+    if (line.trim().startsWith('* ')) {
+      if (!inList) { result.push('<ul style="margin-top:4px; padding-left:20px; margin-bottom:8px;">'); inList = true; }
+      result.push(`<li>${line.trim().substring(2)}</li>`);
+    } else {
+      if (inList) { result.push('</ul>'); inList = false; }
+      result.push(line + (line.trim() ? '<br>' : '<div style="height:8px;"></div>'));
+    }
+  }
+  if (inList) result.push('</ul>');
+  return result.join('');
+}
+
+function toggleAiDrawer() { document.getElementById("ai-drawer").classList.toggle("open"); }
+function closeAiDrawer() { document.getElementById("ai-drawer").classList.remove("open"); }
+function quickAskAI(q) { document.getElementById("ai-chat-input").value = q; sendAiChat(); }
+
+async function sendAiChat() {
+  const input = document.getElementById("ai-chat-input");
+  const q = input.value; if (!q.trim()) return;
+  input.value = "";
+  const body = document.getElementById("ai-chat-body");
+  const btn = document.getElementById("ai-send-btn");
+  body.innerHTML += `<div class="chat-bubble chat-bubble-farmer">${escapeHtml(q)}</div>`;
+  body.scrollTop = body.scrollHeight;
+  btn.disabled = true; btn.textContent = "...";
+  const loadId = 'loading-' + Date.now();
+  body.innerHTML += `<div id="${loadId}" class="chat-bubble" style="background:var(--bg-alt); color:var(--muted); align-self:flex-start; border:1px solid var(--line);">✨ Analyzing regional metrics...</div>`;
+  body.scrollTop = body.scrollHeight;
+  const r = await jpost("/crp/ask", {farm_id: 'admin', question: q});
+  const loadEl = document.getElementById(loadId); if (loadEl) loadEl.remove();
+  btn.disabled = false; btn.textContent = "Send";
+  if (r.error) { body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed.</div>`; }
+  else {
+     const formatted = renderMarkdown(r.answer);
+     body.innerHTML += `<div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">${formatted}</div>`;
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+function nutrientSpark(series, color) {
+  if (!series || !series.length) return "";
+  const min = Math.min(...series), max = Math.max(...series);
+  const rng = Math.max(max - min, 0.1);
+  const pts = series.map((v, i) => `${(i*100)/(series.length-1)},${24-((v-min)/rng)*20}`).join(" ");
+  return `<svg viewBox="0 0 100 24" preserveAspectRatio="none" style="width:100%; height:20px;"><polyline fill="none" stroke="${color}" stroke-width="2" points="${pts}"/></svg>`;
+}
+
+function showOnboard() { document.getElementById("onboard-modal").style.display = "flex"; }
+function hideOnboard() { document.getElementById("onboard-modal").style.display = "none"; }
+async function submitOnboard() {
+  const data = {
+    name: document.getElementById("ob-name").value,
+    phone: document.getElementById("ob-phone").value,
+    district: document.getElementById("ob-district").value,
+    acres: document.getElementById("ob-acres").value,
+    crop: document.getElementById("ob-crop").value
+  };
+  await jpost("/farms/onboard", data);
+  hideOnboard(); toast("Farmer onboarded successfully"); loadFarms(); refreshLedger();
+}
+
+function showOnboardBuyer() { document.getElementById("onboard-buyer-modal").style.display = "flex"; }
+function hideOnboardBuyer() { document.getElementById("onboard-buyer-modal").style.display = "none"; }
+async function submitOnboardBuyer() {
+  const data = {
+    name: document.getElementById("ob-buyer-name").value,
+    contact: document.getElementById("ob-buyer-contact").value,
+    region: document.getElementById("ob-buyer-region").value,
+    floor_ugx: document.getElementById("ob-buyer-floor").value,
+    crops: document.getElementById("ob-buyer-crops").value
+  };
+  if (!data.name || !data.floor_ugx) { toast("Please fill all fields"); return; }
+  await jpost("/buyers/onboard", data);
+  hideOnboardBuyer(); toast("Institutional Buyer Registered"); loadFarms(); refreshLedger();
+}
+
+async function refreshLedger() {
+  const data = await jget("/ledger");
+  if (!data || data.error) return;
+  document.getElementById("ledger").innerHTML = data.rows.slice().reverse().map(r => `
+    <div class="t-row">
+      <span style="color:#74705f;">${new Date(r.entry.ts*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</span>
+      <span class="t-type ${r.entry.type}">${r.entry.type}</span>
+      <span style="color:#d9d3c4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title='${JSON.stringify(r.entry.payload)}'>${JSON.stringify(r.entry.payload)}</span>
+    </div>
+  `).join("");
+}
+
+async function verifyIntegrity() {
+  const r = await jget("/ledger/verify");
+  if (!r || r.error) return;
+  document.getElementById("radar-ledger").textContent = r.ok ? `${r.length} Blocks Secure` : "Chain Tampered!";
+}
+
+async function pingSensor(id) {
+  toast(`Pinging hardware sensor at ${id}...`);
+  const payload = {
+    farm_id: id,
+    soil_moisture: (15 + Math.random() * 10).toFixed(2),
+    temp_c: (28 + Math.random() * 6).toFixed(2),
+    rainfall_mm: (0 + Math.random() * 2).toFixed(2),
+    humidity_pct: (40 + Math.random() * 20).toFixed(2),
+    n_mg_kg: (20 + Math.random() * 20).toFixed(2),
+    p_mg_kg: (10 + Math.random() * 10).toFixed(2),
+    k_mg_kg: (150 + Math.random() * 100).toFixed(2)
+  };
+  await jpost("/sensor/telemetry", payload);
+  toast(`Telemetry received! YPS updated.`);
+  loadFarms(); refreshLedger();
+}
+
+async function askMavuno() {
+  const id = document.getElementById("ask-farm").value, q = document.getElementById("ask-q").value;
+  if (!q.trim()) return toast("Please enter a question.");
+  document.getElementById("ask-answer").textContent = "AI is thinking...";
+  const r = await jpost("/crp/ask", {farm_id:id, question:q});
+  document.getElementById("ask-answer").textContent = r.answer;
+}
+
+async function loadGallery() {
+  const res = await jget("/feed/verified/gallery");
+  const el = document.getElementById("harvest-gallery");
+  if (!el || res.error) return;
+  
+  if (!res.posts || !res.posts.length) {
+    el.innerHTML = '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No verified harvests yet. Photos will appear here once farmers post them via the app.</div>';
+    return;
+  }
+
+  el.innerHTML = res.posts.map(p => `
+    <div style="background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; display:flex; flex-direction:column; gap:8px;">
+      <div style="aspect-ratio:1/1; position:relative; background:var(--bg);">
+        <img src="${p.photo_url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200?text=No+Photo'">
+        <div style="position:absolute; top:8px; right:8px; background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:9px; font-weight:700;">VERIFIED</div>
+      </div>
+      <div style="padding:12px;">
+        <div style="font-weight:600; font-size:11px;">${p.farmer_name}</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:2px;">${p.district} • ${p.crop}</div>
+        <div style="font-size:10px; color:var(--ink-soft); margin-top:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.body}</div>
+        <div style="font-size:9px; color:var(--muted); margin-top:8px;">${new Date(p.created_at*1000).toLocaleDateString()}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+setInterval(() => { 
+  const el = document.getElementById("fineprint-time");
+  if(el) el.textContent = new Date().toLocaleString(); 
+}, 1000);
+setInterval(refreshLedger, 5000);
+setInterval(loadFarms, 15000);
+setInterval(verifyIntegrity, 30000);
+setInterval(loadGallery, 30000);
+</script>
+  const btn = document.getElementById("ai-send-btn");
+  body.innerHTML += `<div class="chat-bubble chat-bubble-farmer">${escapeHtml(q)}</div>`; // Reusing farmer bubble style for Agent
+  body.scrollTop = body.scrollHeight;
+  btn.disabled = true; btn.textContent = "...";
+  const loadId = 'loading-' + Date.now();
+  body.innerHTML += `<div id="${loadId}" class="chat-bubble" style="background:var(--bg-alt); color:var(--muted); align-self:flex-start; border:1px solid var(--line);">✨ Analyzing regional metrics...</div>`;
+  body.scrollTop = body.scrollHeight;
+  const r = await jpost("/crp/ask", {farm_id: 'admin', question: q}); // Agents ask as 'admin'
+  const loadEl = document.getElementById(loadId); if (loadEl) loadEl.remove();
+  btn.disabled = false; btn.textContent = "Send";
+  if (r.error) { body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed.</div>`; }
+  else {
+     const formatted = renderMarkdown(r.answer);
+     body.innerHTML += `<div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">${formatted}</div>`;
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+/* --- Original Agent Logic --- */
 function nutrientSpark(series, color) {
   if (!series || !series.length) return "";
   const min = Math.min(...series), max = Math.max(...series);
@@ -455,7 +827,6 @@ async function loadFarms() {
         ${(s.diagnostics || []).join('<br>')}
       </div>
       <div style="display:flex; gap:8px;">
-        <button class="btn primary" style="flex:1" onclick="runCycle('${id}')">Execute Cycle</button>
         <button class="btn" style="flex:1; border-color:var(--gold); color:var(--gold);" onclick="pingSensor('${id}')">Ping Sensor</button>
       </div>
       <div style="text-align:center; font-size:10px; color:var(--muted); font-weight:500;">Verified for CRP: <b style="color:var(--ink);">${b.kg_remaining || 0} KG</b></div>
@@ -496,8 +867,6 @@ async function submitOnboardBuyer() {
   await jpost("/buyers/onboard", data);
   hideOnboardBuyer(); toast("Institutional Buyer Registered"); loadFarms(); refreshLedger();
 }
-
-async function runCycle(id) { toast(`Cycling ${id}...`); await jpost("/demo/cycle", {farm_id:id}); loadFarms(); refreshLedger(); }
 
 async function refreshLedger() {
   const data = await jget("/ledger");
@@ -576,14 +945,15 @@ setInterval(loadGallery, 30000);
 
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme(localStorage.getItem("mavuno-theme") || "light");
-  const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.onclick = () => {
+  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
+  tgs.forEach(btn => {
+    if (btn) btn.onclick = () => {
       const cur = document.documentElement.getAttribute("data-theme");
       applyTheme(cur === "dark" ? "light" : "dark");
     };
-  }
-  loadFarms(); refreshLedger(); verifyIntegrity(); loadGallery();
+  });
+  loadFarms(); refreshLedger(); verifyIntegrity(); loadGallery(); refreshUnread();
+  setInterval(refreshUnread, 15000);
 });
 </script>
 </body>

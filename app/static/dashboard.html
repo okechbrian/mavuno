@@ -793,12 +793,7 @@ async function onAction(e) {
   if (!id) return;
   b.disabled = true;
   try {
-    if (act === "cycle") {
-      const r = await jpost("/demo/cycle", {farm_id: id});
-      if (r.error) toast("Error · " + r.error);
-      else if (r.priority && r.priority.error) toast("Trade Verification · " + r.priority.error);
-      else toast("Signal cycle complete · " + id);
-    } else if (act === "issue") {
+    if (act === "issue") {
       const r = await jpost("/finance/approve", {farm_id: id});
       toast(r.error ? ("Verification error · " + r.error) : ("Verified · " + r.token_id));
     }
@@ -845,9 +840,7 @@ async function verifyIntegrity() {
 }
 
 document.getElementById("run-all").onclick = async () => {
-  const farms = await jget("/farms");
-  for (const id in farms) await jpost("/demo/cycle", {farm_id: id});
-  toast("Cycle complete · all farms verified");
+  toast("Cycle generation removed in production");
   loadFarms(); refreshLedger(); verifyIntegrity();
 };
 document.getElementById("refresh").onclick = () => { loadFarms(); refreshLedger(); verifyIntegrity(); };

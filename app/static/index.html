@@ -405,6 +405,24 @@
     letter-spacing: 0.08em; text-transform: uppercase;
   }
 
+  /* ============ HOW IT WORKS ============ */
+  .how-it-works { max-width: 1240px; margin: 0 auto; padding: 80px 32px; border-top: 1px solid var(--line); }
+  .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
+  .step-card { background: var(--paper); padding: 32px; border-radius: 12px; border: 1px solid var(--line-soft); position: relative; transition: transform 0.3s var(--ease); }
+  .step-card:hover { transform: translateY(-6px); border-color: var(--forest); }
+  .step-num { position: absolute; top: -12px; left: 24px; background: var(--gold); color: var(--forest); font-family: "Fraunces", serif; font-weight: 600; font-size: 14px; padding: 4px 10px; border-radius: 4px; }
+  .step-icon { font-size: 32px; margin-bottom: 20px; }
+  .step-card h3 { font-family: "Fraunces", serif; font-size: 22px; margin: 0 0 12px; color: var(--forest); }
+  :root[data-theme="dark"] .step-card h3 { color: var(--gold-soft); }
+  .step-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+  /* ============ ABOUT ============ */
+  .about { background: var(--bg-alt); padding: 100px 32px; margin-top: 40px; }
+  .about-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+  .about-text { font-family: "Fraunces", serif; font-size: 22px; font-weight: 300; line-height: 1.6; color: var(--ink-soft); margin-bottom: 32px; }
+  .about-text strong { font-weight: 500; color: var(--forest); }
+  :root[data-theme="dark"] .about-text strong { color: var(--gold-soft); }
+
   /* ============ ENTRANCE ANIMATION ============ */
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
   .rise { animation: rise var(--t-slow) var(--ease) both; }
@@ -425,7 +443,6 @@
     .masthead-inner { padding: 12px 18px; gap: 8px; }
     .brand .wordmark .sub { display: none; }
     .nav-link { display: none; }
-    .nav-link.keep-mobile { display: inline-flex; padding: 8px 12px; font-size: 12px; }
     .prod-badge { display: none; }
     .hero {
       grid-template-columns: 1fr; gap: 28px;
@@ -436,8 +453,10 @@
     .hero p.standfirst { font-size: 16px; }
     .login-card { padding: 24px; }
     .trust { grid-template-columns: repeat(2, 1fr); padding: 24px 18px 8px; gap: 18px; }
-    .roles { padding: 48px 18px 24px; }
-    .role-grid { grid-template-columns: 1fr; gap: 16px; }
+    .step-grid { grid-template-columns: 1fr; gap: 24px; }
+    .how-it-works { padding: 48px 18px; }
+    .about { padding: 64px 18px; }
+    .about-text { font-size: 18px; }
     .colophon-inner { grid-template-columns: 1fr 1fr; gap: 28px; padding: 40px 18px 24px; }
     .fineprint { padding: 16px 18px; flex-direction: column; gap: 8px; }
   }
@@ -464,9 +483,8 @@
       </span>
     </a>
     <nav class="primary" aria-label="Primary">
-      <a class="nav-link keep-mobile" href="#roles">Sign in</a>
-      <a class="nav-link" href="/phone">USSD simulator</a>
-      <a class="nav-link" href="/feed-page">Mavuno Social</a>
+      <a class="nav-link" href="#how-it-works">How it works</a>
+      <a class="nav-link" href="#about">About us</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
     </nav>
   </div>
@@ -479,12 +497,12 @@
     <span class="eyebrow">Production · Uganda</span>
     <h1 class="display">Where soil data <em>becomes</em> trusted trade.</h1>
     <p class="standfirst">
-      Mavuno Yield is the verified intelligence layer for African agricultural trade. A Yield Probability Score (YPS), calibrated on seven soil signals, unlocks access to the <strong>Community Resource Platform (CRP)</strong> — matching farmers with premium buyers and providing AI-driven agronomy advice.
+      Mavuno Yield is the verified intelligence layer for African agricultural trade. A <strong>Yield Probability Score (YPS)</strong> provides a trust badge on the marketplace — matching farmers with premium buyers and providing <strong>Gemini-powered</strong> agronomy advice.
     </p>
     <div class="tagline-strip">
       <span>Soil Signals</span><span class="dot"></span>
       <span>YPS Score</span><span class="dot"></span>
-      <span>CRP Priority Access</span>
+      <span>Gemini AI</span>
     </div>
   </div>
 
@@ -511,6 +529,9 @@
 
         <button type="submit" class="btn" id="submit-btn">Sign in as Farmer</button>
       </form>
+      <div style="margin-top: 16px; text-align: center; font-size: 13px;">
+        Don't have an account? <a href="/signup" style="color: var(--forest); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor;">Sign up here</a>
+      </div>
       <p class="consent">
         By signing in you agree to our
         <a href="/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a>
@@ -538,38 +559,41 @@
   </div>
 </section>
 
-<section class="roles" id="roles" aria-label="Choose your role">
-  <span class="section-eyebrow">Choose your dashboard</span>
-  <h2 class="section-title">Verified data, <em>global trade</em>.</h2>
-  <p class="section-sub">
-    Every role accesses the same hash-chained source of truth. Farmers see soil signals and YPS; Agents verify and onboard; Buyers match with verified harvests; Supervisors monitor regional risk.
-  </p>
+<section id="how-it-works" class="how-it-works rise d4">
+  <span class="section-eyebrow">The Process</span>
+  <h2 class="section-title">How Mavuno <em>Works</em>.</h2>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📡</div>
+      <h3>Monitor</h3>
+      <p>Plug in the Mavuno YPS Node. Our solar-powered sensors track 7 live soil signals, from NPK levels to moisture, providing a real-time data stream of your farm's health.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">✨</div>
+      <h3>Verify</h3>
+      <p>Build your Yield Probability Score (YPS). High-performing farms earn a "Verified Yield" trust badge, backed by immutable data and instantly visible to global buyers.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">🤝</div>
+      <h3>Trade</h3>
+      <p>Sell directly on the Community Resource Platform (CRP). Bypass middlemen, secure premium prices, and settle transactions instantly via Mavuno Pay.</p>
+    </div>
+  </div>
+</section>
 
-  <div class="role-grid">
-    <a class="role-card rise d1" href="#" onclick="quickPick('farmer'); return false;" aria-label="Farmer sign-in shortcut">
-      <div class="role-icon" aria-hidden="true">🌱</div>
-      <h3>Farmer</h3>
-      <p>Check your YPS score, list harvests for CRP Priority, and ask the AI agronomist — all on USSD or Web.</p>
-      <span class="role-cta">Sign in</span>
-    </a>
-    <a class="role-card rise d2" href="#" onclick="quickPick('agent'); return false;" aria-label="Agent sign-in shortcut">
-      <div class="role-icon" aria-hidden="true">⚖️</div>
-      <h3>Agent</h3>
-      <p>Verify farm data, onboard new members, and manage the local CRP ledger entries.</p>
-      <span class="role-cta">Sign in</span>
-    </a>
-    <a class="role-card rise d3" href="#" onclick="quickPick('buyer'); return false;" aria-label="Buyer sign-in shortcut">
-      <div class="role-icon" aria-hidden="true">📦</div>
-      <h3>Buyer</h3>
-      <p>Browse live YPS-verified offers, set floor prices, and settle regional trade via Mavuno Pay.</p>
-      <span class="role-cta">Sign in</span>
-    </a>
-    <a class="role-card rise d4" href="#" onclick="quickPick('supervisor'); return false;" aria-label="Supervisor sign-in shortcut">
-      <div class="role-icon" aria-hidden="true">📈</div>
-      <h3>Supervisor</h3>
-      <p>Aggregate YPS trends, monitor regional credit risk, and export coordinator reports.</p>
-      <span class="role-cta">Sign in</span>
-    </a>
+<section id="about" class="about rise d4">
+  <div class="about-inner">
+    <span class="section-eyebrow">Our Mission</span>
+    <h2 class="section-title">Replacing uncertainty with <em>soil intelligence</em>.</h2>
+    <p class="about-text">
+      For too long, African smallholder farmers have been locked out of global trade due to a lack of collateral and market transparency. <strong>Mavuno Protocol</strong> changes the equation.
+    </p>
+    <p class="about-text">
+      We replace traditional collateral with <strong>Soil Intelligence</strong>. By turning live biological signals into a bankable <strong>Yield Probability Score (YPS)</strong>, we unlock the last mile of African agriculture — making smallholder trade predictable, profitable, and globally trusted.
+    </p>
   </div>
 </section>
 

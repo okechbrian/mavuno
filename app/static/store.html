@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<title>Mavuno Hardware Store</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2416; --ink-soft: #2e382a; --muted: #74705f; --muted-soft: #9a9584;
+    --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
+    --line: #d9d2bd; --line-soft: #e6dfc9;
+    --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
+    --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --line-soft: #242219;
+    --accent: #78a163; --accent-soft: #4a6b36; --clay: #c87a52; --gold: #d4a656; --bad: #d07668;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100vh; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Inter", sans-serif; font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: "Fraunces", serif; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* Masthead */
+  .masthead {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 0 24px; margin-bottom: 32px; border-bottom: 1px solid var(--line);
+  }
+  .mast-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    padding: 8px 14px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); border-radius: 999px;
+    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px; font-weight: 500;
+  }
+  .topbar-btn:hover { background: var(--bg-alt); }
+
+  /* Store Catalog */
+  .store-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px;
+  }
+  .product-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 24px; display: flex; flex-direction: column; gap: 16px;
+    transition: transform 200ms, box-shadow 200ms;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+  .product-img {
+    height: 180px; background: var(--bg-alt); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: 64px;
+    border: 1px solid var(--line-soft);
+  }
+  .product-info h3 { margin: 0; font-size: 20px; color: var(--ink); }
+  .product-info p { color: var(--muted); font-size: 13px; margin: 8px 0 12px; }
+  .price-tag { font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; color: var(--accent); }
+  
+  .btn {
+    padding: 14px 24px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer; border-radius: 4px; transition: all 200ms; width: 100%;
+  }
+  .btn:hover { background: var(--accent); border-color: var(--accent); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Checkout Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none;
+    align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--paper); border-radius: 8px; width: 100%; max-width: 420px;
+    padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .form-group { margin-bottom: 24px; }
+  .form-group label { display: block; font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 700; letter-spacing: 0.05em; }
+  .form-group input {
+    width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 4px;
+    background: var(--bg-alt); color: var(--ink); font-family: inherit; font-size: 14px;
+  }
+  
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); padding: 14px 28px; border-radius: 4px;
+    opacity: 0; transition: 300ms; z-index: 3000; font-size: 12px; font-weight: 700;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="mast-left">
+      <a href="/" class="logo display">Mavuno Store</a>
+      <span style="background: var(--line-soft); color: var(--muted); padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase;">Hardware</span>
+    </div>
+    <div class="topbar-actions">
+      <a href="/" class="topbar-btn" id="dash-link">← Dashboard</a>
+      <button class="topbar-btn" id="theme-toggle">🌙</button>
+    </div>
+  </header>
+
+  <h1 class="display" style="font-size: 32px; margin-bottom: 40px;">Hardware for Verified Sourcing</h1>
+  
+  <div class="store-grid" id="product-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <h2 class="display" style="margin-top: 0; font-size: 24px;">Checkout</h2>
+    <p id="checkout-product" style="color: var(--muted); margin-bottom: 24px; font-weight: 500;"></p>
+    
+    <div class="form-group">
+      <label>Mavuno Pay (Mobile Money)</label>
+      <input type="tel" id="pay-phone" placeholder="e.g. 256777000111">
+    </div>
+    
+    <div style="display: flex; gap: 12px;">
+      <button class="btn" style="background: var(--accent); border-color: var(--accent);" onclick="processPayment()" id="pay-btn">Pay & Confirm</button>
+      <button class="btn" style="background: transparent; color: var(--ink);" onclick="closeCheckout()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let me = null;
+let currentItem = null;
+
+async function jget(url) {
+  const r = await fetch(url);
+  if (r.status === 401) { window.location.href = "/"; return; }
+  return r.json();
+}
+
+async function jpost(url, body) {
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body || {})
+  });
+  return r.json();
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function openCheckout(id, name, price) {
+  currentItem = {id, name, price};
+  document.getElementById('checkout-product').textContent = `${name} — UGX ${price.toLocaleString()}`;
+  document.getElementById('checkout-modal').classList.add('open');
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+}
+
+async function processPayment() {
+  const phone = document.getElementById('pay-phone').value;
+  if (!phone) { toast("Please enter your number."); return; }
+  
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+  
+  const res = await jpost("/api/store/purchase", {
+    product_id: currentItem.id,
+    phone: phone
+  });
+  
+  btn.disabled = false;
+  btn.textContent = "Pay & Confirm";
+  
+  if (res.ok) {
+    toast("Hardware order confirmed! Dispatching soon.");
+    closeCheckout();
+  } else {
+    toast("Payment failed: " + (res.error || "unknown"));
+  }
+}
+
+async function loadProducts() {
+  const products = await jget("/api/store/products");
+  const grid = document.getElementById("product-grid");
+  const icons = {"YPS-MN-2.1": "📡", "SLR-EXT-01": "🔋", "BSTR-PRO": "🛰️"};
+  
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-img">${icons[p.id] || "📦"}</div>
+      <div class="product-info">
+        <h3 class="display">${p.name}</h3>
+        <p>${p.desc}</p>
+        <div class="price-tag">UGX ${p.price_ugx.toLocaleString()}</div>
+      </div>
+      <button class="btn" onclick="openCheckout('${p.id}', '${p.name}', ${p.price_ugx})">Order Now</button>
+    </div>
+  `).join("");
+}
+
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  document.getElementById("theme-toggle").textContent = t === "dark" ? "☀️" : "🌙";
+  localStorage.setItem("mavuno-theme", t);
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const theme = localStorage.getItem("mavuno-theme") || "light";
+  applyTheme(theme);
+  document.getElementById("theme-toggle").onclick = () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  };
+  
+  const r = await jget("/me");
+  if (r && r.role) {
+    const dl = document.getElementById("dash-link");
+    if (r.role === "farmer") dl.href = "/farmer/" + r.subject;
+    else if (r.role === "agent") dl.href = "/agent";
+    else if (r.role === "buyer") dl.href = "/buyer";
+  }
+  loadProducts();
+});
+</script>
+</body>
+</html>

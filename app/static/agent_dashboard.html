@@ -142,6 +142,35 @@
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index: 9999; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; }
   .toast.show { opacity: 1; }
 
+  /* Chat Drawer */
+  .chat-drawer {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
+    background: var(--paper); border-left: 1px solid var(--line);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.08);
+    transform: translateX(100%); transition: transform 0.22s ease; z-index: 2200;
+    display: flex; flex-direction: column;
+  }
+  .chat-drawer.open { transform: translateX(0); }
+  .chat-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px; border-bottom: 1px solid var(--line);
+  }
+  .chat-head h3 { margin: 0; font-family: "Fraunces", serif; font-size: 18px; }
+  .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--ink); padding: 4px 8px; }
+  .chat-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; }
+  .chat-foot { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; }
+  .chat-foot textarea {
+    flex: 1; resize: none; padding: 10px; border: 1px solid var(--line);
+    background: var(--bg-alt); color: var(--ink); border-radius: 4px;
+    font-family: inherit; font-size: 13px; min-height: 44px; max-height: 100px;
+  }
+  .chat-bubble {
+    max-width: 78%; padding: 10px 14px; border-radius: 14px;
+    margin-bottom: 8px; font-size: 13px; line-height: 1.4; word-wrap: break-word;
+  }
+  .chat-bubble-farmer { background: var(--bg-alt); color: var(--ink); align-self: flex-start; }
+  .chat-bubble-buyer  { background: var(--accent); color: var(--paper); align-self: flex-end; margin-left: auto; }
+
   /* Mobile nav */
   .nav-toggle {
     display: none;
@@ -361,8 +390,6 @@
   </div>
 </div>
 
-</div>
-
 <div id="notif-popover" style="display:none; position:fixed; top:70px; right:20px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,0.15); z-index:1000; flex-direction:column; overflow:hidden; animation: fadeInUp 0.3s ease-out;">
   <div style="padding:16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; background:var(--bg-alt);">
     <strong style="font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Notifications</strong>
@@ -376,6 +403,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
+function openChat() { document.getElementById("chat-drawer").classList.add("open"); }
+function closeChat() { document.getElementById("chat-drawer").classList.remove("open"); }
+
 async function verifyFarm(id) {
   const serial = prompt("Enter YPS Node Hardware Serial Number:", "YPS-MN-2.1-");
   if (!serial) return;
@@ -397,11 +427,6 @@ async function loadFarms() {
   const farmsList = ids.map(id => ({...farmsData[id], id}));
 
   // Update Verification Queue
-  // We need to fetch profiles directly to check verification_status if /farms doesn't return it
-  // But for now, let's assume /farms returns everything needed.
-  // Actually, /farms uses a join, so it should.
-  
-  // Filtering pending farmers
   const pending = farmsList.filter(f => f.verification_status && f.verification_status !== 'verified');
   const queueCard = document.getElementById("verification-queue-card");
   const queueList = document.getElementById("queue-list");
@@ -742,219 +767,6 @@ setInterval(refreshLedger, 5000);
 setInterval(loadFarms, 15000);
 setInterval(verifyIntegrity, 30000);
 setInterval(loadGallery, 30000);
-</script>
-  const btn = document.getElementById("ai-send-btn");
-  body.innerHTML += `<div class="chat-bubble chat-bubble-farmer">${escapeHtml(q)}</div>`; // Reusing farmer bubble style for Agent
-  body.scrollTop = body.scrollHeight;
-  btn.disabled = true; btn.textContent = "...";
-  const loadId = 'loading-' + Date.now();
-  body.innerHTML += `<div id="${loadId}" class="chat-bubble" style="background:var(--bg-alt); color:var(--muted); align-self:flex-start; border:1px solid var(--line);">✨ Analyzing regional metrics...</div>`;
-  body.scrollTop = body.scrollHeight;
-  const r = await jpost("/crp/ask", {farm_id: 'admin', question: q}); // Agents ask as 'admin'
-  const loadEl = document.getElementById(loadId); if (loadEl) loadEl.remove();
-  btn.disabled = false; btn.textContent = "Send";
-  if (r.error) { body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed.</div>`; }
-  else {
-     const formatted = renderMarkdown(r.answer);
-     body.innerHTML += `<div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">${formatted}</div>`;
-  }
-  body.scrollTop = body.scrollHeight;
-}
-
-/* --- Original Agent Logic --- */
-function nutrientSpark(series, color) {
-  if (!series || !series.length) return "";
-  const min = Math.min(...series), max = Math.max(...series);
-  const rng = Math.max(max - min, 0.1);
-  const pts = series.map((v, i) => `${(i*100)/(series.length-1)},${24-((v-min)/rng)*20}`).join(" ");
-  return `<svg viewBox="0 0 100 24" preserveAspectRatio="none" style="width:100%; height:20px;"><polyline fill="none" stroke="${color}" stroke-width="2" points="${pts}"/></svg>`;
-}
-
-let lastFarms = {};
-async function loadFarms() {
-  const [farms, buyers] = await Promise.all([jget("/farms"), jget("/buyers")]);
-  if (!farms || farms.error) return;
-  lastFarms = farms;
-  
-  const bl = document.getElementById("buyer-list");
-  if (bl) {
-    bl.innerHTML = buyers.map(b => `
-      <div style="display:flex; justify-content:space-between; border-left:2px solid var(--accent); padding-left:8px;">
-        <span style="font-weight:600;">${b.name}</span>
-        <span style="color:var(--muted);">${b.region}</span>
-      </div>
-    `).join("") || 'No buyers found';
-  }
-
-  const ids = Object.keys(farms);
-  const scores = await Promise.all(ids.map(id => jget("/score/" + id)));
-  const balances = await Promise.all(ids.map(id => jget("/finance/status/" + id)));
-
-  const container = document.getElementById("farms");
-  container.innerHTML = "";
-  let totalCeiling = 0, totalN = 0;
-
-  ids.forEach((id, i) => {
-    const f = farms[id], s = scores[i], b = balances[i];
-    totalCeiling += (s.trade_ceiling_ugx || 0);
-    totalN += (s.nutrients?.n?.slice(-1)[0] || 0);
-
-    const hClass = `b-${(s.trade_health || "poor").toLowerCase()}`;
-    const card = document.createElement("div");
-    card.className = "farm-card";
-    card.innerHTML = `
-      <div class="f-head">
-        <div><h3 class="display">${f.farmer_name}</h3><span style="color:var(--muted); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">${id} · ${f.district}</span></div>
-        <span class="badge ${hClass}">${s.trade_health || "N/A"}</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-alt); padding:16px; border-radius:4px;">
-        <div>
-           <span style="font-size:9px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:4px;">Yield Prob (YPS)</span>
-           <div class="display" style="font-size:32px;">${s.yps || 0}<span style="font-size:12px; color:var(--muted);">/1000</span></div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-weight:700; color:var(--accent); font-size:16px;">${s.kg_allocated || 0} KG</div>
-          <div style="font-size:10px; color:var(--muted); font-weight:500;">Cap: UGX ${(s.trade_ceiling_ugx || 0).toLocaleString()}</div>
-        </div>
-      </div>
-      <div class="spark-row">
-        <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(s.nutrients?.n, "var(--accent)")}</div>
-        <div class="spark-box"><span>Phos</span>${nutrientSpark(s.nutrients?.p, "var(--gold)")}</div>
-        <div class="spark-box"><span>Potass</span>${nutrientSpark(s.nutrients?.k, "var(--clay)")}</div>
-      </div>
-      <div style="background:var(--paper); border:1px solid var(--line-soft); border-radius:2px; padding:12px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
-        <strong style="color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; font-size:9px;">YPS Signal Diagnostic</strong><br>
-        ${(s.diagnostics || []).join('<br>')}
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn" style="flex:1; border-color:var(--gold); color:var(--gold);" onclick="pingSensor('${id}')">Ping Sensor</button>
-      </div>
-      <div style="text-align:center; font-size:10px; color:var(--muted); font-weight:500;">Verified for CRP: <b style="color:var(--ink);">${b.kg_remaining || 0} KG</b></div>
-    `;
-    container.appendChild(card);
-  });
-
-  document.getElementById("radar-velocity").textContent = Math.round(totalCeiling/168).toLocaleString();
-  document.getElementById("radar-risk-label").textContent = "Avg Soil Confidence: " + Math.round(totalN/(ids.length || 1)) + "%";
-  document.getElementById("ask-farm").innerHTML = ids.map(id => `<option value="${id}">${farms[id].farmer_name}</option>`).join("");
-}
-
-function showOnboard() { document.getElementById("onboard-modal").style.display = "flex"; }
-function hideOnboard() { document.getElementById("onboard-modal").style.display = "none"; }
-async function submitOnboard() {
-  const data = {
-    name: document.getElementById("ob-name").value,
-    phone: document.getElementById("ob-phone").value,
-    district: document.getElementById("ob-district").value,
-    acres: document.getElementById("ob-acres").value,
-    crop: document.getElementById("ob-crop").value
-  };
-  await jpost("/farms/onboard", data);
-  hideOnboard(); toast("Farmer onboarded successfully"); loadFarms(); refreshLedger();
-}
-
-function showOnboardBuyer() { document.getElementById("onboard-buyer-modal").style.display = "flex"; }
-function hideOnboardBuyer() { document.getElementById("onboard-buyer-modal").style.display = "none"; }
-async function submitOnboardBuyer() {
-  const data = {
-    name: document.getElementById("ob-buyer-name").value,
-    contact: document.getElementById("ob-buyer-contact").value,
-    region: document.getElementById("ob-buyer-region").value,
-    floor_ugx: document.getElementById("ob-buyer-floor").value,
-    crops: document.getElementById("ob-buyer-crops").value
-  };
-  if (!data.name || !data.floor_ugx) { toast("Please fill all fields"); return; }
-  await jpost("/buyers/onboard", data);
-  hideOnboardBuyer(); toast("Institutional Buyer Registered"); loadFarms(); refreshLedger();
-}
-
-async function refreshLedger() {
-  const data = await jget("/ledger");
-  if (!data || data.error) return;
-  document.getElementById("ledger").innerHTML = data.rows.slice().reverse().map(r => `
-    <div class="t-row">
-      <span style="color:#74705f;">${new Date(r.entry.ts*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</span>
-      <span class="t-type ${r.entry.type}">${r.entry.type}</span>
-      <span style="color:#d9d3c4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title='${JSON.stringify(r.entry.payload)}'>${JSON.stringify(r.entry.payload)}</span>
-    </div>
-  `).join("");
-}
-
-async function verifyIntegrity() {
-  const r = await jget("/ledger/verify");
-  if (!r || r.error) return;
-  document.getElementById("radar-ledger").textContent = r.ok ? `${r.length} Blocks Secure` : "Chain Tampered!";
-}
-
-async function pingSensor(id) {
-  toast(`Pinging hardware sensor at ${id}...`);
-  const payload = {
-    farm_id: id,
-    soil_moisture: (15 + Math.random() * 10).toFixed(2),
-    temp_c: (28 + Math.random() * 6).toFixed(2),
-    rainfall_mm: (0 + Math.random() * 2).toFixed(2),
-    humidity_pct: (40 + Math.random() * 20).toFixed(2),
-    n_mg_kg: (20 + Math.random() * 20).toFixed(2),
-    p_mg_kg: (10 + Math.random() * 10).toFixed(2),
-    k_mg_kg: (150 + Math.random() * 100).toFixed(2)
-  };
-  await jpost("/sensor/telemetry", payload);
-  toast(`Telemetry received! YPS updated.`);
-  loadFarms(); refreshLedger();
-}
-
-async function askMavuno() {
-  const id = document.getElementById("ask-farm").value, q = document.getElementById("ask-q").value;
-  if (!q.trim()) return toast("Please enter a question.");
-  document.getElementById("ask-answer").textContent = "AI is thinking...";
-  const r = await jpost("/crp/ask", {farm_id:id, question:q});
-  document.getElementById("ask-answer").textContent = r.answer;
-}
-
-async function loadGallery() {
-  const res = await jget("/feed/verified/gallery");
-  const el = document.getElementById("harvest-gallery");
-  if (!el || res.error) return;
-  
-  if (!res.posts || !res.posts.length) {
-    el.innerHTML = '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted); border:1px dashed var(--line); border-radius:4px;">No verified harvests yet. Photos will appear here once farmers post them via the app.</div>';
-    return;
-  }
-
-  el.innerHTML = res.posts.map(p => `
-    <div style="background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; display:flex; flex-direction:column; gap:8px;">
-      <div style="aspect-ratio:1/1; position:relative; background:var(--bg);">
-        <img src="${p.photo_url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200?text=No+Photo'">
-        <div style="position:absolute; top:8px; right:8px; background:var(--accent); color:white; padding:2px 8px; border-radius:12px; font-size:9px; font-weight:700;">VERIFIED</div>
-      </div>
-      <div style="padding:12px;">
-        <div style="font-weight:600; font-size:11px;">${p.farmer_name}</div>
-        <div style="font-size:10px; color:var(--muted); margin-top:2px;">${p.district} • ${p.crop}</div>
-        <div style="font-size:10px; color:var(--ink-soft); margin-top:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.body}</div>
-        <div style="font-size:9px; color:var(--muted); margin-top:8px;">${new Date(p.created_at*1000).toLocaleDateString()}</div>
-      </div>
-    </div>
-  `).join("");
-}
-
-setInterval(() => { document.getElementById("fineprint-time").textContent = new Date().toLocaleString(); }, 1000);
-setInterval(refreshLedger, 5000);
-setInterval(loadFarms, 15000);
-setInterval(verifyIntegrity, 30000);
-setInterval(loadGallery, 30000);
-
-document.addEventListener("DOMContentLoaded", () => {
-  applyTheme(localStorage.getItem("mavuno-theme") || "light");
-  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
-  tgs.forEach(btn => {
-    if (btn) btn.onclick = () => {
-      const cur = document.documentElement.getAttribute("data-theme");
-      applyTheme(cur === "dark" ? "light" : "dark");
-    };
-  });
-  loadFarms(); refreshLedger(); verifyIntegrity(); loadGallery(); refreshUnread();
-  setInterval(refreshUnread, 15000);
-});
 </script>
 </body>
 </html>

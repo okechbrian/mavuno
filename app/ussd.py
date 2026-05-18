@@ -5,7 +5,12 @@ from . import scorer, finance, crp
 
 def route(phone: str, text_input: str):
     with SessionLocal() as db:
-        row = db.execute(text("SELECT * FROM farms WHERE phone = :phone"), {"phone": phone}).mappings().first()
+        sql = """
+            SELECT u.id, u.phone, p.farmer_name, p.district, p.crop 
+            FROM users u JOIN farmer_profiles p ON u.id = p.user_id 
+            WHERE u.phone = :phone
+        """
+        row = db.execute(text(sql), {"phone": phone}).mappings().first()
         farm = dict(row) if row else None
     
     if not farm: return "END Number not registered."
@@ -16,7 +21,7 @@ def route(phone: str, text_input: str):
     lang = "en" if parts[0] == "1" else "lg"
     S = {
         "en": {
-            "wel": "Welcome {n}\n1. Score\n2. Trade Priority\n3. Status\n4. Price\n5. Sell\n6. Community\n7. Market\n8. Ask Mavuno\n9. Exit",
+            "wel": "Welcome {n}\n1. Score\n2. Trade Priority\n3. Status\n4. Price\n5. Sell\n6. Community ({d})\n7. Market\n8. Ask Mavuno\n9. Exit",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Enter question:",
             "sell": "Enter kg to sell:",
@@ -27,7 +32,7 @@ def route(phone: str, text_input: str):
             "mkt_empty": "Market is empty."
         },
         "lg": {
-            "wel": "Kulaba {n}\n1. Ekibalo\n2. Yield Priority\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed\n7. Akatale\n8. Buuza Mavuno\n9. Fuluma",
+            "wel": "Kulaba {n}\n1. Ekibalo\n2. Yield Priority\n3. Balansi\n4. Omuwendo\n5. Tunda\n6. Feed ({d})\n7. Akatale\n8. Buuza Mavuno\n9. Fuluma",
             "res": "YPS: {y}\nTier: {t}",
             "ask": "Wandiika ekibuuzo kyo:",
             "sell": "Oyingize kilo:",
@@ -39,7 +44,7 @@ def route(phone: str, text_input: str):
         }
     }[lang]
 
-    if len(parts) == 1: return "CON " + S["wel"].format(n=farm['farmer_name'].split()[0])
+    if len(parts) == 1: return "CON " + S["wel"].format(n=farm['farmer_name'].split()[0], d=farm['district'])
     
     cmd = parts[1]
     

@@ -1,7 +1,8 @@
 {
   "functions": {
     "api/index.py": {
-      "memory": 1024
+      "memory": 1024,
+      "includeFiles": "app/static/**,app/data/**"
     }
   },
   "rewrites": [

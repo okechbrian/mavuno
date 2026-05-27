@@ -2,11 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" />
-<title>Mavuno Yield — Agent Cockpit</title>
+<title>Mavuno Command — Agent Cockpit</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
-<link rel="apple-touch-icon" href="/static/img/mavuno-mono.png" />
-<link rel="manifest" href="/static/manifest.json" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -37,61 +35,78 @@
     width: 280px; background: var(--paper); border-right: 1px solid var(--line);
     padding: 32px; display: flex; flex-direction: column; gap: 32px; overflow-y: auto;
   }
-  .main { flex: 1; overflow-y: auto; padding: 48px; }
+  .main { flex: 1; overflow-y: auto; padding: 48px; display: flex; flex-direction: column; }
   
-  /* Operations */
-  .op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
-  .farm-card {
-    background: var(--paper); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 24px; border-radius: 8px;
-    display: flex; flex-direction: column; gap: 16px; transition: transform 200ms ease;
+  /* Tabs */
+  .tabs { display: flex; gap: 32px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
+  .tab-btn {
+    padding: 12px 0; border: none; background: transparent; color: var(--muted);
+    font-size: 14px; font-weight: 600; cursor: pointer; position: relative;
+    transition: color 200ms;
   }
-  .farm-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); }
+  .tab-btn.active::after {
+    content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+    height: 2px; background: var(--accent);
+  }
+  .tab-content { display: none; flex-direction: column; gap: 32px; }
+  .tab-content.active { display: flex; }
+
+  /* Macro Analytics */
+  .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+  .macro-card { background: var(--paper); padding: 24px; border-radius: 8px; border: 1px solid var(--line); }
+  .macro-label { font-size: 10px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
+  .macro-value { font-size: 32px; font-weight: 600; font-family: "Fraunces", serif; line-height: 1; }
+
+  /* Triage Queue */
+  .triage-section { background: var(--bg-alt); padding: 24px; border-radius: 8px; border: 1px solid var(--line); }
+  .triage-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .triage-item {
+    background: var(--paper); padding: 12px 16px; border-radius: 4px; border: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* Operations Grid */
+  .op-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+  .farm-card {
+    background: var(--paper); border: 1px solid var(--line-soft); padding: 24px; border-radius: 8px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
   
-  .spark-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .spark-box { background: var(--bg); padding: 8px; border-radius: 2px; border: 1px solid var(--line-soft); }
-  .spark-box span { font-size: 8px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
-  
+  .spark-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .spark-box { background: var(--bg); padding: 10px; border-radius: 4px; border: 1px solid var(--line-soft); }
+  .spark-box span { font-size: 9px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+  .spark-box strong { font-size: 14px; color: var(--ink); }
+
+  .yps-gauge {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: var(--bg-alt); border-radius: 6px;
+  }
+  .gauge-bar { flex: 1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .gauge-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; background: var(--paper); border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+  .data-table th { background: var(--bg-alt); padding: 16px; text-align: left; font-size: 10px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .data-table td { padding: 16px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+
+  .btn {
+    padding: 10px 16px; border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px;
+    transition: 200ms;
+  }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.sm { padding: 6px 10px; font-size: 9px; }
+  .btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
   .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
   .b-excellent { background: rgba(46,77,31,0.15); color: var(--accent); }
   .b-good { background: rgba(161,123,44,0.15); color: var(--gold); }
   .b-poor { background: rgba(138,47,36,0.15); color: var(--bad); }
 
-  .btn {
-    padding: 10px 16px; border: 1px solid var(--ink); background: transparent; color: var(--ink);
-    font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px;
-  }
-  .btn.primary { background: var(--ink); color: var(--paper); }
-  .btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
-
-  /* Masthead & Hero */
-  .masthead {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 0 20px; margin-bottom: 32px; border-bottom: 1px solid var(--line);
-  }
-  .mast-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; }
-  .role-badge { background: var(--line-soft); color: var(--muted); padding: 4px 12px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index: 9999; font-size:12px; text-transform:uppercase; }
   .toast.show { opacity: 1; }
-
-  /* Chat Drawer */
-  .chat-drawer {
-    position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
-    background: var(--paper); border-left: 1px solid var(--line);
-    box-shadow: -8px 0 32px rgba(0,0,0,0.08);
-    transform: translateX(100%); transition: transform 0.22s ease; z-index: 2200;
-    display: flex; flex-direction: column;
-  }
-  .chat-drawer.open { transform: translateX(0); }
-  .chat-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
-  .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; }
-  .chat-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; }
-  
-  /* Mobile nav */
-  .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; font-size: 20px; align-items: center; justify-content: center; }
-  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; opacity: 0; pointer-events: none; transition: opacity 200ms; }
-  .backdrop.open { opacity: 1; pointer-events: auto; }
 </style>
 </head>
 <body>
@@ -100,65 +115,218 @@
   <div style="display:flex; flex-direction:column; gap:20px;">
     <button class="btn primary" style="width:100%" onclick="showOnboard()">+ Onboard Farmer</button>
   </div>
+
   <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
     <a href="/store" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📡 Hardware Store</a>
     <a href="/feed-page" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">🌱 Mavuno Social</a>
-    <a href="#" onclick="openChat(); return false;" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">💬 Messages</a>
-    <a href="/logout" style="text-decoration:none; color:var(--bad); font-weight:600; display:block; padding:8px 0;">Sign out</a>
+    <a href="/ledger" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📜 Protocol Ledger</a>
+    <button class="btn" style="width:100%; color:var(--bad); border-color:var(--line); margin-top:8px; font-size:10px; font-weight:600; text-transform:uppercase;" onclick="logout()">Sign out</button>
   </div>
 </div>
-
-<div class="backdrop" id="backdrop" onclick="closeSidebar()"></div>
 
 <div class="main">
-  <header class="masthead">
-    <div class="mast-left">
-      <button class="nav-toggle" id="nav-toggle" onclick="openSidebar()">☰</button>
-      <a href="/" class="logo display">Mavuno Yield</a>
-      <span class="role-badge">Agent Cockpit</span>
-    </div>
+  <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:48px;">
+    <h1 class="display" style="font-size:32px; margin:0;">Command Center</h1>
+    <div id="ledger-status" class="badge" style="padding:6px 12px;">Verifying Protocol...</div>
   </header>
 
-  <h1 class="display" style="font-size:42px;">Agent Cockpit</h1>
-  <div class="op-grid" id="farms"></div>
-</div>
-
-<div class="chat-drawer" id="chat-drawer" aria-hidden="true">
-  <div class="chat-head">
-    <h3 class="display">Messages</h3>
-    <button class="chat-close" onclick="closeChat()">×</button>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(this, 'ops')">Operations</button>
+    <button class="tab-btn" onclick="showTab(this, 'credit')">Credit Management</button>
+    <button class="tab-btn" onclick="showTab(this, 'logistics')">Logistics & Moderation</button>
   </div>
-  <div class="chat-body" id="chat-body"></div>
+
+  <!-- TAB: OPERATIONS -->
+  <div id="tab-ops" class="tab-content active">
+    <div class="macro-grid">
+      <div class="macro-card"><span class="macro-label">System Risk</span><div class="macro-value" id="macro-risk">--%</div></div>
+      <div class="macro-card"><span class="macro-label">Pending KYC</span><div class="macro-value" id="macro-kyc">--</div></div>
+      <div class="macro-card"><span class="macro-label">Active Alerts</span><div class="macro-value" id="macro-alerts" style="color:var(--bad);">--</div></div>
+    </div>
+
+    <div class="triage-section">
+      <h3 class="display" style="font-size:18px; margin:0;">Triage Queue</h3>
+      <div class="triage-list" id="kyc-list"></div>
+      <div class="triage-list" id="alerts-list" style="margin-top:12px;"></div>
+    </div>
+
+    <h3 class="display" style="font-size:20px; margin-top:16px;">Biometric Grid</h3>
+    <div class="op-grid" id="farms-grid"></div>
+  </div>
+
+  <!-- TAB: CREDIT -->
+  <div id="tab-credit" class="tab-content">
+    <div class="macro-grid">
+      <div class="macro-card"><span class="macro-label">Credit Velocity</span><div class="macro-value" id="macro-velocity">-- kg</div></div>
+      <div class="macro-card"><span class="macro-label">Avg Yield Score</span><div class="macro-value" id="macro-avg-yps">--</div></div>
+      <div class="macro-card"><span class="macro-label">Repayment Risk</span><div class="macro-value" id="macro-repayment">Low</div></div>
+    </div>
+
+    <h3 class="display" style="font-size:20px;">Priority Issuance</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Farmer</th><th>District</th><th>Crop</th><th>Live YPS</th><th>Action</th></tr>
+      </thead>
+      <tbody id="credit-table"></tbody>
+    </table>
+  </div>
+
+  <!-- TAB: LOGISTICS -->
+  <div id="tab-logistics" class="tab-content">
+    <div class="macro-grid">
+      <div class="macro-card"><span class="macro-label">Expected Volume</span><div class="macro-value" id="macro-volume">-- kg</div></div>
+      <div class="macro-card"><span class="macro-label">Flagged Posts</span><div class="macro-value" id="macro-flagged">--</div></div>
+      <div class="macro-card"><span class="macro-label">Hub Status</span><div class="macro-value">Active</div></div>
+    </div>
+
+    <h3 class="display" style="font-size:20px;">Community Moderation</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Post ID</th><th>Content Excerpt</th><th>Action</th></tr>
+      </thead>
+      <tbody id="moderation-table"></tbody>
+    </table>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-function openChat() { document.getElementById("chat-drawer").classList.add("open"); }
-function closeChat() { document.getElementById("chat-drawer").classList.remove("open"); }
-function openSidebar() { document.querySelector(".sidebar").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
-function closeSidebar() { document.querySelector(".sidebar").classList.remove("open"); document.getElementById("backdrop").classList.remove("open"); }
+function showTab(btn, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`tab-${id}`).classList.add('active');
+}
 
-async function jget(url) {
-  const r = await fetch(url);
-  if (r.status === 401) { window.location.href = "/"; return; }
+function logout() {
+  window.location.href = "/logout";
+}
+
+async function jpost(url, data={}) {
+  const r = await fetch(url, { method: 'POST', body: data instanceof FormData ? data : JSON.stringify(data) });
   return r.json();
 }
 
-async function loadFarms() {
-  const farms = await jget("/farms");
-  const container = document.getElementById("farms");
-  container.innerHTML = Object.keys(farms).map(id => `
-    <div class="farm-card">
-      <h3 class="display">${farms[id].farmer_name}</h3>
-      <p style="color:var(--muted); font-size:10px;">${id} · ${farms[id].district}</p>
-      <div style="margin-top:12px;"><button class="btn primary" onclick="pingSensor('${id}')">Ping Sensor</button></div>
+async function loadData() {
+  const r = await fetch('/api/agent/overview');
+  if (r.status === 401) { window.location.href = "/"; return; }
+  const data = await r.json();
+
+  // 1. Operations Tab
+  document.getElementById("macro-risk").innerText = `${data.macro.system_risk}%`;
+  document.getElementById("macro-kyc").innerText = data.triage.kyc.length;
+  document.getElementById("macro-alerts").innerText = data.triage.alerts.length;
+
+  const ls = document.getElementById("ledger-status");
+  ls.innerText = data.macro.ledger_verified ? "✓ LEDGER IMMUTABLE" : "⚠ LEDGER COMPROMISED";
+  ls.className = `badge ${data.macro.ledger_verified ? 'b-excellent' : 'b-poor'}`;
+
+  const kycList = document.getElementById("kyc-list");
+  kycList.innerHTML = data.triage.kyc.map(f => `
+    <div class="triage-item">
+      <div><strong>KYC Required:</strong> ${f.name} (${f.district})</div>
+      <button class="btn sm primary" onclick="verifyFarmer('${f.id}')">Verify ID</button>
     </div>
+  `).join("");
+
+  const alertList = document.getElementById("alerts-list");
+  alertList.innerHTML = data.triage.alerts.map(a => `
+    <div class="triage-item" style="border-left: 4px solid var(--bad);">
+      <div><strong>${a.issue}:</strong> ${a.name}</div>
+      <button class="btn sm" onclick="window.location.href='/farmer/${a.id}'">Triage</button>
+    </div>
+  `).join("");
+
+  const grid = document.getElementById("farms-grid");
+  grid.innerHTML = data.farmers.map(f => `
+    <div class="farm-card">
+      <div style="display:flex; justify-content:space-between;">
+        <h4 class="display" style="margin:0;">${f.name}</h4>
+        <span class="badge ${f.yps > 700 ? 'b-excellent' : f.yps > 400 ? 'b-good' : 'b-poor'}">${f.yps} YPS</span>
+      </div>
+      <div class="yps-gauge">
+        <div class="gauge-bar"><div class="gauge-fill" style="width:${f.yps/10}%; background:var(--accent);"></div></div>
+      </div>
+      <div class="spark-row">
+        <div class="spark-box"><span>Moisture</span><strong>${f.telemetry ? f.telemetry.moisture : '--'}%</strong></div>
+        <div class="spark-box"><span>Nitrogen</span><strong>${f.telemetry ? f.telemetry.n : '--'}</strong></div>
+        <div class="spark-box"><span>Temp</span><strong>${f.telemetry ? f.telemetry.temp : '--'}°C</strong></div>
+      </div>
+      <button class="btn sm primary" onclick="pingSensor('${f.id}')">Ping Sensor</button>
+    </div>
+  `).join("");
+
+  // 2. Credit Tab
+  document.getElementById("macro-velocity").innerText = `${data.macro.credit_velocity.toLocaleString()} kg`;
+  const avgYps = data.farmers.length ? Math.round(data.farmers.reduce((a,b)=>a+b.yps,0)/data.farmers.length) : 0;
+  document.getElementById("macro-avg-yps").innerText = avgYps;
+
+  const creditTable = document.getElementById("credit-table");
+  creditTable.innerHTML = data.farmers.filter(f => f.yps > 400).map(f => `
+    <tr>
+      <td><strong>${f.name}</strong></td>
+      <td>${f.district}</td>
+      <td>${f.crop}</td>
+      <td><span class="badge b-good">${f.yps}</span></td>
+      <td><button class="btn sm primary" onclick="issuePriority('${f.id}')">Issue Credit</button></td>
+    </tr>
+  `).join("");
+
+  // 3. Logistics Tab
+  document.getElementById("macro-volume").innerText = `${data.logistics.expected_kg.toLocaleString()} kg`;
+  document.getElementById("macro-flagged").innerText = data.moderation.length;
+
+  const modTable = document.getElementById("moderation-table");
+  modTable.innerHTML = data.moderation.map(m => `
+    <tr>
+      <td style="font-family:'JetBrains Mono'; font-size:11px;">${m.id}</td>
+      <td style="color:var(--muted);">${m.body}</td>
+      <td>
+        <div style="display:flex; gap:8px;">
+          <button class="btn sm" onclick="moderatePost('${m.id}', 'unflag')">Allow</button>
+          <button class="btn sm primary" onclick="moderatePost('${m.id}', 'delete')">Remove</button>
+        </div>
+      </td>
+    </tr>
   `).join("");
 }
 
-function applyTheme(t) { document.documentElement.setAttribute("data-theme", t); }
-document.addEventListener("DOMContentLoaded", () => { applyTheme(localStorage.getItem("mavuno-theme") || "light"); loadFarms(); });
+function showToast(m) { 
+  const t = document.getElementById("toast"); 
+  t.innerText = m; t.classList.add("show"); 
+  setTimeout(()=>t.classList.remove("show"), 3000); 
+}
+
+async function verifyFarmer(id) {
+  showToast("Verifying identity...");
+  await fetch(`/api/agent/verify/${id}`, {method:'POST'});
+  loadData();
+}
+
+async function issuePriority(id) {
+  showToast("Issuing Trade Priority...");
+  const r = await fetch('/api/agent/priorities/issue', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({farm_id: id})
+  });
+  const res = await r.json();
+  if (res.error) showToast("Error: " + res.error);
+  else { showToast("Success: Priority " + res.priority_id); loadData(); }
+}
+
+async function moderatePost(id, action) {
+  showToast("Applying moderation...");
+  const fd = new FormData(); fd.append('action', action);
+  await fetch(`/api/agent/social/moderate/${id}`, {method:'POST', body: fd});
+  loadData();
+}
+
+function pingSensor(id) { showToast(`Sentinel Node ${id} pinged. Signal stable.`); }
+function showOnboard() { showToast("Onboarding module initiated."); }
+
+document.addEventListener("DOMContentLoaded", loadData);
 </script>
 </body>
 </html>

@@ -43,6 +43,7 @@ from .schemas import (
 database.init_db()
 with SessionLocal() as db:
     training.seed_training_data(db)
+    database.seed_from_json(db)
 
 app = FastAPI(title="Mavuno")
 
@@ -50,7 +51,7 @@ app = FastAPI(title="Mavuno")
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"error": str(exc.detail), "path": request.url.path})
 
-@app.mount("/static", StaticFiles(directory=ROOT / "app" / "static"), name="static")
+app.mount("/static", StaticFiles(directory=ROOT / "app" / "static"), name="static")
 
 # --- Demo credentials ---
 import os as _os
@@ -222,6 +223,118 @@ class StorePurchaseReq(BaseModel):
 @app.post("/api/store/purchase")
 def store_purchase(req: StorePurchaseReq, user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     return store.purchase(db, user["subject"], req.product_id, req.phone)
+
+# ============================================================================
+# AGENT OPS
+# ============================================================================
+
+@app.get("/api/agent/overview")
+def agent_overview(db: Session = Depends(get_session), user: dict = Depends(require_user("agent"))):
+    """Unified operational state for the Agent Command Center."""
+    # 1. Fetch Farmers & Compute Aggregates
+    farmers = db.execute(select(FarmerProfile)).scalars().all()
+    
+    farmer_list = []
+    triage_kyc = []
+    triage_alerts = []
+    total_yps = 0
+    total_kg_allocated = 0
+    
+    for f in farmers:
+        # Get latest telemetry
+        latest_t = db.execute(
+            select(SoilTelemetry)
+            .where(SoilTelemetry.farm_id == f.user_id)
+            .order_by(SoilTelemetry.timestamp.desc())
+        ).first()
+        
+        # Get active priority
+        priority = db.execute(
+            select(YieldPriority)
+            .where(YieldPriority.farm_id == f.user_id, YieldPriority.status == "active")
+        ).scalar_one_or_none()
+        
+        yps = priority.yps if priority else 0
+        total_yps += yps
+        if priority: total_kg_allocated += priority.kg_allocated
+            
+        f_data = {
+            "id": f.user_id, "name": f.farmer_name, "district": f.district,
+            "crop": f.crop, "yps": yps, "status": f.verification_status,
+            "telemetry": {
+                "moisture": latest_t[0].soil_moisture if latest_t else 0,
+                "n": latest_t[0].n_mg_kg if latest_t else 0,
+                "temp": latest_t[0].temp_c if latest_t else 0,
+            } if latest_t else None
+        }
+        farmer_list.append(f_data)
+        
+        # Triage Logic
+        if f.verification_status == "pending_kyc":
+            triage_kyc.append(f_data)
+        if latest_t and (latest_t[0].soil_moisture < 20 or yps < 300):
+            triage_alerts.append({"id": f.user_id, "name": f.farmer_name, "issue": "Low Moisture" if latest_t[0].soil_moisture < 20 else "Low YPS"})
+
+    # 2. Logistics (Hub Aggregation)
+    hub_stmt = select(MarketOffer.kg).where(MarketOffer.status == "matched")
+    matched_kg = db.execute(hub_stmt).scalars().all()
+    
+    # 3. Moderation (Flagged Posts)
+    flagged = db.execute(select(Post).where(Post.hidden == True).limit(10)).scalars().all()
+
+    return {
+        "farmers": farmer_list,
+        "triage": {"kyc": triage_kyc, "alerts": triage_alerts},
+        "logistics": {"expected_kg": sum(matched_kg)},
+        "moderation": [{"id": p.id, "body": p.body[:50] + "..."} for p in flagged],
+        "macro": {
+            "system_risk": round(100 - (total_yps / (len(farmers) or 1)), 1),
+            "credit_velocity": total_kg_allocated,
+            "ledger_verified": ledger.verify(db).get("ok", False)
+        }
+    }
+
+@app.post("/api/agent/verify/{farm_id}")
+def api_agent_verify(farm_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user("agent"))):
+    f = db.execute(select(FarmerProfile).where(FarmerProfile.user_id == farm_id)).scalar_one_or_none()
+    if not f: raise HTTPException(404, "farm_not_found")
+    f.verification_status = "verified"
+    db.commit()
+    ledger.write("FARM_VERIFIED", {"farm_id": farm_id, "agent": user["subject"]})
+    return {"ok": True}
+
+@app.post("/api/agent/social/moderate/{post_id}")
+def api_agent_moderate(post_id: str, action: str = Form(...), db: Session = Depends(get_session), user: dict = Depends(require_user("agent"))):
+    p = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+    if not p: raise HTTPException(404, "post_not_found")
+    if action == "unflag": p.hidden = False
+    elif action == "delete": db.delete(p)
+    db.commit()
+    ledger.write("POST_MODERATED", {"post_id": post_id, "action": action, "agent": user["subject"]})
+    return {"ok": True}
+
+@app.post("/api/agent/priorities/issue")
+def api_agent_priority_issue(req: PriorityApproveRequest, db: Session = Depends(get_session), user: dict = Depends(require_user("agent"))):
+    # Check if already has active priority
+    existing = db.execute(select(YieldPriority).where(YieldPriority.farm_id == req.farm_id, YieldPriority.status == "active")).first()
+    if existing: return JSONResponse({"error": "already_has_active_priority"}, status_code=400)
+    
+    score = scorer.score_farm(req.farm_id)
+    if "error" in score: return JSONResponse(score, status_code=400)
+    
+    pid = "YP-" + secrets.token_hex(4).upper()
+    now = int(time.time())
+    expires = now + (72 * 3600)
+    
+    new_p = YieldPriority(
+        id=pid, farm_id=req.farm_id, yps=score["yps"], 
+        kg_allocated=score["kg_allocated"], kg_remaining=score["kg_allocated"],
+        expires_at=expires, signature="SIG-" + secrets.token_hex(16)
+    )
+    db.add(new_p)
+    db.commit()
+    ledger.write("PRIORITY_ISSUED", {"priority_id": pid, "farm_id": req.farm_id, "yps": score["yps"]})
+    return {"ok": True, "priority_id": pid}
 
 # ============================================================================
 # SYSTEM / LEDGER

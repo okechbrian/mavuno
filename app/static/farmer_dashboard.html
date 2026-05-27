@@ -461,6 +461,12 @@ const CROP_OPTIONS = ["coffee", "maize", "beans", "cassava", "rice", "matoke", "
 let currentFarm = null;
 let lastTelemetry = { moisture: 32, temp: 26, n: 22, p: 14, k: 11, hum: 62, rain: 0.8 };
 
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function toast(msg) {
   const el = document.getElementById("toast");
   el.textContent = msg; el.classList.add("show");
@@ -680,7 +686,19 @@ async function sendAiChat() {
      body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed. Please try again.</div>`;
   } else {
      const formatted = renderMarkdown(r.answer);
-     body.innerHTML += `<div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">${formatted}</div>`;
+     const sourceMap = {
+       "gemini": "Gemini 2.0 · Live",
+       "groq": "Llama 3.3 · Live",
+       "ai-fallback": "Mavuno Rule Bank · Offline"
+     };
+     const cite = sourceMap[r.source] || r.source;
+     body.innerHTML += `
+       <div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">
+         ${formatted}
+         <div style="font-size:9px; color:var(--muted); margin-top:8px; border-top:1px solid var(--line-soft); padding-top:4px; font-weight:600;">
+           ${cite} · Based on YPS ${r.context.yps} (${r.context.crop})
+         </div>
+       </div>`;
   }
   body.scrollTop = body.scrollHeight;
 }

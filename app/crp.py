@@ -180,44 +180,62 @@ def _gemini_advise(question: str, ctx: dict) -> str | None:
     key = os.getenv("GEMINI_API_KEY")
     if not key: return None
     safe_q = _redact_pii(question or "")[:500]
+    
+    diagnostics = "\n- ".join(ctx.get('diagnostics', []))
     system_instruction = (
-        "You are Mavuno, an expert Ugandan agronomist AI advisor. "
-        "Your goal is to provide high-quality, actionable, and specific advice to farmers based on their soil data. "
-        "Be helpful and professional. If the farmer's soil data shows deficits (like low NPK or moisture), prioritize fixing those. "
-        "Use basic markdown like **bolding** and bullet points to make your advice easy to read. "
-        f"Context: Farmer grows {ctx.get('crop')} in {ctx.get('district')}. Current Yield Probability Score (YPS) is {ctx.get('yps')}, Trade Health is {ctx.get('health')}."
+        "You are Mavuno, an expert Ugandan agronomist AI advisor specializing in East African crops. "
+        "Your goal is to provide high-quality, actionable advice based on live soil telemetry. "
+        f"Farmer Context: {ctx.get('crop')} in {ctx.get('district')}. YPS: {ctx.get('yps')}, Health: {ctx.get('health')}.\n"
+        f"Soil State: N:{ctx.get('n')}, P:{ctx.get('p')}, K:{ctx.get('k')} mg/kg.\n"
+        f"Recent Alerts:\n- {diagnostics}\n"
+        "Be specific about Ugandan pests (e.g. Coffee Berry Borer, Fall Armyworm) and regional rain patterns. "
+        "Keep advice concise (under 400 characters) and use **bold** for key actions."
     )
     
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     payload = {
-        "system_instruction": {
-            "parts": [{"text": system_instruction}]
-        },
-        "contents": [{
-            "parts": [{"text": safe_q}]
-        }],
-        "generationConfig": {
-            "temperature": 0.25,
-            "maxOutputTokens": 600,
-            "topP": 0.8,
-            "topK": 40
-        },
-        "safetySettings": [
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"}
-        ]
+        "system_instruction": {"parts": [{"text": system_instruction}]},
+        "contents": [{"parts": [{"text": safe_q}]}],
+        "generationConfig": {"temperature": 0.25, "maxOutputTokens": 600}
     }
     
     try:
         with httpx.Client(timeout=8.0) as client:
             r = client.post(url, json=payload)
             r.raise_for_status()
-            data = r.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+            return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
     except Exception as e:
         print(f"Gemini API Error: {e}")
+        return None
+
+def _groq_advise(question: str, ctx: dict) -> str | None:
+    key = os.getenv("GROQ_API_KEY")
+    if not key: return None
+    safe_q = _redact_pii(question or "")[:500]
+    
+    diagnostics = "\n- ".join(ctx.get('diagnostics', []))
+    system = (
+        "You are Mavuno, an expert Ugandan agronomist. Advice must be specific to Uganda. "
+        f"Crop: {ctx.get('crop')}. District: {ctx.get('district')}. YPS: {ctx.get('yps')}.\n"
+        f"Soil: N:{ctx.get('n')}, P:{ctx.get('p')}, K:{ctx.get('k')} mg/kg.\n"
+        f"Alerts: {diagnostics}\n"
+        "Concise, actionable, **bold** actions. Max 350 chars."
+    )
+    
+    try:
+        with httpx.Client(timeout=6.0) as client:
+            r = client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}"},
+                json={
+                    "model": "llama-3.3-70b-versatile",
+                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": safe_q}],
+                    "max_tokens": 150, "temperature": 0.2
+                }
+            )
+            return r.json()["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        print(f"Groq API Error: {e}")
         return None
 
 def logistics_advisor(pending_loads: list, market_context: str) -> str:
@@ -254,14 +272,27 @@ def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
         farm_dict = dict(farm._mapping)
     
     score = scorer.score_farm(farm_id)
+    # Extract averages for AI context
+    n_avg = sum(score['nutrients']['n']) / len(score['nutrients']['n']) if score.get('nutrients') else 0
+    p_avg = sum(score['nutrients']['p']) / len(score['nutrients']['p']) if score.get('nutrients') else 0
+    k_avg = sum(score['nutrients']['k']) / len(score['nutrients']['k']) if score.get('nutrients') else 0
+
     ctx = {
         "crop": farm_dict['crop'], "district": farm_dict['district'],
-        "yps": score.get('yps'), "health": score.get('trade_health')
+        "yps": score.get('yps'), "health": score.get('trade_health'),
+        "n": round(n_avg, 1), "p": round(p_avg, 1), "k": round(k_avg, 1),
+        "diagnostics": score.get('diagnostics', [])
     }
     
     answer = _gemini_advise(question, ctx)
-    source = "gemini" if answer else "ai-fallback"
+    source = "gemini"
+    
     if not answer:
+        answer = _groq_advise(question, ctx)
+        source = "groq"
+    
+    if not answer:
+        source = "ai-fallback"
         q = (question or "").lower()
         # Advanced Fallback AI
         for k, v in _RULE_BANK.items():

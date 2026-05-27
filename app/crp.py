@@ -316,8 +316,9 @@ def advisor(farm_id: str, question: str, make_public: bool = False) -> dict:
     if make_public:
         from . import social
         safe_q = _redact_pii(question)
-        post_body = f"ðŸŒ± Public Query:\nQ: {safe_q}\nA: {answer}"
-        social.create_post(farm_id, post_body)
+        post_body = f"🌱 Public Query:\nQ: {safe_q}\nA: {answer}"
+        with database.SessionLocal() as db_s:
+            social.create_post(db_s, farm_id, post_body)
 
     ledger.write("ADVISE", {"farm_id": farm_id, "source": source, "public": make_public})
     return {"farm_id": farm_id, "answer": answer, "source": source, "context": ctx}

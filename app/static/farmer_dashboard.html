@@ -447,9 +447,15 @@
       </div>
     </div>
   </div>
-  <div class="chat-foot">
-    <textarea id="ai-chat-input" placeholder="Ask about your farm..." rows="1" style="flex:1; resize:none; padding:10px; border:1px solid var(--line); background:var(--bg-alt); color:var(--ink); border-radius:4px; font-family:inherit; font-size:13px;" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendAiChat();}"></textarea>
-    <button class="btn primary" id="ai-send-btn" onclick="sendAiChat()">Send</button>
+  <div class="chat-foot" style="flex-direction:column; gap:8px;">
+    <div style="display:flex; align-items:center; gap:8px; padding:0 4px;">
+      <input type="checkbox" id="ai-make-public" style="width:auto;">
+      <label for="ai-make-public" style="font-size:11px; color:var(--muted); cursor:pointer;">Share this advice on Social Feed</label>
+    </div>
+    <div style="display:flex; gap:8px; width:100%;">
+      <textarea id="ai-chat-input" placeholder="Ask about your farm..." rows="1" style="flex:1; resize:none; padding:10px; border:1px solid var(--line); background:var(--bg-alt); color:var(--ink); border-radius:4px; font-family:inherit; font-size:13px;" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendAiChat();}"></textarea>
+      <button class="btn primary" id="ai-send-btn" onclick="sendAiChat()">Send</button>
+    </div>
   </div>
 </div>
 
@@ -674,7 +680,8 @@ async function sendAiChat() {
   body.innerHTML += `<div id="${loadId}" class="chat-bubble" style="background:var(--bg-alt); color:var(--muted); align-self:flex-start; border:1px solid var(--line);">✨ Analyzing soil telemetry...</div>`;
   body.scrollTop = body.scrollHeight;
   
-  const r = await jpost("/crp/ask", {farm_id: farmId, question: q});
+  const publicChecked = document.getElementById("ai-make-public")?.checked || false;
+  const r = await jpost("/crp/ask", {farm_id: farmId, question: q, make_public: publicChecked});
   
   const loadEl = document.getElementById(loadId);
   if (loadEl) loadEl.remove();

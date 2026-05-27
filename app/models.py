@@ -230,6 +230,7 @@ class Post(Base, TimestampMixin):
     body: Mapped[str] = mapped_column(Text)
     photo_url: Mapped[Optional[str]] = mapped_column(String(500))
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    verification_metadata: Mapped[Optional[str]] = mapped_column(Text) # JSON: {lat, lng, ts, hash}
     hidden: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Relationships

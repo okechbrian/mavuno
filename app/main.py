@@ -16,7 +16,7 @@ import asyncio
 from collections import deque
 from typing import Deque, Optional, List
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response, status, Form
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status, Form, File, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -224,6 +224,14 @@ class StorePurchaseReq(BaseModel):
 def store_purchase(req: StorePurchaseReq, user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     return store.purchase(db, user["subject"], req.product_id, req.phone)
 
+@app.post("/crp/ask")
+def crp_ask(req: CRPAskRequest, user: dict = Depends(require_user()), db: Session = Depends(get_session)):
+    """AI Agronomist advisor endpoint. Supports public knowledge sharing."""
+    # If the user is a farmer, we use their own farm context.
+    # If agent/buyer, we might need a specific farm_id in the request.
+    farm_id = req.farm_id if user["role"] in ["agent", "buyer", "supervisor"] else user["subject"]
+    return crp.advisor(farm_id, req.question, req.make_public)
+
 # ============================================================================
 # AGENT OPS
 # ============================================================================
@@ -335,6 +343,56 @@ def api_agent_priority_issue(req: PriorityApproveRequest, db: Session = Depends(
     db.commit()
     ledger.write("PRIORITY_ISSUED", {"priority_id": pid, "farm_id": req.farm_id, "yps": score["yps"]})
     return {"ok": True, "priority_id": pid}
+
+# ============================================================================
+# SOCIAL FEED
+# ============================================================================
+
+class SocialPostReq(BaseModel):
+    body: str
+    photo_url: Optional[str] = None
+    is_verified: bool = False
+    metadata: Optional[dict] = None
+
+@app.get("/api/feed")
+def get_feed(limit: int = 50, district: Optional[str] = None, db: Session = Depends(get_session)):
+    return social.feed(db, limit=limit, district=district)
+
+@app.post("/api/feed")
+def create_feed_post(req: SocialPostReq, user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
+    return social.create_post(db, user["subject"], req.body, req.photo_url, req.is_verified, req.metadata)
+
+@app.post("/api/feed/{post_id}/react")
+def react_to_post(post_id: str, emoji: str = Form(...), user: dict = Depends(require_user()), db: Session = Depends(get_session)):
+    return social.react(db, post_id, user["role"], user["subject"], emoji)
+
+@app.post("/api/feed/upload")
+async def upload_harvest_photo(file: UploadFile = File(...), user: dict = Depends(require_user("farmer"))):
+    """Handles low-bandwidth WebP image uploads."""
+    try:
+        from PIL import Image
+        import io
+        
+        # 1. Read and validate
+        content = await file.read()
+        img = Image.open(io.BytesIO(content))
+        
+        # 2. Resize and Compress to WebP (Target ~100kb)
+        img.thumbnail((800, 800))
+        out = io.BytesIO()
+        img.save(out, format="WEBP", quality=60, method=6)
+        
+        # 3. Save to static/uploads
+        upload_dir = ROOT / "app" / "static" / "uploads"
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        fname = f"harvest_{user['subject']}_{int(time.time())}.webp"
+        fpath = upload_dir / fname
+        fpath.write_bytes(out.getvalue())
+        
+        return {"photo_url": f"/static/uploads/{fname}"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Upload failed: {str(e)}")
 
 # ============================================================================
 # SYSTEM / LEDGER

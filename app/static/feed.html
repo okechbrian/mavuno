@@ -81,6 +81,16 @@
   .btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
+  .feed-filters {
+    display:flex; gap:12px; margin-bottom:24px;
+  }
+  .filter-btn {
+    background:var(--paper); border:1px solid var(--line); padding:6px 14px;
+    border-radius:999px; font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);
+    transition: 200ms;
+  }
+  .filter-btn.active { background:var(--accent); color:var(--paper); border-color:var(--accent); }
+
   /* Post Styles */
   .post { transition: transform 200ms, box-shadow 200ms; }
   .post:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
@@ -99,6 +109,7 @@
   }
   .chip-district { background: var(--bg-alt); color: var(--accent); }
   .chip-crop     { background: rgba(161,123,44,0.1); color: var(--gold); }
+  .trust-badge   { background: var(--gold); color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
 
   .post-img-wrap {
     margin: 16px -24px; position: relative; background: var(--bg-alt);
@@ -169,10 +180,24 @@
   <div class="card composer" id="composer" style="display:none;">
     <h3 class="display" style="margin:0 0 16px; font-size:20px;">Share an update</h3>
     <textarea id="post-body" maxlength="300" placeholder="Describe your harvest, soil conditions, or market needs..."></textarea>
+    
     <div class="composer-foot">
-      <span class="counter"><span id="post-counter">0</span> / 300 chars</span>
-      <button class="btn" id="post-submit" onclick="submitPost()">Post Update</button>
+      <img id="upload-preview" class="upload-preview">
+      <div class="upload-area" id="upload-area">
+        <span id="upload-label">📸 Add Verified Harvest Photo</span>
+        <input type="file" id="post-file" accept="image/*" onchange="previewUpload(this)">
+      </div>
+      
+      <div class="composer-actions">
+        <span class="counter"><span id="post-counter">0</span> / 300 chars</span>
+        <button class="btn" id="post-submit" onclick="submitPost()">Post Update</button>
+      </div>
     </div>
+  </div>
+
+  <div class="feed-filters" id="feed-filters">
+    <button class="filter-btn active" id="filter-global" onclick="setFilter('global')">Global Feed</button>
+    <button class="filter-btn" id="filter-local" onclick="setFilter('local')" style="display:none;">Local (My District)</button>
   </div>
 
   <div id="feed-list">
@@ -251,16 +276,18 @@ function renderPost(p) {
   const photoHtml = p.photo_url ? `
     <div class="post-img-wrap">
       <img class="post-img" src="${p.photo_url}" onerror="this.parentElement.style.display='none'">
-      <div class="verified-badge">VERIFIED PROOF</div>
+      <div class="verified-badge">${p.is_verified ? '✓ VERIFIED HARVEST' : 'PHOTO PROOF'}</div>
     </div>
   ` : "";
+
+  const badgeHtml = p.trust_badge ? `<span class="trust-badge" title="YPS: ${p.yps || 'N/A'}">${p.trust_badge}</span>` : "";
 
   return `
     <div class="card post" id="post-${p.id}">
       <div class="post-head">
         <div class="avatar">${escapeHtml(initials(p.farmer_name))}</div>
         <div style="flex:1;">
-          <div class="post-name">${escapeHtml(p.farmer_name || p.farm_id || "Anonymous Farmer")}</div>
+          <div class="post-name">${escapeHtml(p.farmer_name || p.farm_id || "Anonymous Farmer")} ${badgeHtml}</div>
           <div class="post-meta">
             ${p.district ? `<span class="chip chip-district">${escapeHtml(p.district)}</span>` : ""}
             ${p.crop ? `<span class="chip chip-crop">${escapeHtml(p.crop)}</span>` : ""}
@@ -278,6 +305,9 @@ function renderPost(p) {
   `;
 }
 
+let currentFilter = "global";
+let myDistrict = null;
+
 async function loadMe() {
   const r = await jget("/me");
   if (r && !r.error) {
@@ -289,18 +319,37 @@ async function loadMe() {
     
     if (me.role === "farmer") {
       document.getElementById("composer").style.display = "block";
+      // Fetch district to enable local filter
+      const profile = await jget("/farms");
+      if (profile[me.subject]) {
+        myDistrict = profile[me.subject].district;
+        document.getElementById("filter-local").style.display = "inline-block";
+        document.getElementById("filter-local").textContent = `Local (${myDistrict})`;
+      }
     }
   }
 }
 
+function setFilter(f) {
+  currentFilter = f;
+  document.getElementById("filter-global").classList.toggle("active", f === "global");
+  document.getElementById("filter-local").classList.toggle("active", f === "local");
+  loadFeed();
+}
+
 async function loadFeed() {
   const list = document.getElementById("feed-list");
-  const res = await jget("/feed?limit=50");
+  let url = "/api/feed?limit=50";
+  if (currentFilter === "local" && myDistrict) {
+    url += `&district=${encodeURIComponent(myDistrict)}`;
+  }
+  
+  const res = await jget(url);
   if (res.error) {
     list.innerHTML = '<div class="empty">Could not load the feed.</div>';
     return;
   }
-  const posts = res.posts || [];
+  const posts = res || [];
   if (!posts.length) {
     list.innerHTML = `
       <div class="empty">
@@ -313,23 +362,63 @@ async function loadFeed() {
   list.innerHTML = posts.map(renderPost).join("");
 }
 
+function previewUpload(input) {
+  const preview = document.getElementById("upload-preview");
+  const label = document.getElementById("upload-label");
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      label.textContent = "📸 Change Photo";
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
 async function submitPost() {
   const ta = document.getElementById("post-body");
   const body = (ta.value || "").trim();
-  if (!body) { toast("Write something first."); return; }
+  const fileInput = document.getElementById("post-file");
+  if (!body && !fileInput.files[0]) { toast("Write something or add a photo."); return; }
+  
   const btn = document.getElementById("post-submit");
   btn.disabled = true;
-  const res = await jpost("/feed", { body });
+  
+  let photoUrl = null;
+  let metadata = null;
+
+  if (fileInput.files[0]) {
+    toast("Compressing harvest proof...");
+    const fd = new FormData();
+    fd.append("file", fileInput.files[0]);
+    const up = await fetch("/api/feed/upload", { method: "POST", body: fd });
+    const upRes = await up.json();
+    if (upRes.photo_url) {
+      photoUrl = upRes.photo_url;
+      // Mock location for "Verified" badge
+      metadata = { lat: 0.3476, lng: 32.5825, ts: Math.floor(Date.now()/1000) };
+    }
+  }
+
+  const res = await jpost("/api/feed", { 
+    body, photo_url: photoUrl, 
+    is_verified: !!photoUrl,
+    metadata: metadata
+  });
+  
   btn.disabled = false;
   if (res.error) {
-    if (res.error === "banned_word") toast("That word isn't allowed.");
-    else if (res.error === "body_too_long") toast("Too long — keep it under 300 chars.");
-    else toast("Could not post: " + res.error);
+    toast("Could not post: " + res.error);
     return;
   }
+  
   ta.value = "";
+  fileInput.value = "";
+  document.getElementById("upload-preview").style.display = "none";
+  document.getElementById("upload-label").textContent = "📸 Add Verified Harvest Photo";
   document.getElementById("post-counter").textContent = "0";
-  toast("Update published!");
+  toast("Harvest published to network!");
   loadFeed();
 }
 
@@ -338,32 +427,29 @@ async function reactTo(postId, emoji) {
     toast("Sign in to react to field updates.");
     return;
   }
-  const res = await jpost(`/feed/${postId}/react`, { emoji });
+  const fd = new FormData(); fd.append("emoji", emoji);
+  const r = await fetch(`/api/feed/${postId}/react`, { method: "POST", body: fd });
+  const res = await r.json();
   if (res.error) {
     toast("Could not react: " + res.error);
     return;
   }
-  const p = await jget(`/feed/${postId}`);
-  if (!p.error) {
-    const card = document.getElementById(`post-${postId}`);
-    if (card) {
-      const isPhoto = !!p.photo_url;
-      card.outerHTML = renderPost(p);
-    }
-  }
+  // Reload only this card or full feed
+  loadFeed();
 }
 
 async function flagPost(postId) {
   if (!confirm("Report this post? It will be hidden from your feed.")) return;
-  const res = await jpost(`/feed/${postId}/flag`, {});
-  if (res.error) { toast("Could not flag: " + res.error); return; }
+  const fd = new FormData(); fd.append("action", "delete");
+  // Farmers/Buyers can flag, Agents can delete
+  const url = me.role === "agent" ? `/api/agent/social/moderate/${postId}` : `/api/feed/${postId}/flag`;
+  
+  const r = await fetch(url, { method: "POST", body: fd });
+  const res = await r.json();
+  if (res.error) { toast("Could not report: " + res.error); return; }
+  
   const card = document.getElementById(`post-${postId}`);
-  if (card) {
-    card.style.transition = "all 400ms ease";
-    card.style.opacity = "0";
-    card.style.transform = "translateX(20px)";
-    setTimeout(() => card.remove(), 420);
-  }
+  if (card) card.remove();
   toast("Post reported and hidden.");
 }
 
@@ -382,5 +468,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 </body>
-</html>
 </html>

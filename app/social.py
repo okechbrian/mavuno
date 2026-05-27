@@ -32,7 +32,7 @@ def _contains_banned(text: str) -> bool:
     t = text.lower()
     return any(b in t for b in _BANNED_WORDS)
 
-def create_post(db: Session, farm_id: str, body: str, photo_url: Optional[str] = None, is_verified: bool = False) -> dict:
+def create_post(db: Session, farm_id: str, body: str, photo_url: Optional[str] = None, is_verified: bool = False, metadata: Optional[dict] = None) -> dict:
     body = (body or "").strip()
     if not body: return {"error": "empty_body"}
     if len(body) > BODY_MAX: return {"error": "body_too_long"}
@@ -47,14 +47,20 @@ def create_post(db: Session, farm_id: str, body: str, photo_url: Optional[str] =
     
     post = Post(
         id=pid, farm_id=farm_id, body=safe_body, photo_url=photo_url,
-        is_verified=is_verified, created_at=now, hidden=False
+        is_verified=is_verified, 
+        verification_metadata=json.dumps(metadata) if metadata else None,
+        created_at=now, hidden=False
     )
     db.add(post)
     db.commit()
 
     ledger.write("POST_CREATED", {"post_id": pid, "farm_id": farm_id})
     if is_verified:
-        ledger.write("VERIFIED_HARVEST", {"post_id": pid, "farm_id": farm_id, "timestamp": now})
+        ledger.write("VERIFIED_HARVEST", {
+            "post_id": pid, "farm_id": farm_id, 
+            "photo_url": photo_url, "metadata": metadata,
+            "timestamp": now
+        })
 
     return _obj_to_dict(post)
 
@@ -114,8 +120,18 @@ def _hydrate(db: Session, post: Post) -> dict:
     d["crop"] = f.crop if f else ""
     
     try:
-        d["yps"] = scorer.score_farm(post.farm_id).get("yps")
-    except: d["yps"] = None
+        s = scorer.score_farm(post.farm_id)
+        yps = s.get("yps", 0)
+        d["yps"] = yps
+        
+        # Calculate Trust Badge (Social Capital)
+        if yps >= 850: d["trust_badge"] = "Master of Soil"
+        elif yps >= 700: d["trust_badge"] = "Elite Farmer"
+        elif yps >= 500: d["trust_badge"] = "Verified Producer"
+        else: d["trust_badge"] = None
+    except: 
+        d["yps"] = None
+        d["trust_badge"] = None
 
     counts = db.execute(
         select(Reaction.emoji, func.count(Reaction.emoji)).where(Reaction.post_id == post.id).group_by(Reaction.emoji)
@@ -127,5 +143,6 @@ def _obj_to_dict(obj: Post) -> dict:
     return {
         "id": obj.id, "farm_id": obj.farm_id, "body": obj.body,
         "photo_url": obj.photo_url, "is_verified": obj.is_verified,
+        "verification_metadata": json.loads(obj.verification_metadata) if obj.verification_metadata else None,
         "created_at": obj.created_at, "hidden": obj.hidden
     }

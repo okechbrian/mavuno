@@ -42,11 +42,51 @@
   .hardware-card { border: 1px solid var(--line); border-radius: 6px; padding: 20px; background: var(--bg-alt); display: flex; gap: 20px; align-items: center; margin-bottom: 24px; }
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; padding: 12px 24px; border-radius: 4px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
   .toast.show { opacity: 1; }
+
+  /* Masthead */
+  .masthead {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 0 20px; margin-bottom: 40px; border-bottom: 1px solid var(--line);
+    width: 100%; max-width: 540px; margin-left: auto; margin-right: auto;
+  }
+  .mast-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .role-badge {
+    background: var(--bg-alt); color: var(--muted);
+    padding: 4px 12px; border-radius: 999px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    position: relative; padding: 8px 14px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); border-radius: 999px;
+    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .topbar-btn:hover { background: var(--bg-alt); }
+  .logout-btn { color: var(--bad) !important; font-weight: 600; }
+
+  :root[data-theme="dark"] {
+    --ink: #f2ece0; --muted: #8e887c; --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
+    --line: #2d2b21; --accent: #78a163; --bad: #d07668;
+  }
 </style>
 </head>
 <body>
 
-<div class="card">
+<div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+  <header class="masthead">
+    <div class="mast-left">
+      <a href="/" class="logo display">Mavuno Yield</a>
+      <span class="role-badge">Onboarding</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="theme-toggle" class="topbar-btn" title="Toggle Theme">🌙</button>
+      <a href="/logout" class="topbar-btn logout-btn">Sign out</a>
+    </div>
+  </header>
+
+  <div class="card">
   <div style="text-align: center; margin-bottom: 32px;">
     <h1 class="display" style="font-size: 28px; margin: 0 0 8px 0;">Complete Onboarding</h1>
     <p style="color: var(--muted); margin: 0;">Follow these steps to unlock the Mavuno Protocol.</p>
@@ -132,6 +172,13 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.textContent = t === "dark" ? "☀️" : "🌙";
+  localStorage.setItem("mavuno-theme", t);
 }
 
 async function jget(url) {
@@ -224,7 +271,15 @@ async function purchaseDevice() {
   }, 1500);
 }
 
-document.addEventListener('DOMContentLoaded', checkStatus);
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(localStorage.getItem("mavuno-theme") || "light");
+  const btn = document.getElementById("theme-toggle");
+  if (btn) btn.onclick = () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  };
+  checkStatus();
+});
 </script>
 </body>
 </html>

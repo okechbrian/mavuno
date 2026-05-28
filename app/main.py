@@ -147,9 +147,10 @@ def login(req: LoginReq, request: Request, response: Response, db: Session = Dep
     return JSONResponse({"error": "Invalid credentials"}, status_code=401)
 
 @app.get("/logout")
-def logout_get(response: Response):
+def logout_get():
+    response = RedirectResponse("/")
     clear_session(response)
-    return RedirectResponse("/")
+    return response
 
 @app.get("/agent", response_class=HTMLResponse)
 def agent_dash(user: dict = Depends(require_user("agent"))): return FileResponse(ROOT / "app" / "static" / "agent_dashboard.html")

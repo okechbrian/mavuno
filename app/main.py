@@ -232,6 +232,37 @@ def crp_ask(req: CRPAskRequest, user: dict = Depends(require_user()), db: Sessio
     farm_id = req.farm_id if user["role"] in ["agent", "buyer", "supervisor"] else user["subject"]
     return crp.advisor(farm_id, req.question, req.make_public)
 
+@app.get("/onboarding", response_class=HTMLResponse)
+def onboarding_page(user: dict = Depends(require_user("farmer"))):
+    return FileResponse(ROOT / "app" / "static" / "onboarding.html")
+
+@app.get("/api/onboarding/status")
+def onboarding_status(user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
+    f = db.execute(select(FarmerProfile).where(FarmerProfile.user_id == user["subject"])).scalar_one_or_none()
+    if not f: raise HTTPException(404, "farm_not_found")
+    return {"status": f.verification_status}
+
+class KYCReq(BaseModel):
+    document_id: str
+
+@app.post("/api/onboarding/kyc")
+def onboarding_kyc(req: KYCReq, user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
+    f = db.execute(select(FarmerProfile).where(FarmerProfile.user_id == user["subject"])).scalar_one_or_none()
+    if not f: raise HTTPException(404, "farm_not_found")
+    f.verification_status = "pending_device"
+    db.commit()
+    ledger.write("KYC_SUBMITTED", {"farm_id": user["subject"], "nin": req.document_id})
+    return {"ok": True, "status": "pending_device"}
+
+@app.post("/api/onboarding/purchase")
+def onboarding_purchase(user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
+    f = db.execute(select(FarmerProfile).where(FarmerProfile.user_id == user["subject"])).scalar_one_or_none()
+    if not f: raise HTTPException(404, "farm_not_found")
+    f.verification_status = "pending_agent"
+    db.commit()
+    ledger.write("HARDWARE_ORDERED", {"farm_id": user["subject"]})
+    return {"ok": True, "status": "pending_agent"}
+
 # ============================================================================
 # AGENT OPS
 # ============================================================================
@@ -358,6 +389,15 @@ class SocialPostReq(BaseModel):
 def get_feed(limit: int = 50, district: Optional[str] = None, db: Session = Depends(get_session)):
     return social.feed(db, limit=limit, district=district)
 
+@app.get("/api/feed/verified")
+def get_verified_feed(limit: int = 50, db: Session = Depends(get_session)):
+    """Returns only posts marked as verified (Verified Harvests)."""
+    from .models import Post
+    from sqlalchemy import select
+    stmt = select(Post).where(Post.is_verified == True, Post.hidden == False).order_by(Post.created_at.desc()).limit(limit)
+    rows = db.execute(stmt).scalars().all()
+    return [social._hydrate(db, r) for r in rows]
+
 @app.post("/api/feed")
 def create_feed_post(req: SocialPostReq, user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
     return social.create_post(db, user["subject"], req.body, req.photo_url, req.is_verified, req.metadata)
@@ -365,6 +405,25 @@ def create_feed_post(req: SocialPostReq, user: dict = Depends(require_user("farm
 @app.post("/api/feed/{post_id}/react")
 def react_to_post(post_id: str, emoji: str = Form(...), user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     return social.react(db, post_id, user["role"], user["subject"], emoji)
+
+class SocialBidReq(BaseModel):
+    offer_id: Optional[str] = None
+
+@app.post("/api/social/bid/{post_id}")
+def social_bid(post_id: str, req: SocialBidReq, user: dict = Depends(require_user("buyer")), db: Session = Depends(get_session)):
+    """Allows a buyer to initiate a bid/chat from a social post."""
+    post = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+    if not post: raise HTTPException(404, "post_not_found")
+    
+    # Open a chat thread tied to this post (or an existing offer)
+    thread = chat.open_thread(db, post.farm_id, user["subject"], req.offer_id)
+    
+    # Auto-send an opening message
+    msg_body = f"Hello! I saw your post: '{post.body[:50]}...'. I'm interested in bidding on your harvest."
+    chat.send(db, thread["id"], "buyer", user["subject"], msg_body)
+    
+    ledger.write("SOCIAL_BID_INITIATED", {"post_id": post_id, "buyer_id": user["subject"], "thread_id": thread["id"]})
+    return {"ok": True, "thread_id": thread["id"]}
 
 @app.post("/api/feed/upload")
 async def upload_harvest_photo(file: UploadFile = File(...), user: dict = Depends(require_user("farmer"))):

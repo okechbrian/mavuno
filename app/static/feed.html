@@ -282,6 +282,11 @@ function renderPost(p) {
 
   const badgeHtml = p.trust_badge ? `<span class="trust-badge" title="YPS: ${p.yps || 'N/A'}">${p.trust_badge}</span>` : "";
 
+  let bidBtn = "";
+  if (me && me.role === "buyer") {
+    bidBtn = `<button class="btn primary" style="padding: 6px 14px; font-size: 10px; margin-left: auto; margin-right: 12px;" onclick="placeBid('${p.id}')">Place Bid</button>`;
+  }
+
   return `
     <div class="card post" id="post-${p.id}">
       <div class="post-head">
@@ -294,6 +299,7 @@ function renderPost(p) {
             <span style="opacity:0.6;">· ${relTime(p.created_at)}</span>
           </div>
         </div>
+        ${bidBtn}
       </div>
       ${photoHtml}
       <div class="post-body">${escapeHtml(p.body)}</div>
@@ -303,6 +309,19 @@ function renderPost(p) {
       </div>
     </div>
   `;
+}
+
+async function placeBid(postId) {
+  if (!confirm("Initiate a bid for this harvest? This will open a private chat thread with the farmer.")) return;
+  const res = await jpost(`/api/social/bid/${postId}`, {});
+  if (res.error) {
+    toast("Could not initiate bid: " + res.error);
+    return;
+  }
+  toast("Bid initiated! Redirecting to chat...");
+  setTimeout(() => {
+    window.location.href = me.role === "buyer" ? `/buyer/${me.subject}?thread=${res.thread_id}` : "/";
+  }, 1500);
 }
 
 let currentFilter = "global";

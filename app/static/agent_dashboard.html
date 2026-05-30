@@ -5,6 +5,7 @@
 <title>Mavuno Command — Agent Cockpit</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
+<script src="https://unpkg.com/lucide@latest"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,6 +16,7 @@
     --line: #d9d2bd; --line-soft: #e6dfc9;
     --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
     --sb-width: 280px;
+    --sb-rail: 72px;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
@@ -34,24 +36,47 @@
   /* Layout */
   .sidebar {
     width: var(--sb-width); background: var(--paper); border-right: 1px solid var(--line);
-    padding: 32px; display: flex; flex-direction: column; gap: 32px; overflow-y: auto;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; flex-shrink: 0;
+    padding: 24px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative; flex-shrink: 0; z-index: 1000;
   }
-  .sidebar.collapsed { width: 0; padding: 0; overflow: hidden; border: none; }
+  .sidebar.collapsed { width: var(--sb-rail); padding: 24px 12px; }
   
-  .main { flex: 1; overflow-y: auto; padding: 48px; display: flex; flex-direction: column; transition: padding 0.3s; }
-  .main.expanded { padding-left: 64px; }
+  .sidebar .nav-item {
+    display: flex; align-items: center; gap: 16px; padding: 12px 16px;
+    text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 8px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .sidebar .nav-item:hover { background: var(--bg-alt); }
+  .sidebar .nav-item i { flex-shrink: 0; width: 20px; height: 20px; }
+  .sidebar .nav-item span { transition: opacity 0.2s; }
+  .sidebar.collapsed .nav-item { justify-content: center; padding: 12px; }
+  .sidebar.collapsed .nav-item span { display: none; }
+  
+  .main { flex: 1; overflow-y: auto; padding: 0; display: flex; flex-direction: column; transition: padding 0.3s; }
+  .content-wrap { padding: 48px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
   .sb-toggle {
-    position: fixed; bottom: 32px; left: 32px; z-index: 100;
+    position: absolute; bottom: 32px; left: 24px;
     width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper);
     border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 18px; transition: 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.3s; z-index: 1100;
   }
-  .sb-toggle:hover { background: var(--accent); transform: scale(1.1); }
-  .sidebar.collapsed ~ .sb-toggle { left: 24px; background: var(--accent); }
+  .sidebar.collapsed .sb-toggle { left: 16px; background: var(--accent); }
   
+  .masthead {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px; background: var(--paper); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 900;
+  }
+  .mast-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 20px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .role-badge {
+    background: var(--bg-alt); color: var(--muted);
+    padding: 4px 12px; border-radius: 999px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
   /* Tabs */
   .tabs { display: flex; gap: 32px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
   .tab-btn {
@@ -74,14 +99,32 @@
   .macro-label { font-size: 10px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
   .macro-value { font-size: 32px; font-weight: 600; font-family: "Fraunces", serif; line-height: 1; }
 
-  @media (max-width: 1024px) {
-    .macro-grid { grid-template-columns: 1fr; gap: 16px; }
-    .macro-value { font-size: 28px; }
-    .main { padding: 24px; }
-    .sb-toggle { display: none; }
+  @media (max-width: 768px) {
+    body { flex-direction: column; overflow: auto; height: auto; }
+    .sidebar {
+      position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+      width: 100% !important; height: 64px; border-right: none; border-top: 1px solid var(--line);
+      padding: 0 16px !important; flex-direction: row; justify-content: space-around; align-items: center;
+      gap: 0; background: var(--paper); border-radius: 16px 16px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,0.05);
+    }
+    .sidebar.collapsed { width: 100% !important; height: 64px; }
+    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 8px; font-size: 10px; flex: 1; justify-content: center; }
+    .sidebar .nav-item i { width: 18px; height: 18px; }
+    .sidebar .nav-item span { display: block !important; opacity: 0.7; font-weight: 600; }
+    .sidebar .nav-item.active span { opacity: 1; color: var(--accent); }
+    .sidebar .nav-item.active i { color: var(--accent); }
+    .sidebar .sb-toggle { display: none; }
+
+    .main { height: auto; overflow: visible; padding-bottom: 80px; }
+    .masthead { padding: 16px 20px; }
+    .content-wrap { padding: 24px 20px; }
+    .macro-grid { grid-template-columns: 1fr; gap: 12px; }
+    .tabs { gap: 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
   }
 
-  /* Triage Queue */
+  /* Tables */
+
   .triage-section { background: var(--bg-alt); padding: 24px; border-radius: 8px; border: 1px solid var(--line); }
   .triage-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
   .triage-item {
@@ -138,31 +181,60 @@
 <body>
 
 <div class="sidebar">
-  <div style="display:flex; flex-direction:column; gap:20px;">
-    <button class="btn primary" style="width:100%" onclick="showOnboard()">+ Onboard Farmer</button>
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+    <a href="#" onclick="showOnboard(); return false;" class="nav-item active" title="Onboard Farmer">
+      <i data-lucide="plus-circle"></i>
+      <span>Onboard Farmer</span>
+    </a>
+    <div style="height: 1px; background: var(--line-soft); margin: 8px 0;"></div>
+    <a href="/store" class="nav-item" title="Hardware Store">
+      <i data-lucide="package"></i>
+      <span>Hardware Store</span>
+    </a>
+    <a href="/feed-page" class="nav-item" title="Mavuno Social">
+      <i data-lucide="share-2"></i>
+      <span>Mavuno Social</span>
+    </a>
+    <a href="/ledger" class="nav-item" title="Protocol Ledger">
+      <i data-lucide="scroll"></i>
+      <span>Protocol Ledger</span>
+    </a>
   </div>
 
   <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
-    <a href="/store" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📡 Hardware Store</a>
-    <a href="/feed-page" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">🌱 Mavuno Social</a>
-    <a href="/ledger" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📜 Protocol Ledger</a>
-    <button class="btn" style="width:100%; color:var(--bad); border-color:var(--line); margin-top:8px; font-size:10px; font-weight:600; text-transform:uppercase;" onclick="logout()">Sign out</button>
+    <button class="nav-item" style="background:transparent; border:none; width:100%; cursor:pointer;" onclick="logout()">
+      <i data-lucide="log-out" style="color:var(--bad);"></i>
+      <span style="color:var(--bad);">Sign out</span>
+    </button>
   </div>
+  
+  <button class="sb-toggle" id="sb-toggle" title="Toggle Sidebar">
+    <i data-lucide="chevron-right"></i>
+  </button>
 </div>
 
-<button class="sb-toggle" id="sb-toggle" title="Toggle Sidebar">☰</button>
-
 <div class="main">
-  <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:48px;">
-    <h1 class="display" style="font-size:32px; margin:0;">Command Center</h1>
-    <div id="ledger-status" class="badge" style="padding:6px 12px;">Verifying Protocol...</div>
+  <header class="masthead">
+    <div class="mast-left">
+      <a href="/" class="logo display">Mavuno Yield</a>
+      <span class="role-badge">Agent Cockpit</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div id="ledger-status" class="badge">Verifying Protocol...</div>
+      <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:white; font-weight:700;">A</div>
+    </div>
   </header>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab(this, 'ops')">Operations</button>
-    <button class="tab-btn" onclick="showTab(this, 'credit')">Credit Management</button>
-    <button class="tab-btn" onclick="showTab(this, 'logistics')">Logistics & Moderation</button>
-  </div>
+  <div class="content-wrap">
+    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:48px;">
+      <h1 class="display" style="font-size:32px; margin:0;">Command Center</h1>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(this, 'ops')">Operations</button>
+      <button class="tab-btn" onclick="showTab(this, 'credit')">Credit Management</button>
+      <button class="tab-btn" onclick="showTab(this, 'logistics')">Logistics & Moderation</button>
+    </div>
 
   <!-- TAB: OPERATIONS -->
   <div id="tab-ops" class="tab-content active">
@@ -362,19 +434,19 @@ const toggle = document.getElementById('sb-toggle');
 function setSB(collapsed) {
   if (collapsed) {
     sb.classList.add('collapsed');
-    main.classList.add('expanded');
-    toggle.textContent = "➡️";
+    toggle.innerHTML = '<i data-lucide="chevron-right"></i>';
   } else {
     sb.classList.remove('collapsed');
-    main.classList.remove('expanded');
-    toggle.textContent = "☰";
+    toggle.innerHTML = '<i data-lucide="chevron-left"></i>';
   }
+  lucide.createIcons();
   localStorage.setItem('mavuno-sb-collapsed', collapsed ? '1' : '0');
 }
 
 toggle.onclick = () => setSB(!sb.classList.contains('collapsed'));
 
 document.addEventListener("DOMContentLoaded", () => {
+  lucide.createIcons();
   if (localStorage.getItem('mavuno-sb-collapsed') === '1' && window.innerWidth > 1024) {
     setSB(true);
   }

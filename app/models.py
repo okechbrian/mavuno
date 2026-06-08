@@ -62,6 +62,7 @@ class FarmerProfile(Base, TimestampMixin):
     acres: Mapped[float] = mapped_column(Float)
     lat: Mapped[Optional[float]] = mapped_column(Float)
     lng: Mapped[Optional[float]] = mapped_column(Float)
+    planting_date: Mapped[Optional[int]] = mapped_column(BigInteger)  # Unix timestamp
     collection_hub: Mapped[str] = mapped_column(String(64), default="Aggregation-Hub-01")
     current_stage: Mapped[str] = mapped_column(String(32), default="Land Prep")
     verification_status: Mapped[str] = mapped_column(String(32), default="pending_kyc")
@@ -290,3 +291,16 @@ class FarmerCertification(Base, TimestampMixin):
     # Relationships
     farmer: Mapped["FarmerProfile"] = relationship(back_populates="certifications")
     module: Mapped["TrainingModule"] = relationship(back_populates="certifications")
+
+class HardwareAudit(Base):
+    """Sentinel Node health heartbeats and firmware tracking."""
+    __tablename__ = "hardware_audit"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    farm_id: Mapped[str] = mapped_column(ForeignKey("farmer_profiles.user_id"), index=True)
+    device_id: Mapped[str] = mapped_column(String(64))
+    firmware_v: Mapped[str] = mapped_column(String(16))
+    battery_pct: Mapped[float] = mapped_column(Float)
+    signal_rssi: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(16), default="nominal") # nominal, low_battery, offline
+    last_ping_at: Mapped[int] = mapped_column(BigInteger, default=lambda: int(time.time()))

@@ -345,6 +345,10 @@
       <i data-lucide="share-2"></i>
       <span>Mavuno Social</span>
     </a>
+    <a href="/feed/verified/gallery" class="nav-item" title="Verified Gallery">
+      <i data-lucide="image"></i>
+      <span>Verified Gallery</span>
+    </a>
     <a href="#" onclick="openChat(); return false;" class="nav-item" title="Messages">
       <i data-lucide="message-square"></i>
       <span>Messages</span>
@@ -428,6 +432,20 @@
 
   
 <div id="farm-content">Loading your farm data...</div>
+
+<div class="radar-card" id="predictive-yield-card" style="display:none; background:var(--paper); border-top: 4px solid var(--gold); margin-top:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+            <span class="label">ML Predictive Yield (v1)</span>
+            <h3 class="display" id="harvest-prediction-title" style="margin:8px 0 0; font-size:20px;">Harvest Forecast</h3>
+            <p id="harvest-prediction-desc" style="font-size:12px; color:var(--muted); margin:4px 0 0;">Analyzing soil maturity curves...</p>
+        </div>
+        <div style="text-align:right;">
+            <div class="display" id="harvest-days-value" style="font-size:32px; font-weight:700; color:var(--gold);">--</div>
+            <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-weight:700;">Days to Maturity</div>
+        </div>
+    </div>
+</div>
 
   
   </div>
@@ -653,6 +671,21 @@ async function loadData() {
   document.getElementById("yps-value").textContent = yps;
   document.getElementById("yps-ring").style.strokeDasharray = `${(yps/1000)*100}, 100`;
   document.getElementById("yps-label").textContent = score.trade_health || "Calculating...";
+
+  // Update Predictive Yield
+  if (score.predicted_harvest_days !== null) {
+      document.getElementById("predictive-yield-card").style.display = "block";
+      document.getElementById("harvest-days-value").textContent = score.predicted_harvest_days;
+      const forecastDate = new Date();
+      forecastDate.setDate(forecastDate.getDate() + score.predicted_harvest_days);
+      document.getElementById("harvest-prediction-title").textContent = "Harvest Forecast: " + forecastDate.toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
+      
+      let desc = "Analyzing soil maturity curves...";
+      if (score.predicted_harvest_days <= 14) desc = "Peak maturity approaching. Secure storage and transport.";
+      else if (score.predicted_harvest_days > 60) desc = "Early growth stage. Maintain consistent irrigation.";
+      else desc = "Mid-season development. NPK levels are critical.";
+      document.getElementById("harvest-prediction-desc").textContent = desc;
+  }
 
   const hClass = `b-${(score.trade_health || "poor").toLowerCase()}`;
     // Render Smart Tasks

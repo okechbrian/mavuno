@@ -41,6 +41,13 @@ class PaymentBatchRequest(BaseModel):
 class TrainingCompleteRequest(BaseModel):
     module_id: str = Field(..., max_length=64)
 
+class ChatThreadReq(BaseModel):
+    farm_id: str = Field(..., max_length=64)
+    offer_id: Optional[str] = Field(default=None, max_length=64)
+
+class ChatMessageReq(BaseModel):
+    body: str = Field(..., min_length=1, max_length=500)
+
 class LogisticsOptimizeRequest(BaseModel):
     max_dist_km: float = Field(15.0, gt=0, le=500)
 

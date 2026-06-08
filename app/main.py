@@ -21,13 +21,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
-from sqlalchemy import select, update
+from sqlalchemy import select, update, text
 from sqlalchemy.orm import Session
 
-from . import crp, finance, ledger, scorer, ussd, database, payments, chat, social, pdf, training, store
+from . import crp, finance, ledger, scorer, ussd, database, payments, chat, social, pdf, training, store, logistics, notifications, hardware
 from .config import HMAC_SECRET, ROOT, PUBLIC_BASE_URL
 from .database import engine, get_session, SessionLocal
-from .models import User, FarmerProfile, BuyerProfile, SoilTelemetry, YieldPriority, MarketOffer, Settlement, Notification, Post
+from .models import User, FarmerProfile, BuyerProfile, SoilTelemetry, YieldPriority, MarketOffer, Settlement, Notification, Post, Conversation, Message
 from .gateways import send_sms, initiate_fw_payment, verify_fw_transaction
 from .session import (
     COOKIE_NAME, clear_session, current_user, issue_session,
@@ -36,7 +36,8 @@ from .session import (
 from .schemas import (
     FarmerOnboardRequest, BuyerOnboardRequest, TelemetryRecord, ErrorResponse,
     PriorityApproveRequest, CRPAskRequest, PaymentBatchRequest, TrainingCompleteRequest,
-    LogisticsOptimizeRequest, LogisticsAdviseRequest, FarmStageUpdate
+    LogisticsOptimizeRequest, LogisticsAdviseRequest, FarmStageUpdate,
+    ChatThreadReq, ChatMessageReq
 )
 
 # Idempotent startup
@@ -82,7 +83,12 @@ def _check_chat_throttle(sender_key: str):
 # ============================================================================
 
 @app.get("/health")
-def health(): return {"ok": True}
+def health():
+    return {
+        "status": "ok",
+        "engine": database.get_engine_name(),
+        "timestamp": int(time.time())
+    }
 
 @app.get("/", response_class=HTMLResponse)
 def root(request: Request):
@@ -155,6 +161,14 @@ def logout_get():
 @app.get("/agent", response_class=HTMLResponse)
 def agent_dash(user: dict = Depends(require_user("agent"))): return FileResponse(ROOT / "app" / "static" / "agent_dashboard.html")
 
+@app.get("/supervisor", response_class=HTMLResponse)
+def supervisor_dash(user: dict = Depends(require_user("supervisor"))):
+    return FileResponse(ROOT / "app" / "static" / "supervisor_dashboard.html")
+
+@app.get("/logistics", response_class=HTMLResponse)
+def logistics_dash(user: dict = Depends(require_user("logistics", "agent"))):
+    return FileResponse(ROOT / "app" / "static" / "logistics_dashboard.html")
+
 @app.get("/farmer/{farm_id}", response_class=HTMLResponse)
 def farmer_dash(farm_id: str, user: dict = Depends(require_user("farmer", "agent")), db: Session = Depends(get_session)):
     require_owner_or_agent("farmer", farm_id, user)
@@ -186,6 +200,75 @@ def payments_initiate(req: PaymentInitiateReq, request: Request, user: dict = De
     res = payments.initiate(db, user["subject"], req.offer_id, req.msisdn, req.method)
     if "error" in res: return JSONResponse(res, status_code=400)
     return res
+
+def _payment_party_check(p: dict, user: dict) -> None:
+    if user["role"] == "agent": return
+    if user["role"] == "buyer" and user["subject"] == p["buyer_id"]: return
+    if user["role"] == "farmer" and user["subject"] == p["farm_id"]: return
+    raise HTTPException(status_code=403, detail="not_payment_party")
+
+@app.post("/payments/confirm")
+async def payments_confirm(request: Request, db: Session = Depends(get_session)):
+    """PSP callback. Body is signed with HMAC_SECRET; we re-sign and compare."""
+    body = await request.body()
+    sig = request.headers.get("x-mavuno-sig", "")
+    if not hmac.compare_digest(payments.callback_signature(body), sig):
+        return JSONResponse({"error": "bad_signature"}, status_code=401)
+    try:
+        data = json.loads(body.decode("utf-8"))
+        pid = data["payment_id"]
+        success = bool(data.get("success", False))
+    except (ValueError, KeyError):
+        return JSONResponse({"error": "bad_body"}, status_code=400)
+    return payments.confirm(db, pid, success)
+
+@app.post("/payments/batch")
+def payments_batch_init(req: PaymentBatchRequest, db: Session = Depends(get_session), user: dict = Depends(require_user("buyer"))):
+    res = payments.initiate_batch(db, user["subject"], req.offer_ids, req.msisdn)
+    if "error" in res: return JSONResponse(res, status_code=400)
+    return res
+
+@app.post("/payments/batch/confirm")
+async def payments_batch_confirm(request: Request, db: Session = Depends(get_session)):
+    body = await request.body()
+    sig = request.headers.get("x-mavuno-sig", "")
+    if not hmac.compare_digest(payments.callback_signature(body), sig):
+        return JSONResponse({"error": "bad_signature"}, status_code=401)
+    data = json.loads(body.decode("utf-8"))
+    return payments.confirm_batch(db, data["batch_id"], data.get("success", False))
+
+@app.get("/payments/status/{payment_id}")
+def payments_status(payment_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    p = payments.get(db, payment_id)
+    if not p: raise HTTPException(status_code=404, detail="payment_not_found")
+    _payment_party_check(p, user)
+    return p
+
+@app.get("/payments/farmer/{farm_id}")
+def payments_for_farm(farm_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user("farmer", "agent"))):
+    require_owner_or_agent("farmer", farm_id, user)
+    return {"payments": payments.for_farm(db, farm_id)}
+
+@app.get("/payments/buyer/{buyer_id}")
+def payments_for_buyer(buyer_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user("buyer", "agent"))):
+    require_owner_or_agent("buyer", buyer_id, user)
+    return {"payments": payments.for_buyer(db, buyer_id)}
+
+@app.get("/payments/receipt/{payment_id}")
+def payments_receipt(payment_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    p = payments.get(db, payment_id)
+    if not p: raise HTTPException(status_code=404, detail="payment_not_found")
+    _payment_party_check(p, user)
+    return payments.receipt(db, payment_id)
+
+@app.get("/payments/receipt/{payment_id}/pdf")
+def payments_receipt_pdf(payment_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    data = payments.receipt(db, payment_id)
+    if not data: raise HTTPException(status_code=404, detail="receipt_not_found")
+    _payment_party_check(payments.get(db, payment_id), user)
+    pdf_bytes = pdf.generate_receipt_pdf(data)
+    filename = f"MAVUNO-RECEIPT-{payment_id}.pdf"
+    return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename={filename}"})
 
 class OfferReq(BaseModel):
     farm_id: str
@@ -225,6 +308,23 @@ class StorePurchaseReq(BaseModel):
 def store_purchase(req: StorePurchaseReq, user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     return store.purchase(db, user["subject"], req.product_id, req.phone)
 
+# ============================================================================
+# TRAINING & ACADEMY
+# ============================================================================
+
+@app.get("/training/modules")
+def list_training_modules(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    return {"modules": training.list_modules(db)}
+
+@app.post("/training/complete")
+def complete_training_module(req: TrainingCompleteRequest, db: Session = Depends(get_session), user: dict = Depends(require_user("farmer"))):
+    return training.complete_module(db, user["subject"], req.module_id)
+
+@app.get("/farmer/{farm_id}/certifications")
+def get_certifications(farm_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    require_owner_or_agent("farmer", farm_id, user)
+    return {"certifications": training.get_farmer_certifications(db, farm_id)}
+
 @app.post("/crp/ask")
 def crp_ask(req: CRPAskRequest, user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     """AI Agronomist advisor endpoint. Supports public knowledge sharing."""
@@ -246,14 +346,44 @@ def onboarding_status(user: dict = Depends(require_user("farmer")), db: Session 
 class KYCReq(BaseModel):
     document_id: str
 
+async def _process_webp(file: UploadFile, prefix: str, user_id: str) -> str:
+    """Helper to process and save WebP images."""
+    try:
+        from PIL import Image
+        import io
+        content = await file.read()
+        img = Image.open(io.BytesIO(content))
+        img.thumbnail((800, 800))
+        out = io.BytesIO()
+        img.save(out, format="WEBP", quality=60, method=6)
+        
+        upload_dir = ROOT / "app" / "static" / "uploads" / prefix
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        fname = f"{prefix}_{user_id}_{int(time.time())}.webp"
+        fpath = upload_dir / fname
+        fpath.write_bytes(out.getvalue())
+        return f"/static/uploads/{prefix}/{fname}"
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Processing failed: {str(e)}")
+
 @app.post("/api/onboarding/kyc")
-def onboarding_kyc(req: KYCReq, user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
+async def onboarding_kyc(
+    document_id: str = Form(...), 
+    file: UploadFile = File(...),
+    user: dict = Depends(require_user("farmer")), 
+    db: Session = Depends(get_session)
+):
     f = db.execute(select(FarmerProfile).where(FarmerProfile.user_id == user["subject"])).scalar_one_or_none()
     if not f: raise HTTPException(404, "farm_not_found")
+    
+    # Process the ID photo
+    photo_url = await _process_webp(file, "kyc", user["subject"])
+    
     f.verification_status = "pending_device"
     db.commit()
-    ledger.write("KYC_SUBMITTED", {"farm_id": user["subject"], "nin": req.document_id})
-    return {"ok": True, "status": "pending_device"}
+    ledger.write("KYC_SUBMITTED", {"farm_id": user["subject"], "nin": document_id, "id_photo": photo_url})
+    return {"ok": True, "status": "pending_device", "photo_url": photo_url}
 
 @app.post("/api/onboarding/purchase")
 def onboarding_purchase(user: dict = Depends(require_user("farmer")), db: Session = Depends(get_session)):
@@ -262,7 +392,97 @@ def onboarding_purchase(user: dict = Depends(require_user("farmer")), db: Sessio
     f.verification_status = "pending_agent"
     db.commit()
     ledger.write("HARDWARE_ORDERED", {"farm_id": user["subject"]})
+    # Notify Field Agent (Assumes first active agent or district-based routing could be added later)
+    # Using generic alert for demonstration; in production, route to specific district agent
+    send_sms("+256770000000", f"Alert: Farm {f.farmer_name} ({f.district}) needs hardware installation.")
     return {"ok": True, "status": "pending_agent"}
+
+@app.get("/me")
+def get_me(user: dict = Depends(require_user())):
+    return {"id": user["subject"], "role": user["role"]}
+
+@app.get("/farms")
+def list_farms(db: Session = Depends(get_session)):
+    stmt = select(FarmerProfile)
+    rows = db.execute(stmt).scalars().all()
+    return {f.user_id: {
+        "id": f.user_id,
+        "farmer_name": f.farmer_name,
+        "district": f.district,
+        "crop": f.crop,
+        "yps": scorer.score_farm(db, f.user_id).get("yps", 0) if f.verification_status == "verified" else 0
+    } for f in rows}
+
+@app.get("/buyers")
+def list_buyers_alias(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    """Alias for /api/buyers to support dashboard legacy calls."""
+    rows = db.execute(select(BuyerProfile)).scalars().all()
+    return [{"id": b.user_id, "name": b.name, "region": b.region, "crops": json.loads(b.crops_json), "floor_ugx": b.floor_ugx} for b in rows]
+
+@app.get("/crp/prices")
+def get_crp_prices(crop: str, region: str):
+    return crp.market_prices(crop, region)
+
+@app.get("/score/{farm_id}")
+def get_farm_score(farm_id: str, db: Session = Depends(get_session)):
+    return scorer.score_farm(db, farm_id)
+
+@app.get("/finance/status/{farm_id}")
+def get_finance_status(farm_id: str, db: Session = Depends(get_session)):
+    # Aggregated finance view for farmer dashboard
+    settled = db.execute(select(Settlement).where(Settlement.farm_id == farm_id, Settlement.status == "settled")).scalars().all()
+    pending = db.execute(select(Settlement).where(Settlement.farm_id == farm_id, Settlement.status == "pending")).scalars().all()
+    return {
+        "balance_ugx": sum(s.amount_ugx for s in settled),
+        "pending_ugx": sum(s.amount_ugx for s in pending),
+        "recent_payments": [dict(id=s.id, amount=s.amount_ugx, status=s.status, date=s.created_at) for s in settled[-5:]]
+    }
+
+@app.get("/supervisor/stats")
+def supervisor_stats(user: dict = Depends(require_user("supervisor")), db: Session = Depends(get_session)):
+    # Regional YPS breakdown
+    regional_yps = []
+    districts = db.execute(text("SELECT DISTINCT district FROM farmer_profiles")).scalars().all()
+    for d in districts:
+        scores = [scorer.score_farm(db, f.user_id).get("yps", 0) 
+                  for f in db.execute(select(FarmerProfile).where(FarmerProfile.district == d)).scalars().all()]
+        if scores:
+            regional_yps.append({"district": d, "avg_yps": int(sum(scores)/len(scores))})
+    
+    # Mocked monthly trade volume for the chart
+    trade_volume = [
+        {"month": "Jan", "total_kg": 4500},
+        {"month": "Feb", "total_kg": 5200},
+        {"month": "Mar", "total_kg": 6100},
+        {"month": "Apr", "total_kg": 7800}
+    ]
+    return {"regional_yps": regional_yps, "trade_volume": trade_volume}
+
+class SignupReq(BaseModel):
+    role: str
+    phone: str
+    name: str
+    pin_or_password: str
+    district_or_region: str
+    crop_or_floor: str
+
+@app.post("/api/signup")
+def signup(req: SignupReq, response: Response, db: Session = Depends(get_session)):
+    user_id = ("UG-FARM-" if req.role == "farmer" else "BY-") + secrets.token_hex(3).upper()
+    user = User(id=user_id, phone=req.phone, role=req.role, password_hash=req.pin_or_password)
+    db.add(user)
+    db.flush()
+    
+    if req.role == "farmer":
+        profile = FarmerProfile(user_id=user_id, farmer_name=req.name, district=req.district_or_region, crop=req.crop_or_floor, acres=1.0)
+        db.add(profile)
+    else:
+        profile = BuyerProfile(user_id=user_id, name=req.name, region=req.district_or_region, crops_json="[]", floor_ugx=int(req.crop_or_floor), lat=0.0, lng=0.0)
+        db.add(profile)
+    
+    db.commit()
+    issue_session(response, req.role, user_id)
+    return {"ok": True, "id": user_id, "redirect": f"/farmer/{user_id}" if req.role == "farmer" else f"/buyer/{user_id}"}
 
 # ============================================================================
 # AGENT OPS
@@ -288,19 +508,24 @@ def agent_overview(db: Session = Depends(get_session), user: dict = Depends(requ
             .order_by(SoilTelemetry.timestamp.desc())
         ).first()
         
+        # Get live score & prediction
+        score = scorer.score_farm(db, f.user_id)
+        yps = score.get("yps", 0)
+        total_yps += yps
+        
         # Get active priority
         priority = db.execute(
             select(YieldPriority)
             .where(YieldPriority.farm_id == f.user_id, YieldPriority.status == "active")
         ).scalar_one_or_none()
         
-        yps = priority.yps if priority else 0
-        total_yps += yps
         if priority: total_kg_allocated += priority.kg_allocated
             
         f_data = {
             "id": f.user_id, "name": f.farmer_name, "district": f.district,
             "crop": f.crop, "yps": yps, "status": f.verification_status,
+            "predicted_yield_kg": score.get("predicted_yield_kg"),
+            "predicted_harvest_days": score.get("predicted_harvest_days"),
             "telemetry": {
                 "moisture": latest_t[0].soil_moisture if latest_t else 0,
                 "n": latest_t[0].n_mg_kg if latest_t else 0,
@@ -341,6 +566,13 @@ def api_agent_verify(farm_id: str, db: Session = Depends(get_session), user: dic
     f.verification_status = "verified"
     db.commit()
     ledger.write("FARM_VERIFIED", {"farm_id": farm_id, "agent": user["subject"]})
+    
+    # Notify Farmer
+    notifications.notify(
+        db, farm_id, "Account Verified", 
+        "Your Mavuno account is now verified! You can now list harvests and apply for credit.",
+        n_type="kyc_verified", sms_fallback=True
+    )
     return {"ok": True}
 
 @app.post("/api/agent/social/moderate/{post_id}")
@@ -359,7 +591,7 @@ def api_agent_priority_issue(req: PriorityApproveRequest, db: Session = Depends(
     existing = db.execute(select(YieldPriority).where(YieldPriority.farm_id == req.farm_id, YieldPriority.status == "active")).first()
     if existing: return JSONResponse({"error": "already_has_active_priority"}, status_code=400)
     
-    score = scorer.score_farm(req.farm_id)
+    score = scorer.score_farm(db, req.farm_id)
     if "error" in score: return JSONResponse(score, status_code=400)
     
     pid = "YP-" + secrets.token_hex(4).upper()
@@ -374,10 +606,70 @@ def api_agent_priority_issue(req: PriorityApproveRequest, db: Session = Depends(
     db.add(new_p)
     db.commit()
     ledger.write("PRIORITY_ISSUED", {"priority_id": pid, "farm_id": req.farm_id, "yps": score["yps"]})
+    
+    # Notify Farmer
+    notifications.notify(
+        db, req.farm_id, "Trade Priority Issued",
+        f"Congratulations! You've been issued a Trade Priority for {score['kg_allocated']}kg of {score.get('crop', 'produce')}.",
+        n_type="priority_issued", sms_fallback=True
+    )
     return {"ok": True, "priority_id": pid}
 
 # ============================================================================
-# SOCIAL FEED
+# CHAT
+# ============================================================================
+
+def _chat_party_check(thread: dict, user: dict) -> None:
+    if user["role"] == "agent": return
+    if user["role"] == "buyer" and user["subject"] == thread["buyer_id"]: return
+    if user["role"] == "farmer" and user["subject"] == thread["farm_id"]: return
+    raise HTTPException(status_code=403, detail="not_chat_party")
+
+@app.post("/chat/threads")
+def chat_open_thread(req: ChatThreadReq, db: Session = Depends(get_session), user: dict = Depends(require_user("buyer", "agent"))):
+    if user["role"] == "buyer": buyer_id = user["subject"]
+    else: raise HTTPException(status_code=400, detail="agent_open_not_supported")
+    res = chat.open_thread(db, buyer_id, req.farm_id, req.offer_id)
+    if "error" in res: return JSONResponse(res, status_code=400)
+    return res
+
+@app.get("/chat/threads")
+def chat_list_threads(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    if user["role"] == "farmer": return {"threads": chat.threads_for_farm(db, user["subject"])}
+    if user["role"] == "buyer": return {"threads": chat.threads_for_buyer(db, user["subject"])}
+    return {"threads": chat.threads_for_agent(db)}
+
+@app.get("/chat/{thread_id}/messages")
+async def chat_get_messages(thread_id: str, request: Request, since: int = 0, wait: int = 25, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    thread = chat.get_thread(db, thread_id)
+    if not thread: raise HTTPException(status_code=404, detail="thread_not_found")
+    _chat_party_check(thread, user)
+    wait = max(0, min(int(wait), 25))
+    deadline = time.time() + wait
+    msgs = chat.messages(db, thread_id, since_ts=since)
+    while not msgs and time.time() < deadline:
+        if await request.is_disconnected(): break
+        await asyncio.sleep(1.0)
+        msgs = chat.messages(db, thread_id, since_ts=since)
+    chat.mark_read(db, thread_id, user["role"], user["subject"])
+    return {"thread_id": thread_id, "messages": msgs}
+
+@app.post("/chat/{thread_id}/messages")
+def chat_post_message(thread_id: str, req: ChatMessageReq, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    thread = chat.get_thread(db, thread_id)
+    if not thread: raise HTTPException(status_code=404, detail="thread_not_found")
+    _chat_party_check(thread, user)
+    _check_chat_throttle(f"{user['role']}:{user['subject']}")
+    res = chat.send(db, thread_id, user["role"], user["subject"], req.body)
+    if "error" in res: return JSONResponse(res, status_code=400)
+    return res
+
+@app.get("/chat/unread/count")
+def chat_unread(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    return {"count": chat.unread_count(db, user["role"], user["subject"])}
+
+# ============================================================================
+# MAVUNO SOCIAL
 # ============================================================================
 
 class SocialPostReq(BaseModel):
@@ -385,6 +677,11 @@ class SocialPostReq(BaseModel):
     photo_url: Optional[str] = None
     is_verified: bool = False
     metadata: Optional[dict] = None
+
+@app.get("/feed/verified/gallery", response_class=HTMLResponse)
+def get_verified_gallery_page(user: dict = Depends(require_user())):
+    """Serves the visually-rich Verified Harvest Gallery."""
+    return FileResponse(ROOT / "app" / "static" / "gallery.html")
 
 @app.get("/api/feed")
 def get_feed(limit: int = 50, district: Optional[str] = None, db: Session = Depends(get_session)):
@@ -407,6 +704,10 @@ def create_feed_post(req: SocialPostReq, user: dict = Depends(require_user("farm
 def react_to_post(post_id: str, emoji: str = Form(...), user: dict = Depends(require_user()), db: Session = Depends(get_session)):
     return social.react(db, post_id, user["role"], user["subject"], emoji)
 
+@app.post("/api/feed/{post_id}/flag")
+def flag_post(post_id: str, reason: Optional[str] = Form(None), user: dict = Depends(require_user()), db: Session = Depends(get_session)):
+    return social.flag(db, post_id, user["role"], user["subject"], reason)
+
 class SocialBidReq(BaseModel):
     offer_id: Optional[str] = None
 
@@ -424,35 +725,86 @@ def social_bid(post_id: str, req: SocialBidReq, user: dict = Depends(require_use
     chat.send(db, thread["id"], "buyer", user["subject"], msg_body)
     
     ledger.write("SOCIAL_BID_INITIATED", {"post_id": post_id, "buyer_id": user["subject"], "thread_id": thread["id"]})
+    
+    # Notify Farmer
+    notifications.notify(
+        db, post.farm_id, "New Social Bid",
+        f"A buyer is interested in your recent harvest post! Check your messages to respond.",
+        n_type="social_bid", sms_fallback=True
+    )
     return {"ok": True, "thread_id": thread["id"]}
+
+@app.get("/api/buyers")
+def get_buyers_list(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    """Returns the list of all registered buyers."""
+    from .models import BuyerProfile
+    rows = db.execute(select(BuyerProfile)).scalars().all()
+    return [{"id": b.user_id, "name": b.name, "region": b.region, "crops": json.loads(b.crops_json), "floor_ugx": b.floor_ugx} for b in rows]
+
+@app.get("/buyers")
+def get_buyers_redirect(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    """Alias for /api/buyers to support dashboard legacy calls."""
+    return get_buyers_list(db, user)
 
 @app.post("/api/feed/upload")
 async def upload_harvest_photo(file: UploadFile = File(...), user: dict = Depends(require_user("farmer"))):
-    """Handles low-bandwidth WebP image uploads."""
-    try:
-        from PIL import Image
-        import io
-        
-        # 1. Read and validate
-        content = await file.read()
-        img = Image.open(io.BytesIO(content))
-        
-        # 2. Resize and Compress to WebP (Target ~100kb)
-        img.thumbnail((800, 800))
-        out = io.BytesIO()
-        img.save(out, format="WEBP", quality=60, method=6)
-        
-        # 3. Save to static/uploads
-        upload_dir = ROOT / "app" / "static" / "uploads"
-        upload_dir.mkdir(parents=True, exist_ok=True)
-        
-        fname = f"harvest_{user['subject']}_{int(time.time())}.webp"
-        fpath = upload_dir / fname
-        fpath.write_bytes(out.getvalue())
-        
-        return {"photo_url": f"/static/uploads/{fname}"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Upload failed: {str(e)}")
+    """Handles low-bandwidth WebP image uploads using the shared helper."""
+    photo_url = await _process_webp(file, "harvest", user["subject"])
+    return {"photo_url": photo_url}
+
+@app.get("/feed-page", response_class=HTMLResponse)
+def feed_page(user: dict = Depends(require_user())):
+    return FileResponse(ROOT / "app" / "static" / "feed.html")
+
+@app.get("/feed/{post_id}")
+def feed_get(post_id: str, db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    from .models import Post
+    p = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+    if not p: raise HTTPException(status_code=404, detail="post_not_found")
+    return social._hydrate(db, p)
+
+@app.get("/notifications")
+def notifications_list(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    from .models import Notification
+    rows = db.execute(select(Notification).where(Notification.user_id == user["subject"]).order_by(Notification.created_at.desc()).limit(50)).scalars().all()
+    return {"notifications": [
+        {"id": n.id, "title": n.title, "body": n.body, "type": n.type, "read": n.read, "created_at": n.created_at}
+        for n in rows
+    ]}
+
+@app.post("/notifications/read")
+def notifications_mark_read(db: Session = Depends(get_session), user: dict = Depends(require_user())):
+    from .models import Notification
+    db.execute(update(Notification).where(Notification.user_id == user["subject"]).values(read=True))
+    db.commit()
+    return {"ok": True}
+
+# ============================================================================
+# LOGISTICS
+# ============================================================================
+
+@app.get("/logistics/pending")
+def logistics_pending(db: Session = Depends(get_session), user: dict = Depends(require_user("logistics", "agent"))):
+    # Returns settled payments with farm info for collection
+    stmt = select(
+        Settlement.id, Settlement.farm_id, Settlement.amount_ugx, Settlement.settled_at,
+        FarmerProfile.farmer_name, FarmerProfile.district, FarmerProfile.crop
+    ).join(FarmerProfile, Settlement.farm_id == FarmerProfile.user_id).where(Settlement.status == 'settled').order_by(Settlement.settled_at.desc())
+    
+    rows = db.execute(stmt).all()
+    return {"pending": [dict(r._mapping) for r in rows]}
+
+@app.post("/logistics/optimize")
+def logistics_optimize(req: LogisticsOptimizeRequest, db: Session = Depends(get_session), user: dict = Depends(require_user("logistics", "agent"))):
+    """Real geospatial supply clustering for collection routes."""
+    return {"routes": logistics.cluster_collection_routes(db)}
+
+@app.post("/logistics/advise")
+def logistics_advise_ai(req: LogisticsAdviseRequest, user: dict = Depends(require_user("logistics", "agent"))):
+    # Context-aware logistics advice
+    mkt = crp.market_prices("coffee", "Eastern")
+    ctx = f"Coffee trending {mkt.get('trend')}. 7d avg: {mkt.get('last7_avg')} UGX."
+    return {"advice": crp.logistics_advisor(req.pending, ctx)}
 
 # ============================================================================
 # SYSTEM / LEDGER
@@ -466,9 +818,27 @@ def ledger_view(user: dict = Depends(require_user("agent")), db: Session = Depen
 def ledger_verify(user: dict = Depends(require_user("agent")), db: Session = Depends(get_session)):
     return ledger.verify(db)
 
-@app.get("/me")
-def me_endpoint(user: dict = Depends(require_user())):
-    return {"role": user["role"], "subject": user["subject"], "exp": user["exp"]}
+# ============================================================================
+# HARDWARE & SENSORS
+# ============================================================================
+
+class HeartbeatReq(BaseModel):
+    farm_id: str
+    device_id: str
+    firmware: str
+    battery: float
+    rssi: int
+
+@app.post("/hardware/heartbeat")
+def hardware_heartbeat(req: HeartbeatReq, db: Session = Depends(get_session)):
+    """Sensor-originating heartbeat to track device health."""
+    # Note: In production, this would be authenticated via device-specific HMAC keys
+    return hardware.log_heartbeat(db, req.farm_id, req.device_id, req.firmware, req.battery, req.rssi)
+
+@app.get("/api/agent/hardware/status")
+def agent_hardware_status(db: Session = Depends(get_session), user: dict = Depends(require_user("agent"))):
+    """Returns the latest health status for all Sentinel Nodes."""
+    return {"devices": hardware.list_system_health(db)}
 
 @app.get("/terms", response_class=HTMLResponse)
 def terms(): return FileResponse(ROOT / "app" / "static" / "terms.html")

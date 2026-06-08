@@ -1,59 +1,302 @@
 {
   "UG-MBL-0001": {
     "farm_id": "UG-MBL-0001",
-    "farmer_name": "Akello Sarah",
+    "farmer_name": "Farmer Mbale 1",
     "district": "Mbale",
     "crop": "coffee",
     "gps": {
-      "lat": 1.0754,
-      "lng": 34.1754
+      "lat": 1.1019713399228943,
+      "lng": 34.17125053776113
+    },
+    "acres": 1.8,
+    "phone": "+25670000101",
+    "discipline": 0.6669632214446468,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0002": {
+    "farm_id": "UG-MBL-0002",
+    "farmer_name": "Farmer Mbale 2",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.1068235607082006,
+      "lng": 34.20383497437115
+    },
+    "acres": 3.7,
+    "phone": "+25670000102",
+    "discipline": 0.6260816497888249,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0003": {
+    "farm_id": "UG-MBL-0003",
+    "farmer_name": "Farmer Mbale 3",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.0910960909842635,
+      "lng": 34.1714898609719
+    },
+    "acres": 1.7,
+    "phone": "+25670000103",
+    "discipline": 0.7516065864310086,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0004": {
+    "farm_id": "UG-MBL-0004",
+    "farmer_name": "Farmer Mbale 4",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.0713267984841932,
+      "lng": 34.17994188253434
+    },
+    "acres": 2.9,
+    "phone": "+25670000104",
+    "discipline": 0.763482444180965,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0005": {
+    "farm_id": "UG-MBL-0005",
+    "farmer_name": "Farmer Mbale 5",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.0810220311020349,
+      "lng": 34.1994632841938
+    },
+    "acres": 3.4,
+    "phone": "+25670000105",
+    "discipline": 0.6019496279034183,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0006": {
+    "farm_id": "UG-MBL-0006",
+    "farmer_name": "Farmer Mbale 6",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.1102909625916404,
+      "lng": 34.204906969749416
     },
     "acres": 2.0,
-    "phone": "+256700000001",
-    "pump": {
-      "lat": 1.098,
-      "lng": 34.182,
-      "name": "EASP-Mbale-07"
-    },
-    "discipline": 0.9,
-    "drought_factor": 1.0
+    "phone": "+25670000106",
+    "discipline": 0.6466438499435344,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
   },
-  "UG-GUL-0002": {
-    "farm_id": "UG-GUL-0002",
-    "farmer_name": "Okello John",
+  "UG-MBL-0007": {
+    "farm_id": "UG-MBL-0007",
+    "farmer_name": "Farmer Mbale 7",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.117860653610339,
+      "lng": 34.186829727255635
+    },
+    "acres": 1.3,
+    "phone": "+25670000107",
+    "discipline": 0.6290149130500392,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-MBL-0008": {
+    "farm_id": "UG-MBL-0008",
+    "farmer_name": "Farmer Mbale 8",
+    "district": "Mbale",
+    "crop": "coffee",
+    "gps": {
+      "lat": 1.1123747183173731,
+      "lng": 34.200186301568344
+    },
+    "acres": 3.4,
+    "phone": "+25670000108",
+    "discipline": 0.8189195360081454,
+    "drought_factor": 1.0,
+    "planting_date": 1765054800
+  },
+  "UG-GUL-0001": {
+    "farm_id": "UG-GUL-0001",
+    "farmer_name": "Farmer Gulu 1",
     "district": "Gulu",
     "crop": "maize",
     "gps": {
-      "lat": 2.7747,
-      "lng": 32.299
+      "lat": 2.812898247316376,
+      "lng": 32.36784926111835
     },
-    "acres": 3.5,
-    "phone": "+256700000002",
-    "pump": {
-      "lat": 2.752,
-      "lng": 32.314,
-      "name": "EASP-Gulu-02"
-    },
-    "discipline": 0.45,
-    "drought_factor": 0.35
+    "acres": 3.9,
+    "phone": "+25670000201",
+    "discipline": 0.6760203156366136,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
   },
-  "UG-MBR-0003": {
-    "farm_id": "UG-MBR-0003",
-    "farmer_name": "Namazzi Grace",
+  "UG-GUL-0002": {
+    "farm_id": "UG-GUL-0002",
+    "farmer_name": "Farmer Gulu 2",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.83635237314024,
+      "lng": 32.33948158018914
+    },
+    "acres": 6.3,
+    "phone": "+25670000202",
+    "discipline": 0.688676072628381,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
+  },
+  "UG-GUL-0003": {
+    "farm_id": "UG-GUL-0003",
+    "farmer_name": "Farmer Gulu 3",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.826365746897194,
+      "lng": 32.29366595069245
+    },
+    "acres": 3.1,
+    "phone": "+25670000203",
+    "discipline": 0.5446939818010537,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
+  },
+  "UG-GUL-0004": {
+    "farm_id": "UG-GUL-0004",
+    "farmer_name": "Farmer Gulu 4",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.77638335815389,
+      "lng": 32.30862327090888
+    },
+    "acres": 2.5,
+    "phone": "+25670000204",
+    "discipline": 0.5389868015550461,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
+  },
+  "UG-GUL-0005": {
+    "farm_id": "UG-GUL-0005",
+    "farmer_name": "Farmer Gulu 5",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.820854755541152,
+      "lng": 32.319186574317605
+    },
+    "acres": 3.9,
+    "phone": "+25670000205",
+    "discipline": 0.5047535153857439,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
+  },
+  "UG-GUL-0006": {
+    "farm_id": "UG-GUL-0006",
+    "farmer_name": "Farmer Gulu 6",
+    "district": "Gulu",
+    "crop": "maize",
+    "gps": {
+      "lat": 2.791358225763929,
+      "lng": 32.364932367017
+    },
+    "acres": 5.2,
+    "phone": "+25670000206",
+    "discipline": 0.7045655028334941,
+    "drought_factor": 0.8,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0001": {
+    "farm_id": "UG-MBR-0001",
+    "farmer_name": "Farmer Mbarara 1",
     "district": "Mbarara",
     "crop": "beans",
     "gps": {
-      "lat": -0.61,
-      "lng": 30.654
+      "lat": -0.5997316811081141,
+      "lng": 30.693747607877018
     },
-    "acres": 1.2,
-    "phone": "+256700000003",
-    "pump": {
-      "lat": -0.631,
-      "lng": 30.67,
-      "name": "EASP-Mbarara-11"
+    "acres": 0.8,
+    "phone": "+25670000301",
+    "discipline": 0.7758910883515295,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0002": {
+    "farm_id": "UG-MBR-0002",
+    "farmer_name": "Farmer Mbarara 2",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.5506285989618043,
+      "lng": 30.688399985591243
     },
-    "discipline": 0.7,
-    "drought_factor": 0.95
+    "acres": 1.6,
+    "phone": "+25670000302",
+    "discipline": 0.8369228501979749,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0003": {
+    "farm_id": "UG-MBR-0003",
+    "farmer_name": "Farmer Mbarara 3",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.5594288847886114,
+      "lng": 30.696559994692773
+    },
+    "acres": 1.0,
+    "phone": "+25670000303",
+    "discipline": 0.7064200487808076,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0004": {
+    "farm_id": "UG-MBR-0004",
+    "farmer_name": "Farmer Mbarara 4",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.5910728171164551,
+      "lng": 30.66606445255854
+    },
+    "acres": 0.9,
+    "phone": "+25670000304",
+    "discipline": 0.8885819428670109,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0005": {
+    "farm_id": "UG-MBR-0005",
+    "farmer_name": "Farmer Mbarara 5",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.5574179424116399,
+      "lng": 30.66888067284791
+    },
+    "acres": 1.8,
+    "phone": "+25670000305",
+    "discipline": 0.7791263802121329,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
+  },
+  "UG-MBR-0006": {
+    "farm_id": "UG-MBR-0006",
+    "farmer_name": "Farmer Mbarara 6",
+    "district": "Mbarara",
+    "crop": "beans",
+    "gps": {
+      "lat": -0.5551271446155673,
+      "lng": 30.677531111155243
+    },
+    "acres": 1.0,
+    "phone": "+25670000306",
+    "discipline": 0.7493255015387966,
+    "drought_factor": 0.95,
+    "planting_date": 1765054800
   }
 }

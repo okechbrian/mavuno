@@ -49,18 +49,18 @@ def route(phone: str, text_input: str):
     cmd = parts[1]
     
     if cmd == "1":
-        s = scorer.score_farm(farm['id'])
+        s = scorer.score_farm(db, farm['id'])
         return f"END " + S["res"].format(y=s['yps'], t=s['tier_label'].upper())
         
     if cmd == "2":
-        s = scorer.score_farm(farm['id'])
-        t = finance.issue(farm['id'], s['yps'], s['kg_allocated'])
+        s = scorer.score_farm(db, farm['id'])
+        t = finance.issue(db, farm['id'], s['yps'], s['kg_allocated'])
         if "error" in t:
             return f"END Issue failed: {t['error']}"
         return f"END Priority: {t.get('priority_id')}\nKG: {t.get('kg')}\nHub: {t.get('hub')}"
         
     if cmd == "3":
-        b = finance.farm_balance(farm['id'])
+        b = finance.farm_balance(db, farm['id'])
         return f"END Bal: {b['kg_remaining']} KG\nActive: {b['active_priorities']}"
         
     if cmd == "4":

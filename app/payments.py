@@ -92,13 +92,12 @@ def initiate(db: Session, buyer_id: str, offer_id: str, msisdn: str, method: str
     db.add(settlement)
     
     # Create notification for farmer
-    notif = Notification(
-        user_id=offer.farm_id, title="New Procurement Bid",
-        body=f"A buyer has initiated a payment of UGX {amount:,} for your {offer.crop} listing.",
-        type='payment_alert', created_at=now
+    from . import notifications
+    notifications.notify(
+        db, offer.farm_id, "New Procurement Bid",
+        f"A buyer has initiated a payment of UGX {amount:,} for your {offer.crop} listing.",
+        n_type="payment_alert", sms_fallback=True
     )
-    db.add(notif)
-    db.commit()
 
     ledger.write("PAYMENT_INITIATED", {
         "payment_id": pid, "offer_id": offer_id, "buyer_id": buyer_id,
@@ -167,9 +166,8 @@ def confirm(db: Session, payment_id: str, success: bool) -> dict:
     # Create notification for farmer
     title = "Payment Settled" if success else "Payment Failed"
     msg = f"Payment of UGX {settlement.amount_ugx:,} for your {settlement.offer_id} listing has been {new_status}."
-    notif = Notification(user_id=settlement.farm_id, title=title, body=msg, type='payment_alert', created_at=now)
-    db.add(notif)
-    db.commit()
+    from . import notifications
+    notifications.notify(db, settlement.farm_id, title, msg, n_type="payment_alert", sms_fallback=True)
 
     ledger.write("PAYMENT_SETTLED", {
         "payment_id": payment_id, "offer_id": settlement.offer_id,

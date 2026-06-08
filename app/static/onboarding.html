@@ -118,9 +118,13 @@
     </div>
     <div class="form-group">
       <label>Upload ID Photo</label>
-      <div style="border: 2px dashed var(--line); padding: 32px; text-align: center; border-radius: 4px; background: var(--bg-alt); cursor: pointer;">
-        <span style="font-size: 24px;">📷</span><br>
-        <span style="font-size: 12px; color: var(--muted); font-weight: 600;">Tap to upload photo</span>
+      <input type="file" id="kyc-file" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+      <div id="kyc-upload-area" onclick="document.getElementById('kyc-file').click()" style="border: 2px dashed var(--line); padding: 32px; text-align: center; border-radius: 4px; background: var(--bg-alt); cursor: pointer; overflow: hidden; position: relative;">
+        <div id="kyc-placeholder">
+            <span style="font-size: 24px;">📷</span><br>
+            <span style="font-size: 12px; color: var(--muted); font-weight: 600;">Tap to upload photo</span>
+        </div>
+        <img id="kyc-preview" style="display: none; width: 100%; height: 160px; object-fit: contain;">
       </div>
     </div>
     <button class="btn" onclick="submitKYC()" id="btn-kyc">Submit & Continue</button>
@@ -234,20 +238,53 @@ async function checkStatus() {
   }
 }
 
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('kyc-placeholder').style.display = 'none';
+    const preview = document.getElementById('kyc-preview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
 async function submitKYC() {
   const nin = document.getElementById('kyc-nin').value;
+  const fileInput = document.getElementById('kyc-file');
+  
   if (!nin) return showToast("Please enter your NIN.");
+  if (!fileInput.files[0]) return showToast("Please upload an ID photo.");
   
   const btn = document.getElementById('btn-kyc');
-  btn.disabled = true; btn.textContent = "Verifying...";
+  btn.disabled = true; btn.textContent = "Uploading...";
   
-  const res = await jpost('/api/onboarding/kyc', { document_id: nin });
-  if (res.ok) {
-    currentStatus = res.status;
-    updateUI();
-  } else {
-    showToast(res.error || "Failed to submit KYC");
+  const formData = new FormData();
+  formData.append('document_id', nin);
+  formData.append('file', fileInput.files[0]);
+  
+  try {
+    const res = await fetch('/api/onboarding/kyc', {
+      method: "POST",
+      credentials: "same-origin",
+      body: formData
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      currentStatus = data.status;
+      updateUI();
+    } else {
+      const err = await res.json();
+      showToast(err.error || "Failed to submit KYC");
+    }
+  } catch (e) {
+    showToast("Network error. Please try again.");
   }
+  
   btn.disabled = false; btn.textContent = "Submit & Continue";
 }
 

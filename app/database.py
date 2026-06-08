@@ -19,6 +19,13 @@ from .models import Base
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
     connect_args["check_same_thread"] = False
+elif "postgresql" in DATABASE_URL:
+    # Ensure SSL for Neon/Postgres if not specified
+    if "sslmode" not in DATABASE_URL:
+        if "?" in DATABASE_URL:
+            DATABASE_URL += "&sslmode=require"
+        else:
+            DATABASE_URL += "?sslmode=require"
 
 engine = create_engine(
     DATABASE_URL, 
@@ -26,6 +33,10 @@ engine = create_engine(
     pool_pre_ping=True
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_engine_name() -> str:
+    """Returns the name of the database engine (sqlite, postgresql, etc.)"""
+    return engine.name
 
 def get_session() -> Generator[Session, None, None]:
     """Modern SQLAlchemy session dependency."""

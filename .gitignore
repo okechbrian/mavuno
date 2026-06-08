@@ -1,5 +1,6 @@
 .vercel
 .venv/
+.venv3/
 __pycache__/
 *.pyc
 .env
@@ -9,5 +10,3 @@ __pycache__/
 app/data/mavuno.db
 server.log
 .DS_Store
-
-.vercel

@@ -99,28 +99,36 @@
   .macro-label { font-size: 10px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
   .macro-value { font-size: 32px; font-weight: 600; font-family: "Fraunces", serif; line-height: 1; }
 
-  @media (max-width: 768px) {
+  /* Responsive Overrides (Mobile-First) */
+  @media (max-width: 1023px) {
+    /* Layout */
     body { flex-direction: column; overflow: auto; height: auto; }
     .sidebar {
       position: fixed; bottom: 0; left: 0; right: 0; top: auto;
-      width: 100% !important; height: 64px; border-right: none; border-top: 1px solid var(--line);
-      padding: 0 16px !important; flex-direction: row; justify-content: space-around; align-items: center;
-      gap: 0; background: var(--paper); border-radius: 16px 16px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,0.05);
+      width: 100% !important; height: 60px; border-right: none; border-top: 1px solid var(--line);
+      padding: 0 !important; flex-direction: row; justify-content: space-around; align-items: center;
+      background: var(--paper); z-index: 2000;
     }
-    .sidebar.collapsed { width: 100% !important; height: 64px; }
-    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 8px; font-size: 10px; flex: 1; justify-content: center; }
-    .sidebar .nav-item i { width: 18px; height: 18px; }
-    .sidebar .nav-item span { display: block !important; opacity: 0.7; font-weight: 600; }
-    .sidebar .nav-item.active span { opacity: 1; color: var(--accent); }
-    .sidebar .nav-item.active i { color: var(--accent); }
-    .sidebar .sb-toggle { display: none; }
-
+    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 4px; font-size: 9px; flex: 1; justify-content: center; }
+    .sidebar .nav-item span { display: block !important; opacity: 0.7; }
+    .sb-toggle { display: none; }
+    
     .main { height: auto; overflow: visible; padding-bottom: 80px; }
-    .masthead { padding: 16px 20px; }
-    .content-wrap { padding: 24px 20px; }
+    .masthead { padding: 12px 16px; }
+    .content-wrap { padding: 16px; }
+    
+    /* Grids & Tables */
     .macro-grid { grid-template-columns: 1fr; gap: 12px; }
-    .tabs { gap: 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
+    .op-grid { grid-template-columns: 1fr; gap: 16px; }
+    
+    /* Table to Card Transformation */
+    .data-table, .data-table thead, .data-table tbody, .data-table th, .data-table td, .data-table tr { 
+      display: block; 
+    }
+    .data-table thead { display: none; }
+    .data-table tr { margin-bottom: 16px; border: 1px solid var(--line); padding: 16px; border-radius: 8px; background: var(--paper); }
+    .data-table td { padding: 8px 0; border: none; }
+    .data-table td:before { content: attr(data-label); font-weight: bold; display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); }
   }
 
   /* Tables */
@@ -234,8 +242,8 @@
       <button class="tab-btn active" onclick="showTab(this, 'ops')">Operations</button>
       <button class="tab-btn" onclick="showTab(this, 'credit')">Credit Management</button>
       <button class="tab-btn" onclick="showTab(this, 'logistics')">Logistics & Moderation</button>
+      <button class="tab-btn" onclick="showTab(this, 'hardware')">Hardware Audit</button>
     </div>
-
   <!-- TAB: OPERATIONS -->
   <div id="tab-ops" class="tab-content active">
     <div class="macro-grid">
@@ -247,6 +255,7 @@
     <div class="triage-section">
       <h3 class="display" style="font-size:18px; margin:0;">Triage Queue</h3>
       <div class="triage-list" id="kyc-list"></div>
+      <div class="triage-list" id="hardware-list" style="margin-top:12px;"></div>
       <div class="triage-list" id="alerts-list" style="margin-top:12px;"></div>
     </div>
 
@@ -275,16 +284,41 @@
   <div id="tab-logistics" class="tab-content">
     <div class="macro-grid">
       <div class="macro-card"><span class="macro-label">Expected Volume</span><div class="macro-value" id="macro-volume">-- kg</div></div>
+      <div class="macro-card"><span class="macro-label">Active Routes</span><div class="macro-value" id="macro-active-routes">--</div></div>
       <div class="macro-card"><span class="macro-label">Flagged Posts</span><div class="macro-value" id="macro-flagged">--</div></div>
-      <div class="macro-card"><span class="macro-label">Hub Status</span><div class="macro-value">Active</div></div>
     </div>
 
-    <h3 class="display" style="font-size:20px;">Community Moderation</h3>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+      <div>
+        <h3 class="display" style="font-size:20px;">Optimized Collection Routes</h3>
+        <div id="routes-list" style="display:flex; flex-direction:column; gap:16px;"></div>
+      </div>
+      <div>
+        <h3 class="display" style="font-size:20px;">Community Moderation</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Post ID</th><th>Content Excerpt</th><th>Action</th></tr>
+          </thead>
+          <tbody id="moderation-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: HARDWARE -->
+  <div id="tab-hardware" class="tab-content">
+    <div class="macro-grid">
+      <div class="macro-card"><span class="macro-label">Active Nodes</span><div class="macro-value" id="macro-active-nodes">--</div></div>
+      <div class="macro-card"><span class="macro-label">Firmware Compliance</span><div class="macro-value">100%</div></div>
+      <div class="macro-card"><span class="macro-label">Mean Battery</span><div class="macro-value" id="macro-battery">--%</div></div>
+    </div>
+
+    <h3 class="display" style="font-size:20px;">Sentinel Node Audit Log</h3>
     <table class="data-table">
       <thead>
-        <tr><th>Post ID</th><th>Content Excerpt</th><th>Action</th></tr>
+        <tr><th>Device ID</th><th>Farm ID</th><th>Firmware</th><th>Battery</th><th>Signal</th><th>Last Ping</th><th>Status</th></tr>
       </thead>
-      <tbody id="moderation-table"></tbody>
+      <tbody id="hardware-table"></tbody>
     </table>
   </div>
 </div>
@@ -345,6 +379,10 @@ async function loadData() {
         <h4 class="display" style="margin:0;">${f.name}</h4>
         <span class="badge ${f.yps > 700 ? 'b-excellent' : f.yps > 400 ? 'b-good' : 'b-poor'}">${f.yps} YPS</span>
       </div>
+      <div style="font-size:11px; color:var(--muted); margin-bottom:8px;">
+        ${f.predicted_harvest_days !== null ? `Maturity: <strong>${f.predicted_harvest_days} days</strong>` : ''}
+        ${f.predicted_yield_kg !== null ? ` · Predicted: <strong>${f.predicted_yield_kg.toLocaleString()} kg</strong>` : ''}
+      </div>
       <div class="yps-gauge">
         <div class="gauge-bar"><div class="gauge-fill" style="width:${f.yps/10}%; background:var(--accent);"></div></div>
       </div>
@@ -365,11 +403,11 @@ async function loadData() {
   const creditTable = document.getElementById("credit-table");
   creditTable.innerHTML = data.farmers.filter(f => f.yps > 400).map(f => `
     <tr>
-      <td><strong>${f.name}</strong></td>
-      <td>${f.district}</td>
-      <td>${f.crop}</td>
-      <td><span class="badge b-good">${f.yps}</span></td>
-      <td><button class="btn sm primary" onclick="issuePriority('${f.id}')">Issue Credit</button></td>
+      <td data-label="Farmer"><strong>${f.name}</strong></td>
+      <td data-label="District">${f.district}</td>
+      <td data-label="Crop">${f.crop}</td>
+      <td data-label="Live YPS"><span class="badge b-good">${f.yps}</span></td>
+      <td data-label="Action"><button class="btn sm primary" onclick="issuePriority('${f.id}')">Issue Credit</button></td>
     </tr>
   `).join("");
 
@@ -380,14 +418,65 @@ async function loadData() {
   const modTable = document.getElementById("moderation-table");
   modTable.innerHTML = data.moderation.map(m => `
     <tr>
-      <td style="font-family:'JetBrains Mono'; font-size:11px;">${m.id}</td>
-      <td style="color:var(--muted);">${m.body}</td>
-      <td>
+      <td data-label="Post ID" style="font-family:'JetBrains Mono'; font-size:11px;">${m.id}</td>
+      <td data-label="Excerpt" style="color:var(--muted);">${m.body}</td>
+      <td data-label="Action">
         <div style="display:flex; gap:8px;">
           <button class="btn sm" onclick="moderatePost('${m.id}', 'unflag')">Allow</button>
           <button class="btn sm primary" onclick="moderatePost('${m.id}', 'delete')">Remove</button>
         </div>
       </td>
+    </tr>
+  `).join("");
+
+  // Fetch Routes
+  const r2 = await fetch('/logistics/optimize', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({})});
+  const rData = await r2.json();
+  const routesList = document.getElementById("routes-list");
+  document.getElementById("macro-active-routes").innerText = rData.routes.length;
+  
+  if (rData.routes.length === 0) {
+    routesList.innerHTML = '<div class="empty" style="padding:40px;">No settled orders for collection.</div>';
+  } else {
+    routesList.innerHTML = rData.routes.map(r => `
+      <div class="card" style="padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--paper);">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+          <strong style="font-family:'JetBrains Mono';">${r.id}</strong>
+          <span class="badge b-excellent">${r.total_stops} Stops</span>
+        </div>
+        <div style="font-size:11px; color:var(--muted); margin-bottom:12px;">
+          Center: ${r.center.lat.toFixed(4)}, ${r.center.lng.toFixed(4)}
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          ${r.stops.map(s => `
+            <div style="display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-top:1px solid var(--line-soft);">
+              <span>${s.farmer_name}</span>
+              <span style="color:var(--accent); font-weight:600;">UGX ${s.amount_ugx.toLocaleString()}</span>
+            </div>
+          `).join("")}
+        </div>
+        <button class="btn sm primary" style="width:100%; margin-top:16px;">Dispatch Collector</button>
+      </div>
+    `).join("");
+  }
+
+  // 4. Hardware Tab
+  const hwRes = await fetch('/api/agent/hardware/status');
+  const hwData = await hwRes.json();
+  document.getElementById("macro-active-nodes").innerText = hwData.devices.length;
+  const avgBattery = hwData.devices.length ? Math.round(hwData.devices.reduce((a,b)=>a+b.battery_pct,0)/hwData.devices.length) : 0;
+  document.getElementById("macro-battery").innerText = `${avgBattery}%`;
+
+  const hwTable = document.getElementById("hardware-table");
+  hwTable.innerHTML = hwData.devices.map(d => `
+    <tr>
+      <td data-label="Device ID" style="font-family:'JetBrains Mono'; font-size:11px;">${d.device_id}</td>
+      <td data-label="Farm ID">${d.farm_id}</td>
+      <td data-label="Firmware">${d.firmware_v}</td>
+      <td data-label="Battery">${d.battery_pct}%</td>
+      <td data-label="Signal">${d.signal_rssi} dBm</td>
+      <td data-label="Last Ping">${new Date(d.last_ping_at * 1000).toLocaleString()}</td>
+      <td data-label="Status"><span class="badge ${d.status === 'nominal' ? 'b-excellent' : 'b-poor'}">${d.status}</span></td>
     </tr>
   `).join("");
 }

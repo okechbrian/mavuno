@@ -383,6 +383,14 @@ async def onboarding_kyc(
     f.verification_status = "pending_device"
     db.commit()
     ledger.write("KYC_SUBMITTED", {"farm_id": user["subject"], "nin": document_id, "id_photo": photo_url})
+    
+    # Notify Agent
+    notifications.notify(
+        db, "admin", "KYC Submitted",
+        f"Farmer {f.farmer_name} has submitted KYC documents for review.",
+        n_type="kyc_submitted"
+    )
+    
     return {"ok": True, "status": "pending_device", "photo_url": photo_url}
 
 @app.post("/api/onboarding/purchase")
@@ -392,8 +400,15 @@ def onboarding_purchase(user: dict = Depends(require_user("farmer")), db: Sessio
     f.verification_status = "pending_agent"
     db.commit()
     ledger.write("HARDWARE_ORDERED", {"farm_id": user["subject"]})
-    # Notify Field Agent (Assumes first active agent or district-based routing could be added later)
-    # Using generic alert for demonstration; in production, route to specific district agent
+    
+    # Notify Field Agent
+    notifications.notify(
+        db, "admin", "Hardware Ordered",
+        f"Farmer {f.farmer_name} has paid for hardware. Field inspection required.",
+        n_type="hardware_ordered"
+    )
+    
+    # SMS Fallback (mocked)
     send_sms("+256770000000", f"Alert: Farm {f.farmer_name} ({f.district}) needs hardware installation.")
     return {"ok": True, "status": "pending_agent"}
 
@@ -496,6 +511,7 @@ def agent_overview(db: Session = Depends(get_session), user: dict = Depends(requ
     
     farmer_list = []
     triage_kyc = []
+    triage_inspection = []
     triage_alerts = []
     total_yps = 0
     total_kg_allocated = 0
@@ -537,6 +553,9 @@ def agent_overview(db: Session = Depends(get_session), user: dict = Depends(requ
         # Triage Logic
         if f.verification_status == "pending_kyc":
             triage_kyc.append(f_data)
+        elif f.verification_status == "pending_agent":
+            triage_inspection.append(f_data)
+            
         if latest_t and (latest_t[0].soil_moisture < 20 or yps < 300):
             triage_alerts.append({"id": f.user_id, "name": f.farmer_name, "issue": "Low Moisture" if latest_t[0].soil_moisture < 20 else "Low YPS"})
 
@@ -547,15 +566,19 @@ def agent_overview(db: Session = Depends(get_session), user: dict = Depends(requ
     # 3. Moderation (Flagged Posts)
     flagged = db.execute(select(Post).where(Post.hidden == True).limit(10)).scalars().all()
 
+    # 4. Notifications
+    unread_n = db.execute(select(Notification).where(Notification.user_id == user["subject"], Notification.read == False)).scalars().all()
+
     return {
         "farmers": farmer_list,
-        "triage": {"kyc": triage_kyc, "alerts": triage_alerts},
+        "triage": {"kyc": triage_kyc, "inspection": triage_inspection, "alerts": triage_alerts},
         "logistics": {"expected_kg": sum(matched_kg)},
         "moderation": [{"id": p.id, "body": p.body[:50] + "..."} for p in flagged],
         "macro": {
             "system_risk": round(100 - (total_yps / (len(farmers) or 1)), 1),
             "credit_velocity": total_kg_allocated,
-            "ledger_verified": ledger.verify(db).get("ok", False)
+            "ledger_verified": ledger.verify(db).get("ok", False),
+            "unread_notifications": len(unread_n)
         }
     }
 

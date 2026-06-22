@@ -35,34 +35,27 @@
   
   /* Layout */
   .sidebar {
-    width: var(--sb-width); background: var(--paper); border-right: 1px solid var(--line);
-    padding: 24px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+    width: var(--sb-rail); background: var(--paper); border-right: 1px solid var(--line);
+    padding: 24px 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; flex-shrink: 0; z-index: 1000;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
   }
-  .sidebar.collapsed { width: var(--sb-rail); padding: 24px 12px; }
+  .sidebar:hover { width: var(--sb-width); padding: 24px; }
   
   .sidebar .nav-item {
     display: flex; align-items: center; gap: 16px; padding: 12px 16px;
     text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 8px;
-    transition: all 0.2s; white-space: nowrap;
+    transition: all 0.2s; white-space: nowrap; width: 100%;
   }
   .sidebar .nav-item:hover { background: var(--bg-alt); }
   .sidebar .nav-item i { flex-shrink: 0; width: 20px; height: 20px; }
-  .sidebar .nav-item span { transition: opacity 0.2s; }
-  .sidebar.collapsed .nav-item { justify-content: center; padding: 12px; }
-  .sidebar.collapsed .nav-item span { display: none; }
+  .sidebar .nav-item span { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .sidebar:hover .nav-item span { opacity: 1; pointer-events: auto; }
   
-  .main { flex: 1; overflow-y: auto; padding: 0; display: flex; flex-direction: column; transition: padding 0.3s; }
+  .main { flex: 1; margin-left: var(--sb-rail); overflow-y: auto; padding: 0; display: flex; flex-direction: column; }
   .content-wrap { padding: 48px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-  .sb-toggle {
-    position: absolute; bottom: 32px; left: 24px;
-    width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper);
-    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.3s; z-index: 1100;
-  }
-  .sidebar.collapsed .sb-toggle { left: 16px; background: var(--accent); }
+  .sb-toggle { display: none; }
   
   .masthead {
     display: flex; justify-content: space-between; align-items: center;
@@ -76,6 +69,43 @@
     padding: 4px 12px; border-radius: 999px; font-size: 10px;
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
   }
+
+  .triage-section { transition: all 0.3s; border-left: 3px solid transparent; }
+  .triage-section.active { border-left-color: var(--gold); background: var(--bg-alt); }
+
+  /* User Menu Dropdown */
+  .user-menu { position: relative; }
+  .avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; color: white;
+    font-weight: 700; cursor: pointer; border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--line); position: relative;
+  }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px; background: var(--bad);
+    color: white; font-size: 9px; min-width: 16px; height: 16px;
+    border-radius: 8px; display: none; align-items: center; justify-content: center;
+    border: 2px solid var(--paper); font-weight: 800;
+  }
+  .dropdown {
+    position: absolute; top: calc(100% + 12px); right: 0; width: 200px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; flex-direction: column;
+    padding: 8px; z-index: 2000; animation: dropdownSlide 0.2s ease;
+  }
+  .dropdown.show { display: flex; }
+  @keyframes dropdownSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 6px;
+    transition: 0.2s; font-size: 12px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
+  }
+  .dropdown-item:hover { background: var(--bg-alt); }
+  .dropdown-divider { height: 1px; background: var(--line-soft); margin: 8px 4px; }
+  .dropdown-item i { width: 16px; height: 16px; color: var(--muted); }
 
   /* Tabs */
   .tabs { display: flex; gap: 32px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
@@ -208,17 +238,6 @@
       <span>Protocol Ledger</span>
     </a>
   </div>
-
-  <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
-    <button class="nav-item" style="background:transparent; border:none; width:100%; cursor:pointer;" onclick="logout()">
-      <i data-lucide="log-out" style="color:var(--bad);"></i>
-      <span style="color:var(--bad);">Sign out</span>
-    </button>
-  </div>
-  
-  <button class="sb-toggle" id="sb-toggle" title="Toggle Sidebar">
-    <i data-lucide="chevron-right"></i>
-  </button>
 </div>
 
 <div class="main">
@@ -227,9 +246,34 @@
       <a href="/" class="logo display">Mavuno Yield</a>
       <span class="role-badge">Agent Cockpit</span>
     </div>
-    <div style="display:flex; align-items:center; gap:16px;">
+    <div style="display:flex; align-items:center; gap:20px;">
       <div id="ledger-status" class="badge">Verifying Protocol...</div>
-      <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:white; font-weight:700;">A</div>
+      
+      <div class="user-menu">
+        <div class="avatar-btn" onclick="toggleDropdown(event)">
+          A
+          <div id="notif-badge" class="notif-badge" style="display:none;">0</div>
+        </div>
+        <div id="user-dropdown" class="dropdown">
+          <div style="padding: 12px; border-bottom: 1px solid var(--line-soft); margin-bottom: 4px;">
+            <div style="font-weight: 600; font-size: 13px;">Agent Admin</div>
+            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 2px;">Central Uganda SACCO</div>
+          </div>
+          <button class="dropdown-item" onclick="window.location.href='/notifications'">
+            <i data-lucide="bell"></i>
+            <span>Notifications</span>
+          </button>
+          <button class="dropdown-item" onclick="showSettings()">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" onclick="logout()" style="color: var(--bad);">
+            <i data-lucide="log-out"></i>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -248,7 +292,7 @@
   <div id="tab-ops" class="tab-content active">
     <div class="macro-grid">
       <div class="macro-card"><span class="macro-label">System Risk</span><div class="macro-value" id="macro-risk">--%</div></div>
-      <div class="macro-card"><span class="macro-label">Pending KYC</span><div class="macro-value" id="macro-kyc">--</div></div>
+      <div class="macro-card"><span class="macro-label">Pending Actions</span><div class="macro-value" id="macro-kyc">--</div></div>
       <div class="macro-card"><span class="macro-label">Active Alerts</span><div class="macro-value" id="macro-alerts" style="color:var(--bad);">--</div></div>
     </div>
 
@@ -337,6 +381,18 @@ function logout() {
   window.location.href = "/logout";
 }
 
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('user-dropdown').classList.toggle('show');
+}
+
+document.addEventListener('click', () => {
+  document.getElementById('user-dropdown').classList.remove('show');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('user-dropdown').classList.remove('show');
+});
+
 async function jpost(url, data={}) {
   const r = await fetch(url, { method: 'POST', body: data instanceof FormData ? data : JSON.stringify(data) });
   return r.json();
@@ -349,28 +405,58 @@ async function loadData() {
 
   // 1. Operations Tab
   document.getElementById("macro-risk").innerText = `${data.macro.system_risk}%`;
-  document.getElementById("macro-kyc").innerText = data.triage.kyc.length;
+  document.getElementById("macro-kyc").innerText = data.triage.kyc.length + data.triage.inspection.length;
   document.getElementById("macro-alerts").innerText = data.triage.alerts.length;
+
+  const totalTriage = data.triage.kyc.length + data.triage.inspection.length + data.triage.alerts.length;
+  const triageSection = document.querySelector(".triage-section");
+  if (totalTriage > 0) triageSection.classList.add("active");
+  else triageSection.classList.remove("active");
+
+  // Notification Badge
+  const nBadge = document.getElementById("notif-badge");
+  if (data.macro.unread_notifications > 0) {
+    nBadge.innerText = data.macro.unread_notifications;
+    nBadge.style.display = 'flex';
+  } else {
+    nBadge.style.display = 'none';
+  }
 
   const ls = document.getElementById("ledger-status");
   ls.innerText = data.macro.ledger_verified ? "✓ LEDGER IMMUTABLE" : "⚠ LEDGER COMPROMISED";
   ls.className = `badge ${data.macro.ledger_verified ? 'b-excellent' : 'b-poor'}`;
 
   const kycList = document.getElementById("kyc-list");
-  kycList.innerHTML = data.triage.kyc.map(f => `
+  kycList.innerHTML = data.triage.kyc.length
+    ? `<div style="font-size:10px; text-transform:uppercase; color:var(--accent); letter-spacing:0.05em; margin-bottom:4px;">Identity Verification</div>`
+      + data.triage.kyc.map(f => `
     <div class="triage-item">
-      <div><strong>KYC Required:</strong> ${f.name} (${f.district})</div>
+      <div><strong>${f.name}</strong> (${f.district})</div>
       <button class="btn sm primary" onclick="verifyFarmer('${f.id}')">Verify ID</button>
     </div>
-  `).join("");
+  `).join("")
+    : '';
+  
+  const hwList = document.getElementById("hardware-list");
+  hwList.innerHTML = data.triage.inspection.length
+    ? `<div style="font-size:10px; text-transform:uppercase; color:var(--gold); letter-spacing:0.05em; margin-bottom:4px;">Field Inspection Required</div>`
+      + data.triage.inspection.map(f => `
+    <div class="triage-item" style="border-left:4px solid var(--gold);">
+      <div><strong>${f.name}</strong> (${f.district})</div>
+      <button class="btn sm" style="background:var(--gold); color:white; border-color:var(--gold);" onclick="verifyFarmer('${f.id}')">Complete Onboarding</button>
+    </div>
+  `).join("")
+    : '<div style="padding:12px; color:var(--muted); font-size:11px;">All farmers onboarded.</div>';
 
   const alertList = document.getElementById("alerts-list");
-  alertList.innerHTML = data.triage.alerts.map(a => `
+  alertList.innerHTML = data.triage.alerts.length
+    ? data.triage.alerts.map(a => `
     <div class="triage-item" style="border-left: 4px solid var(--bad);">
       <div><strong>${a.issue}:</strong> ${a.name}</div>
       <button class="btn sm" onclick="window.location.href='/farmer/${a.id}'">Triage</button>
     </div>
-  `).join("");
+  `).join("")
+    : '';
 
   const grid = document.getElementById("farms-grid");
   grid.innerHTML = data.farmers.map(f => `
@@ -514,31 +600,10 @@ async function moderatePost(id, action) {
 
 function pingSensor(id) { showToast(`Sentinel Node ${id} pinged. Signal stable.`); }
 function showOnboard() { showToast("Onboarding module initiated."); }
-
-// Sidebar Toggle Logic
-const sb = document.querySelector('.sidebar');
-const main = document.querySelector('.main');
-const toggle = document.getElementById('sb-toggle');
-
-function setSB(collapsed) {
-  if (collapsed) {
-    sb.classList.add('collapsed');
-    toggle.innerHTML = '<i data-lucide="chevron-right"></i>';
-  } else {
-    sb.classList.remove('collapsed');
-    toggle.innerHTML = '<i data-lucide="chevron-left"></i>';
-  }
-  lucide.createIcons();
-  localStorage.setItem('mavuno-sb-collapsed', collapsed ? '1' : '0');
-}
-
-toggle.onclick = () => setSB(!sb.classList.contains('collapsed'));
+function showSettings() { showToast("Settings module under construction."); }
 
 document.addEventListener("DOMContentLoaded", () => {
   lucide.createIcons();
-  if (localStorage.getItem('mavuno-sb-collapsed') === '1' && window.innerWidth > 1024) {
-    setSB(true);
-  }
   loadData();
 });
 </script>

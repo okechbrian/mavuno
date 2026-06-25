@@ -105,7 +105,7 @@ The Mavuno project spans 4 directories:
 | Phase | Task | Status |
 |-------|------|--------|
 | 1 | PostgreSQL/Neon database migration | **Done** — Alembic configured, migrations run on startup, `.env.example` has Neon setup guide |
-| 2 | Vercel Blob image uploads for social feed | **Not started** — photo upload endpoint missing |
+| 2 | Vercel Blob image uploads for social feed | **Done** — `app/blobs.py` abstraction uploads to Blob in prod, local FS in dev |
 | 3 | React Native bridge foundation | **Not started** — no RN project created |
 
 ---

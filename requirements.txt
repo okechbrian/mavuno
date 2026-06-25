@@ -7,8 +7,10 @@ python-multipart==0.0.12
 reportlab==4.3.1
 PyJWT==2.10.1
 SQLAlchemy==2.0.31
-psycopg2-binary==2.9.10
+alembic==1.18.5
 africastalking==1.2.3
 Pillow==11.0.0
 vercel-blob==0.3.2
+# PostgreSQL (optional — install only when using Neon/Postgres)
+# psycopg2-binary==2.9.10
 

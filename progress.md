@@ -100,13 +100,11 @@ The Mavuno project spans 4 directories:
 
 ---
 
-## Q2 Acceleration Plan (from Gemini CLI — Not Executed)
-
-The discontinued Gemini CLI left these items planned but unstarted:
+## Q2 Acceleration Plan
 
 | Phase | Task | Status |
 |-------|------|--------|
-| 1 | PostgreSQL/Neon database migration | **Not started** — still on SQLite |
+| 1 | PostgreSQL/Neon database migration | **Done** — Alembic configured, migrations run on startup, `.env.example` has Neon setup guide |
 | 2 | Vercel Blob image uploads for social feed | **Not started** — photo upload endpoint missing |
 | 3 | React Native bridge foundation | **Not started** — no RN project created |
 

@@ -801,8 +801,10 @@ class SignupReq(BaseModel):
     phone: str
     name: str
     pin_or_password: str
-    district_or_region: str
-    crop_or_floor: str
+    district: Optional[str] = None
+    region: Optional[str] = None
+    crop: Optional[str] = None
+    acres: Optional[float] = None
 
 
 @app.post("/api/signup")
@@ -820,18 +822,18 @@ def signup(req: SignupReq, response: Response, db: Session = Depends(get_session
         profile = FarmerProfile(
             user_id=user_id,
             farmer_name=req.name,
-            district=req.district_or_region,
-            crop=req.crop_or_floor,
-            acres=1.0,
+            district=req.district or "",
+            crop=req.crop or "",
+            acres=req.acres or 1.0,
         )
         db.add(profile)
     else:
         profile = BuyerProfile(
             user_id=user_id,
             name=req.name,
-            region=req.district_or_region,
+            region=req.region or "",
             crops_json="[]",
-            floor_ugx=int(req.crop_or_floor),
+            floor_ugx=1000,
             lat=0.0,
             lng=0.0,
         )

@@ -214,6 +214,37 @@
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index: 9999; font-size:12px; text-transform:uppercase; }
   .toast.show { opacity: 1; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 32px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    animation: modalSlide 0.2s ease;
+  }
+  @keyframes modalSlide {
+    from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-box h2 { margin: 0 0 24px; font-size: 20px; }
+  .modal-box label { display: block; font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .modal-box input, .modal-box select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--bg); color: var(--ink); font-size: 13px; margin-bottom: 16px;
+    font-family: "Inter", sans-serif;
+  }
+  .modal-box input:focus, .modal-box select:focus { outline: none; border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+
+  /* Theme toggle icon */
+  .theme-btn { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--muted); display: flex; align-items: center; transition: 0.2s; }
+  .theme-btn:hover { background: var(--bg-alt); color: var(--ink); }
+  .theme-btn svg { width: 18px; height: 18px; }
 </style>
 </head>
 <body>
@@ -248,6 +279,10 @@
     </div>
     <div style="display:flex; align-items:center; gap:20px;">
       <div id="ledger-status" class="badge">Verifying Protocol...</div>
+      
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
       
       <div class="user-menu">
         <div class="avatar-btn" onclick="toggleDropdown(event)">
@@ -369,6 +404,48 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Onboarding Modal -->
+<div class="modal-overlay" id="onboard-modal">
+  <div class="modal-box">
+    <h2 class="display">Onboard New Farmer</h2>
+    <label>Farmer Name</label>
+    <input type="text" id="ob-name" placeholder="e.g. Nakato Grace" />
+    <label>District</label>
+    <input type="text" id="ob-district" placeholder="e.g. Mbale" />
+    <label>Main Crop</label>
+    <input type="text" id="ob-crop" placeholder="e.g. Coffee" />
+    <label>Phone Number</label>
+    <input type="tel" id="ob-phone" placeholder="e.g. +256700000001" />
+    <label>Acres</label>
+    <input type="number" id="ob-acres" placeholder="e.g. 2.5" step="0.1" />
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('onboard-modal')">Cancel</button>
+      <button class="btn primary" onclick="submitOnboard()">Onboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <h2 class="display">Settings</h2>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
+      <div>
+        <div style="font-weight:600;">Dark Mode</div>
+        <div style="font-size:11px; color:var(--muted);">Switch between light and dark theme</div>
+      </div>
+      <label style="position:relative; display:inline-block; width:44px; height:24px; cursor:pointer;">
+        <input type="checkbox" id="dark-mode-switch" onchange="toggleTheme()" style="opacity:0; width:0; height:0;" />
+        <span style="position:absolute; inset:0; background:var(--line); border-radius:12px; transition:0.3s;"></span>
+        <span style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:var(--paper); border-radius:50%; transition:0.3s; box-shadow:0 1px 3px rgba(0,0,0,0.2);" id="toggle-knob"></span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('settings-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function showTab(btn, id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -399,9 +476,15 @@ async function jpost(url, data={}) {
 }
 
 async function loadData() {
-  const r = await fetch('/api/agent/overview');
-  if (r.status === 401) { window.location.href = "/"; return; }
-  const data = await r.json();
+  let data;
+  try {
+    const r = await fetch('/api/agent/overview');
+    if (r.status === 401) { window.location.href = "/"; return; }
+    data = await r.json();
+  } catch (e) {
+    showToast('Failed to load dashboard data');
+    return;
+  }
 
   // 1. Operations Tab
   document.getElementById("macro-risk").innerText = `${data.macro.system_risk}%`;
@@ -435,7 +518,7 @@ async function loadData() {
       <button class="btn sm primary" onclick="verifyFarmer('${f.id}')">Verify ID</button>
     </div>
   `).join("")
-    : '';
+    : '<div style="padding:12px; color:var(--muted); font-size:11px;">No pending verifications.</div>';
   
   const hwList = document.getElementById("hardware-list");
   hwList.innerHTML = data.triage.inspection.length
@@ -456,7 +539,7 @@ async function loadData() {
       <button class="btn sm" onclick="window.location.href='/farmer/${a.id}'">Triage</button>
     </div>
   `).join("")
-    : '';
+    : '<div style="padding:12px; color:var(--muted); font-size:11px;">No active alerts.</div>';
 
   const grid = document.getElementById("farms-grid");
   grid.innerHTML = data.farmers.map(f => `
@@ -516,12 +599,15 @@ async function loadData() {
   `).join("");
 
   // Fetch Routes
-  const r2 = await fetch('/logistics/optimize', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({})});
-  const rData = await r2.json();
+  let rData = { routes: [] };
+  try {
+    const r2 = await fetch('/logistics/optimize', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({})});
+    rData = await r2.json();
+  } catch (e) { showToast('Failed to load logistics routes'); }
   const routesList = document.getElementById("routes-list");
   document.getElementById("macro-active-routes").innerText = rData.routes.length;
   
-  if (rData.routes.length === 0) {
+  if (!rData.routes || rData.routes.length === 0) {
     routesList.innerHTML = '<div class="empty" style="padding:40px;">No settled orders for collection.</div>';
   } else {
     routesList.innerHTML = rData.routes.map(r => `
@@ -547,8 +633,11 @@ async function loadData() {
   }
 
   // 4. Hardware Tab
-  const hwRes = await fetch('/api/agent/hardware/status');
-  const hwData = await hwRes.json();
+  let hwData = { devices: [] };
+  try {
+    const hwRes = await fetch('/api/agent/hardware/status');
+    hwData = await hwRes.json();
+  } catch (e) { showToast('Failed to load hardware status'); }
   document.getElementById("macro-active-nodes").innerText = hwData.devices.length;
   const avgBattery = hwData.devices.length ? Math.round(hwData.devices.reduce((a,b)=>a+b.battery_pct,0)/hwData.devices.length) : 0;
   document.getElementById("macro-battery").innerText = `${avgBattery}%`;
@@ -575,34 +664,116 @@ function showToast(m) {
 
 async function verifyFarmer(id) {
   showToast("Verifying identity...");
-  await fetch(`/api/agent/verify/${id}`, {method:'POST'});
-  loadData();
+  try {
+    await fetch(`/api/agent/verify/${id}`, {method:'POST'});
+    loadData();
+  } catch (e) { showToast('Verification failed'); }
 }
 
 async function issuePriority(id) {
   showToast("Issuing Trade Priority...");
-  const r = await fetch('/api/agent/priorities/issue', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({farm_id: id})
-  });
-  const res = await r.json();
-  if (res.error) showToast("Error: " + res.error);
-  else { showToast("Success: Priority " + res.priority_id); loadData(); }
+  try {
+    const r = await fetch('/api/agent/priorities/issue', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({farm_id: id})
+    });
+    const res = await r.json();
+    if (res.error) showToast("Error: " + res.error);
+    else { showToast("Success: Priority " + res.priority_id); loadData(); }
+  } catch (e) { showToast('Failed to issue priority'); }
 }
 
 async function moderatePost(id, action) {
   showToast("Applying moderation...");
-  const fd = new FormData(); fd.append('action', action);
-  await fetch(`/api/agent/social/moderate/${id}`, {method:'POST', body: fd});
-  loadData();
+  try {
+    const fd = new FormData(); fd.append('action', action);
+    await fetch(`/api/agent/social/moderate/${id}`, {method:'POST', body: fd});
+    loadData();
+  } catch (e) { showToast('Moderation failed'); }
 }
 
 function pingSensor(id) { showToast(`Sentinel Node ${id} pinged. Signal stable.`); }
-function showOnboard() { showToast("Onboarding module initiated."); }
-function showSettings() { showToast("Settings module under construction."); }
+
+// Theme
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('mavuno-theme', next);
+  updateThemeIcon(next);
+  syncSettingsToggle(next);
+}
+
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('theme-icon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+
+function syncSettingsToggle(theme) {
+  const cb = document.getElementById('dark-mode-switch');
+  if (cb) cb.checked = theme === 'dark';
+  const knob = document.getElementById('toggle-knob');
+  if (knob) knob.style.transform = theme === 'dark' ? 'translateX(20px)' : 'translateX(0)';
+}
+
+// Modal
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function showOnboard() { openModal('onboard-modal'); }
+function showSettings() {
+  syncSettingsToggle(document.documentElement.getAttribute('data-theme'));
+  openModal('settings-modal');
+}
+
+async function submitOnboard() {
+  const name = document.getElementById('ob-name').value.trim();
+  const district = document.getElementById('ob-district').value.trim();
+  const crop = document.getElementById('ob-crop').value.trim();
+  const phone = document.getElementById('ob-phone').value.trim();
+  const acres = parseFloat(document.getElementById('ob-acres').value) || 1.0;
+  if (!name || !district || !crop || !phone) { showToast('Please fill all required fields.'); return; }
+  showToast('Onboarding farmer...');
+  try {
+    const r = await fetch('/farms/onboard', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name, district, crop, phone, acres })
+    });
+    const data = await r.json();
+    if (data.ok) {
+      showToast('Farmer onboarded successfully!');
+      closeModal('onboard-modal');
+      document.getElementById('ob-name').value = '';
+      document.getElementById('ob-district').value = '';
+      document.getElementById('ob-crop').value = '';
+      document.getElementById('ob-phone').value = '';
+      document.getElementById('ob-acres').value = '';
+      loadData();
+    } else {
+      showToast('Error: ' + (data.error || 'Onboarding failed'));
+    }
+  } catch (e) {
+    showToast('Network error during onboarding');
+  }
+}
+
+// Close modals on overlay click
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('show');
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem('mavuno-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
   lucide.createIcons();
   loadData();
 });

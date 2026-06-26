@@ -13,8 +13,7 @@
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
     --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
-    --sb-width: 280px;
-    --sb-rail: 72px;
+    --sb-rail: 72px; --sb-width: 280px;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
@@ -30,39 +29,28 @@
     -webkit-font-smoothing: antialiased; display: flex;
   }
   .display { font-family: "Fraunces", serif; }
-  
-  /* Layout */
+
+  /* Sidebar (Hover Rail) */
   .sidebar {
-    width: var(--sb-width); background: var(--paper); border-right: 1px solid var(--line);
-    padding: 24px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+    width: var(--sb-rail); background: var(--paper); border-right: 1px solid var(--line);
+    padding: 24px 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; flex-shrink: 0; z-index: 1000;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
   }
-  .sidebar.collapsed { width: var(--sb-rail); padding: 24px 12px; }
-  
+  .sidebar:hover { width: var(--sb-width); padding: 24px; }
   .sidebar .nav-item {
     display: flex; align-items: center; gap: 16px; padding: 12px 16px;
     text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 8px;
-    transition: all 0.2s; white-space: nowrap;
+    transition: all 0.2s; white-space: nowrap; width: 100%;
   }
   .sidebar .nav-item:hover { background: var(--bg-alt); }
   .sidebar .nav-item.active { background: var(--bg-alt); color: var(--accent); }
   .sidebar .nav-item i { flex-shrink: 0; width: 20px; height: 20px; }
-  .sidebar .nav-item span { transition: opacity 0.2s; }
-  .sidebar.collapsed .nav-item { justify-content: center; padding: 12px; }
-  .sidebar.collapsed .nav-item span { display: none; }
-  
-  .main { flex: 1; overflow-y: auto; padding: 0; display: flex; flex-direction: column; transition: padding 0.3s; }
+  .sidebar .nav-item span { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .sidebar:hover .nav-item span { opacity: 1; pointer-events: auto; }
+  .main { flex: 1; margin-left: var(--sb-rail); overflow-y: auto; padding: 0; display: flex; flex-direction: column; }
   .content-wrap { padding: 48px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-  .sb-toggle {
-    position: absolute; bottom: 32px; left: 24px;
-    width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper);
-    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.3s; z-index: 1100;
-  }
-  .sidebar.collapsed .sb-toggle { left: 16px; background: var(--accent); }
-  
   .masthead {
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px 48px; background: var(--paper); border-bottom: 1px solid var(--line);
@@ -76,26 +64,78 @@
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
   }
 
-  @media (max-width: 768px) {
-    body { flex-direction: column; overflow: auto; height: auto; }
-    .sidebar {
-      position: fixed; bottom: 0; left: 0; right: 0; top: auto;
-      width: 100% !important; height: 64px; border-right: none; border-top: 1px solid var(--line);
-      padding: 0 16px !important; flex-direction: row; justify-content: space-around; align-items: center;
-      gap: 0; background: var(--paper); border-radius: 16px 16px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,0.05);
-    }
-    .sidebar.collapsed { width: 100% !important; height: 64px; }
-    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 8px; font-size: 10px; flex: 1; justify-content: center; }
-    .sidebar .nav-item i { width: 18px; height: 18px; }
-    .sidebar .nav-item span { display: block !important; opacity: 0.7; font-weight: 600; }
-    .sidebar .nav-item.active span { opacity: 1; color: var(--accent); }
-    .sidebar .nav-item.active i { color: var(--accent); }
-    .sidebar .sb-toggle { display: none; }
-    
-    .main { height: auto; overflow: visible; padding-bottom: 80px; }
-    .masthead { padding: 16px 20px; }
-    .content-wrap { padding: 24px 20px; }
+  /* Theme Toggle */
+  .theme-btn { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--muted); display: flex; align-items: center; transition: 0.2s; }
+  .theme-btn:hover { background: var(--bg-alt); color: var(--ink); }
+  .theme-btn svg { width: 18px; height: 18px; }
+
+  /* User Menu */
+  .user-menu { position: relative; }
+  .avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; color: white;
+    font-weight: 700; cursor: pointer; border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--line); position: relative;
   }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px; background: var(--bad);
+    color: white; font-size: 9px; min-width: 16px; height: 16px;
+    border-radius: 8px; display: none; align-items: center; justify-content: center;
+    border: 2px solid var(--paper); font-weight: 800;
+  }
+  .dropdown {
+    position: absolute; top: calc(100% + 12px); right: 0; width: 200px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; flex-direction: column;
+    padding: 8px; z-index: 2000; animation: dropdownSlide 0.2s ease;
+  }
+  .dropdown.show { display: flex; }
+  @keyframes dropdownSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 6px;
+    transition: 0.2s; font-size: 12px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
+  }
+  .dropdown-item:hover { background: var(--bg-alt); }
+  .dropdown-divider { height: 1px; background: var(--line-soft); margin: 8px 4px; }
+  .dropdown-item i { width: 16px; height: 16px; color: var(--muted); }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
+  .tab-btn { background: transparent; border: none; color: var(--muted); font-size: 14px; font-weight: 600; padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 200ms; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-pane { display: none; animation: fadeInUp 0.4s ease-out; }
+  .tab-pane.active { display: block; }
+
+  /* Modals */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 32px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    animation: modalSlide 0.2s ease;
+  }
+  @keyframes modalSlide {
+    from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-box h2 { margin: 0 0 24px; font-size: 20px; }
+  .modal-box label { display: block; font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .modal-box input, .modal-box select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--bg); color: var(--ink); font-size: 13px; margin-bottom: 16px;
+    font-family: "Inter", sans-serif;
+  }
+  .modal-box input:focus, .modal-box select:focus { outline: none; border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
 
   .radar-card { background: var(--paper); border: none; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); margin-bottom: 20px; }
   .radar-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); display: block; margin-bottom: 8px; }
@@ -120,173 +160,16 @@
   .pill-open { background: var(--line-soft); color: var(--muted); }
   .pill-accepted { background: rgba(46,77,31,0.15); color: var(--accent); }
   .pill-closed { background: var(--bg-alt); color: var(--muted); }
-  @media (max-width: 768px) {
-    .list-form-row { grid-template-columns: 1fr; }
-    .listing-row { grid-template-columns: 1fr 1fr; }
-  }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index:9999; font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500;}
-  .toast.show { opacity: 1; }
-  .topbar-actions { display: flex; align-items: center; gap: 10px; }
-  .topbar-btn {
-    position: relative; padding: 8px 14px; border: 1px solid var(--line);
-    background: var(--paper); color: var(--ink); border-radius: 999px;
-    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
-    align-items: center; gap: 6px;
-  }
-  .topbar-btn:hover { background: var(--bg-alt); }
-  .unread-dot {
-    display: none; background: var(--bad); color: var(--paper);
-    border-radius: 999px; padding: 1px 7px; font-size: 10px; font-weight: 600;
-    margin-left: 4px; min-width: 16px; text-align: center;
-  }
-  .unread-dot.on { display: inline-block; }
-  .chat-drawer {
-    position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
-    background: var(--paper); border-left: 1px solid var(--line);
-    box-shadow: -8px 0 32px rgba(0,0,0,0.08);
-    transform: translateX(100%); transition: transform 0.22s ease; z-index: 1100;
-    display: flex; flex-direction: column;
-  }
-  .chat-drawer.open { transform: translateX(0); }
-  .chat-head {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 20px; border-bottom: 1px solid var(--line);
-  }
-  .chat-head h3 { margin: 0; font-family: "Fraunces", serif; font-size: 18px; }
-  .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--ink); padding: 4px 8px; }
-  .chat-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
-  .chat-foot { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; }
-  .chat-foot textarea {
-    flex: 1; resize: none; padding: 10px; border: 1px solid var(--line);
-    background: var(--bg-alt); color: var(--ink); -webkit-text-fill-color: var(--ink);
-    caret-color: var(--ink); border-radius: 4px; font-family: inherit; font-size: 13px;
-    min-height: 44px; max-height: 100px;
-  }
-  .chat-thread-row { padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-alt); margin-bottom: 10px; cursor: pointer; }
-  .chat-thread-row:hover { background: var(--paper); }
-  .chat-thread-row .ct-name { font-weight: 600; font-size: 13px; }
-  .chat-thread-row .ct-preview { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .chat-thread-row .ct-unread {
-    display: inline-block; background: var(--bad); color: var(--paper);
-    border-radius: 999px; padding: 0 8px; font-size: 10px; font-weight: 600; margin-left: 6px;
-  }
-  .chat-bubble {
-    max-width: 78%; padding: 10px 14px; border-radius: 14px;
-    margin-bottom: 8px; font-size: 13px; line-height: 1.4; word-wrap: break-word;
-  }
-  .chat-bubble-farmer { background: var(--accent); color: var(--paper); align-self: flex-end; margin-left: auto; }
-  .chat-bubble-buyer  { background: var(--gold);   color: var(--paper); align-self: flex-start; }
-  .chat-bubble .b-meta { font-size: 9px; opacity: 0.75; margin-top: 4px; letter-spacing: 0.04em; }
-  .chat-convo-flex { display: flex; flex-direction: column; }
-  .chat-back {
-    background: transparent; border: 1px solid var(--line); padding: 4px 10px;
-    font-size: 11px; color: var(--ink); cursor: pointer; border-radius: 4px; margin-bottom: 12px;
-  }
-  .nav-toggle {
-    display: none;
-    width: 44px; height: 44px; border-radius: 8px;
-    border: 1px solid var(--line); background: var(--paper); color: var(--ink);
-    cursor: pointer; font-size: 20px; line-height: 1;
-    align-items: center; justify-content: center;
-  }
-  .backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    z-index: 998; opacity: 0; pointer-events: none; transition: opacity 200ms;
-  }
-  .backdrop.open { opacity: 1; pointer-events: auto; }
-  .masthead {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 0 20px; margin-bottom: 32px; border-bottom: 1px solid var(--line);
-  }
-  .mast-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; }
-  .role-badge {
-    background: var(--line-soft); color: var(--muted);
-    padding: 4px 12px; border-radius: 999px; font-size: 10px;
-    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  }
-  .logout-btn { color: var(--bad) !important; font-weight: 600; }
-  .hero-section {
-    background: var(--paper); border: 1px solid var(--line);
-    border-radius: 8px; padding: 40px; margin-bottom: 32px;
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 40px; position: relative; overflow: hidden;
-  }
-  .hero-section::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-    background: var(--accent);
-  }
-  .hero-main { flex: 1; }
-  .hero-yps { display: flex; align-items: center; gap: 32px; border-left: 1px solid var(--line); padding-left: 40px; }
-  @media (max-width: 1024px) {
-    html, body { height: auto !important; overflow: auto !important; }
-    body { display: block; }
-    .sidebar {
-      position: fixed; top: 0; left: 0; height: 100vh; z-index: 2000;
-      width: 280px; max-width: 85vw;
-      transform: translateX(-100%); transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 10px 0 40px rgba(0,0,0,0.15);
-      animation: none !important; /* Prevent transform conflicts */
-    }
-    .sidebar.open { transform: translateX(0); }
-    .backdrop { z-index: 1900; }
-    .main { padding: 20px; min-height: 100vh; overflow: visible; }
-    .masthead {
-      position: sticky; top: 0; z-index: 1000;
-      background: var(--bg); margin: -20px -20px 24px;
-      padding: 16px 20px !important; border-bottom: 1px solid var(--line);
-    }
-    .nav-toggle { display: inline-flex; }
-    .hero-section { flex-direction: column; align-items: stretch; padding: 24px; gap: 24px; }
-    .hero-yps { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 24px; width: 100%; justify-content: flex-start; gap: 20px; }
-    .greeting-row h1 { font-size: 28px !important; }
-    .display { font-size: 24px !important; }
-    
-    /* Layout fix for grid sections */
-    .tab-pane > div[style*="grid-template-columns"] {
-      grid-template-columns: 1fr !important;
-      gap: 20px !important;
-    }
-  }
 
-  @media (max-width: 600px) {
-    .hero-yps { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .signal-strip { grid-template-columns: repeat(2, 1fr); }
-    .tab-bar { 
-      overflow-x: auto; white-space: nowrap; padding-bottom: 4px; 
-      scrollbar-width: none; -ms-overflow-style: none;
-    }
-    .tab-bar::-webkit-scrollbar { display: none; }
-    .tab-btn { padding: 10px 12px; font-size: 13px; }
-  }
-  .signal-strip {
-    display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
-    margin-top: 24px;
-  }
-  .signal-tile {
-    background: var(--bg-alt); border: 1px solid var(--line-soft);
-    padding: 12px 8px; border-radius: 4px; text-align: center;
-    cursor: pointer; transition: all 200ms;
-  }
+  .signal-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 24px; }
+  .signal-tile { background: var(--bg-alt); border: 1px solid var(--line-soft); padding: 12px 8px; border-radius: 4px; text-align: center; cursor: pointer; transition: all 200ms; }
   .signal-tile:hover { border-color: var(--accent); background: var(--paper); transform: translateY(-2px); }
   .signal-tile .s-label { font-size: 8px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.05em; }
   .signal-tile .s-value { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600; color: var(--accent); }
   .signal-tile .s-unit { font-size: 9px; color: var(--muted-soft); margin-left: 1px; }
-  @media (max-width: 1000px) {
-    .signal-strip { grid-template-columns: repeat(4, 1fr); }
-  }
-  @media (max-width: 600px) {
-    .signal-strip { grid-template-columns: repeat(2, 1fr); }
-  }
-  .crop-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;
-    margin-top: 20px;
-  }
-  .crop-tile {
-    background: var(--paper); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    padding: 20px; border-radius: 6px; display: flex; flex-direction: column; gap: 12px;
-    transition: transform 200ms ease, box-shadow 200ms ease;
-  }
+
+  .crop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+  .crop-tile { background: var(--paper); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 20px; border-radius: 6px; display: flex; flex-direction: column; gap: 12px; transition: transform 200ms ease, box-shadow 200ms ease; }
   .crop-tile:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: var(--accent); }
   .crop-tile .c-crop { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.05em; }
   .crop-tile .c-weight { font-family: "Fraunces", serif; font-size: 24px; font-weight: 600; line-height: 1; }
@@ -294,50 +177,100 @@
   .crop-tile .c-meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between; align-items: center; }
   .crop-tile .c-date { font-size: 9px; color: var(--muted-soft); }
 
-  
-  /* Tabs */
-  .tab-bar { display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
-  .tab-btn { background: transparent; border: none; color: var(--muted); font-size: 14px; font-weight: 600; padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 200ms; }
-  .tab-btn:hover { color: var(--ink); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-pane { display: none; animation: fadeInUp 0.4s ease-out; }
-  .tab-pane.active { display: block; }
+  .hero-section { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 40px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; gap: 40px; position: relative; overflow: hidden; }
+  .hero-section::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+  .hero-main { flex: 1; }
+  .hero-yps { display: flex; align-items: center; gap: 32px; border-left: 1px solid var(--line); padding-left: 40px; }
 
-  /* Entrance Animations */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .sidebar { animation: fadeInUp 0.4s ease-out forwards; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index: 9999; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+  .toast.show { opacity: 1; }
+
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn { position: relative; padding: 8px 14px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .topbar-btn:hover { background: var(--bg-alt); }
+  .unread-dot { display: none; background: var(--bad); color: var(--paper); border-radius: 999px; padding: 1px 7px; font-size: 10px; font-weight: 600; margin-left: 4px; min-width: 16px; text-align: center; }
+  .unread-dot.on { display: inline-block; }
+  .chat-drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw; background: var(--paper); border-left: 1px solid var(--line); box-shadow: -8px 0 32px rgba(0,0,0,0.08); transform: translateX(100%); transition: transform 0.22s ease; z-index: 1100; display: flex; flex-direction: column; }
+  .chat-drawer.open { transform: translateX(0); }
+  .chat-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+  .chat-head h3 { margin: 0; font-family: "Fraunces", serif; font-size: 18px; }
+  .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: var(--ink); padding: 4px 8px; }
+  .chat-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .chat-foot { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; }
+  .chat-foot textarea { flex: 1; resize: none; padding: 10px; border: 1px solid var(--line); background: var(--bg-alt); color: var(--ink); -webkit-text-fill-color: var(--ink); caret-color: var(--ink); border-radius: 4px; font-family: inherit; font-size: 13px; min-height: 44px; max-height: 100px; }
+  .chat-thread-row { padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-alt); margin-bottom: 10px; cursor: pointer; }
+  .chat-thread-row:hover { background: var(--paper); }
+  .chat-thread-row .ct-name { font-weight: 600; font-size: 13px; }
+  .chat-thread-row .ct-preview { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .chat-thread-row .ct-unread { display: inline-block; background: var(--bad); color: var(--paper); border-radius: 999px; padding: 0 8px; font-size: 10px; font-weight: 600; margin-left: 6px; }
+  .chat-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; margin-bottom: 8px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+  .chat-bubble-farmer { background: var(--accent); color: var(--paper); align-self: flex-end; margin-left: auto; }
+  .chat-bubble-buyer { background: var(--gold); color: var(--paper); align-self: flex-start; }
+  .chat-bubble .b-meta { font-size: 9px; opacity: 0.75; margin-top: 4px; letter-spacing: 0.04em; }
+  .chat-convo-flex { display: flex; flex-direction: column; }
+  .chat-back { background: transparent; border: 1px solid var(--line); padding: 4px 10px; font-size: 11px; color: var(--ink); cursor: pointer; border-radius: 4px; margin-bottom: 12px; }
+
+  .task-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+  .task-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .task-check { appearance: none; width: 16px; height: 16px; border: 1.5px solid var(--line); border-radius: 4px; margin-top: 2px; cursor: pointer; position: relative; transition: all 0.2s; flex-shrink: 0; }
+  .task-check:checked { background: var(--accent); border-color: var(--accent); }
+  .task-check:checked::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .task-label { font-size: 12px; color: var(--ink); line-height: 1.4; transition: color 0.2s; cursor: pointer; }
+  .task-check:checked + .task-label { color: var(--muted); text-decoration: line-through; }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .masthead { animation: fadeInUp 0.4s ease-out 0.1s forwards; opacity: 0; }
   .hero-section { animation: fadeInUp 0.5s ease-out 0.15s forwards; opacity: 0; }
   #farm-content { animation: fadeInUp 0.5s ease-out 0.2s forwards; opacity: 0; }
-  .main > div:nth-child(n+7) { animation: fadeInUp 0.6s ease-out 0.25s forwards; opacity: 0; }
 
-  .task-item { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--line-soft); }
-  .task-item:last-child { border-bottom:none; padding-bottom:0; }
-  .task-check { 
-    appearance:none; width:16px; height:16px; border:1.5px solid var(--line); border-radius:4px; 
-    margin-top:2px; cursor:pointer; position:relative; transition:all 0.2s; flex-shrink:0;
+  @media (max-width: 1023px) {
+    html, body { height: auto !important; overflow: auto !important; }
+    body { display: block; }
+    .sidebar {
+      position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+      width: 100% !important; height: 60px; border-right: none; border-top: 1px solid var(--line);
+      padding: 0 !important; flex-direction: row; justify-content: space-around; align-items: center;
+      background: var(--paper); z-index: 2000;
+    }
+    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 4px; font-size: 9px; flex: 1; justify-content: center; }
+    .sidebar .nav-item span { display: block !important; opacity: 0.7; }
+    .sidebar:hover { width: 100% !important; padding: 0 !important; }
+    .sidebar:hover .nav-item span { opacity: 0.7; }
+    .main { margin-left: 0; height: auto; overflow: visible; padding-bottom: 80px; }
+    .masthead { padding: 16px 20px; }
+    .content-wrap { padding: 24px 20px; }
+    .signal-strip { grid-template-columns: repeat(4, 1fr); }
+    .hero-section { flex-direction: column; align-items: stretch; padding: 24px; gap: 24px; }
+    .hero-yps { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 24px; width: 100%; justify-content: flex-start; gap: 20px; }
+    .greeting-row h1 { font-size: 28px !important; }
+    .display { font-size: 24px !important; }
+    .tab-pane > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 20px !important; }
   }
-  .task-check:checked { background:var(--accent); border-color:var(--accent); }
-  .task-check:checked::after {
-    content:""; position:absolute; left:4px; top:1px; width:4px; height:8px;
-    border:solid white; border-width:0 2px 2px 0; transform:rotate(45deg);
+
+  @media (max-width: 600px) {
+    .hero-yps { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .signal-strip { grid-template-columns: repeat(2, 1fr); }
+    .tab-bar { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn { padding: 10px 12px; font-size: 13px; }
+    .list-form-row { grid-template-columns: 1fr; }
+    .listing-row { grid-template-columns: 1fr 1fr; }
   }
-  .task-label { font-size:12px; color:var(--ink); line-height:1.4; transition:color 0.2s; cursor:pointer; }
-  .task-check:checked + .task-label { color:var(--muted); text-decoration:line-through; }
+
+  @media (max-width: 1000px) {
+    .signal-strip { grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
 
 <div class="sidebar">
   <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
-    <a href="#" onclick="switchTab('overview'); return false;" class="nav-item active" id="nav-overview" title="Farm Overview">
+    <a href="#" onclick="navigateTab('overview'); return false;" class="nav-item active" id="nav-overview" title="Farm Overview">
       <i data-lucide="layout-dashboard"></i>
       <span>Overview</span>
     </a>
-    <a href="#" onclick="switchTab('trade'); return false;" class="nav-item" id="nav-trade" title="Trade Produce">
+    <a href="#" onclick="navigateTab('trade'); return false;" class="nav-item" id="nav-trade" title="Trade Produce">
       <i data-lucide="arrow-up-right"></i>
       <span>Trade (CRP)</span>
     </a>
@@ -364,21 +297,6 @@
       <span>Simulator</span>
     </a>
   </div>
-
-  <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
-    <button id="theme-toggle-side" class="nav-item" style="background:transparent; border:none; width:100%; cursor:pointer;">
-      <i data-lucide="moon"></i>
-      <span>Theme</span>
-    </button>
-    <a href="/logout" class="nav-item" style="color:var(--bad);">
-      <i data-lucide="log-out" style="color:var(--bad);"></i>
-      <span>Sign out</span>
-    </a>
-  </div>
-  
-  <button class="sb-toggle" id="sb-toggle" title="Toggle Sidebar">
-    <i data-lucide="chevron-right"></i>
-  </button>
 </div>
 
 <div class="main">
@@ -387,135 +305,147 @@
       <a href="/" class="logo display">Mavuno Yield</a>
       <span class="role-badge" id="disp-farm-id">—</span>
     </div>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <button class="topbar-btn" id="notif-btn" onclick="toggleNotifs()" title="Notifications">
-        <i data-lucide="bell" style="width:16px; height:16px;"></i>
-        <span class="unread-dot" id="notif-unread">0</span>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <div style="width:32px; height:32px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; color:white; font-weight:700;">F</div>
+      <div class="user-menu">
+        <div class="avatar-btn" onclick="toggleDropdown(event)" title="Account menu">
+          F
+          <div id="notif-badge-avatar" class="notif-badge" style="display:none;">0</div>
+        </div>
+        <div id="user-dropdown" class="dropdown">
+          <div style="padding: 12px; border-bottom: 1px solid var(--line-soft); margin-bottom: 4px;">
+            <div style="font-weight: 600; font-size: 13px;" id="dropdown-farmer-name">Farmer</div>
+            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 2px;" id="dropdown-farm-location">Farm</div>
+          </div>
+          <button class="dropdown-item" onclick="showSettings()">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" onclick="logout()" style="color: var(--bad);">
+            <i data-lucide="log-out"></i>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
   <div class="content-wrap">
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
-      <button class="tab-btn" onclick="switchTab('trade')">Trade (CRP)</button>
-      <button class="tab-btn" onclick="switchTab('learn')">AI & Learn</button>
+      <button class="tab-btn active" data-tab="overview" onclick="switchTab(this)">Overview</button>
+      <button class="tab-btn" data-tab="trade" onclick="switchTab(this)">Trade (CRP)</button>
+      <button class="tab-btn" data-tab="learn" onclick="switchTab(this)">AI & Learn</button>
     </div>
 
-  <div id="tab-overview" class="tab-pane active">
-<div class="hero-section">
-    <div class="hero-main">
-      <div class="greeting-row">
-        <h1 class="display" id="welcome-msg" style="margin:0; font-size:42px;">Welcome</h1>
+    <div id="tab-overview" class="tab-pane active">
+      <div class="hero-section">
+        <div class="hero-main">
+          <div class="greeting-row">
+            <h1 class="display" id="welcome-msg" style="margin:0; font-size:42px;">Welcome</h1>
+          </div>
+          <p style="margin:16px 0 0; color:var(--muted); font-size:14px; max-width:480px;">
+            Your farm performance is tracked via live soil telemetry.
+            Maintain a high YPS score to unlock premium CRP marketplace access and verified trade tiers.
+          </p>
+        </div>
+        <div class="hero-yps">
+          <div style="position:relative; width:100px; height:100px;">
+            <svg viewBox="0 0 36 36" style="width:100px; height:100px; transform: rotate(-90deg);">
+              <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--line-soft)" stroke-width="2.5" />
+              <path id="yps-ring" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="0, 100" stroke-linecap="round" style="transition: stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1);" />
+            </svg>
+            <div class="display" id="yps-value" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700;">0</div>
+          </div>
+          <div>
+            <div class="display" id="yps-label" style="font-weight:700; color:var(--accent); font-size:20px; text-transform:uppercase; letter-spacing:0.02em;">Calculating...</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:4px;">Yield Probability Score (YPS)</div>
+            <div style="font-size:9px; color:var(--muted-soft); margin-top:2px;">Calibrated on 7 live signals</div>
+          </div>
+        </div>
       </div>
-      <p style="margin:16px 0 0; color:var(--muted); font-size:14px; max-width:480px;">
-        Your farm performance is tracked via live soil telemetry. 
-        Maintain a high YPS score to unlock premium CRP marketplace access and verified trade tiers.
-      </p>
-    </div>
-    <div class="hero-yps">
-      <div style="position:relative; width:100px; height:100px;">
-        <svg viewBox="0 0 36 36" style="width:100px; height:100px; transform: rotate(-90deg);">
-          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--line-soft)" stroke-width="2.5" />
-          <path id="yps-ring" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="0, 100" stroke-linecap="round" style="transition: stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1);" />
-        </svg>
-        <div class="display" id="yps-value" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700;">0</div>
-      </div>
-      <div>
-        <div class="display" id="yps-label" style="font-weight:700; color:var(--accent); font-size:20px; text-transform:uppercase; letter-spacing:0.02em;">Calculating...</div>
-        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Yield Probability Score (YPS)</div>
-        <div style="font-size:9px; color:var(--muted-soft); margin-top:2px;">Calibrated on 7 live signals</div>
-      </div>
-    </div>
-  </div>
 
-  
-<div id="farm-content">Loading your farm data...</div>
+      <div id="farm-content">Loading your farm data...</div>
 
-<div class="radar-card" id="predictive-yield-card" style="display:none; background:var(--paper); border-top: 4px solid var(--gold); margin-top:20px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div>
+      <div class="radar-card" id="predictive-yield-card" style="display:none; background:var(--paper); border-top: 4px solid var(--gold); margin-top:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
             <span class="label">ML Predictive Yield (v1)</span>
             <h3 class="display" id="harvest-prediction-title" style="margin:8px 0 0; font-size:20px;">Harvest Forecast</h3>
             <p id="harvest-prediction-desc" style="font-size:12px; color:var(--muted); margin:4px 0 0;">Analyzing soil maturity curves...</p>
-        </div>
-        <div style="text-align:right;">
+          </div>
+          <div style="text-align:right;">
             <div class="display" id="harvest-days-value" style="font-size:32px; font-weight:700; color:var(--gold);">--</div>
             <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-weight:700;">Days to Maturity</div>
-        </div>
-    </div>
-</div>
-
-  
-  </div>
-<div id="notif-popover" style="display:none; position:fixed; top:80px; right:48px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:4px; box-shadow:0 8px 32px rgba(0,0,0,0.1); z-index:1000; flex-direction:column; overflow:hidden;">
-    <div style="padding:12px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
-      <strong style="font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Notifications</strong>
-      <button onclick="markNotifsRead()" style="border:none; background:transparent; font-size:10px; color:var(--accent); cursor:pointer; font-weight:600;">Mark all read</button>
-    </div>
-    <div id="notif-list" style="flex:1; overflow-y:auto; padding:8px;"></div>
-  </div>
-
-  
-
-  <div id="tab-trade" class="tab-pane">
-    <div style="max-width: 600px;">
-<div class="radar-card" style="background:var(--paper);">
-      <span class="label">List Produce for Sale (CRP)</span>
-      <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer to the Community Resource Platform. Institutional buyers see verified listings instantly.</p>
-      <form id="list-form" onsubmit="return postOffer(event)">
-        <div class="list-form-row">
-          <div>
-            <label for="of-crop">Crop</label>
-            <select id="of-crop" required></select>
-          </div>
-          <div>
-            <label for="of-kg">KG</label>
-            <input type="number" id="of-kg" required placeholder="e.g. 50">
-          </div>
-          <div>
-            <label for="of-price">Floor (UGX/kg)</label>
-            <input type="number" id="of-price" required placeholder="e.g. 1500">
           </div>
         </div>
-        <button class="btn" type="submit" style="width:100%; margin-top:20px;">List on CRP Marketplace</button>
-      </form>
-    </div>
-    
-    </div>
-<div style="margin-top:40px; display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
-    <div>
-      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">My CRP Listings</h2>
-      <div id="my-listings" class="crop-grid"></div>
-    </div>
-    <div>
-      <h2 class="display" style="font-size: 24px; margin-bottom:20px;">Trade Settlements</h2>
-      <div id="payments-feed"></div>
-    </div>
-  </div>
-
-  
-  </div>
-
-  <div id="tab-learn" class="tab-pane">
-    <div style="padding-top:16px;">
-    <h2 class="display" style="font-size: 24px; margin-bottom:24px;">Training & Certifications</h2>
-    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
-      <div>
-        <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">Available Modules</h3>
-        <div id="training-modules" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;"></div>
       </div>
-      <div>
-        <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">My Certifications</h3>
-        <div id="my-certifications" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
+    <div id="notif-popover" style="display:none; position:fixed; top:80px; right:48px; width:320px; max-height:400px; background:var(--paper); border:1px solid var(--line); border-radius:4px; box-shadow:0 8px 32px rgba(0,0,0,0.1); z-index:1000; flex-direction:column; overflow:hidden;">
+      <div style="padding:12px 16px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+        <strong style="font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Notifications</strong>
+        <button onclick="markNotifsRead()" style="border:none; background:transparent; font-size:10px; color:var(--accent); cursor:pointer; font-weight:600;">Mark all read</button>
+      </div>
+      <div id="notif-list" style="flex:1; overflow-y:auto; padding:8px;"></div>
+    </div>
+
+    <div id="tab-trade" class="tab-pane">
+      <div style="max-width: 600px;">
+        <div class="radar-card" style="background:var(--paper);">
+          <span class="label">List Produce for Sale (CRP)</span>
+          <p style="font-size:12px; color:var(--muted); margin:8px 0 0;">Post an offer to the Community Resource Platform. Institutional buyers see verified listings instantly.</p>
+          <form id="list-form" onsubmit="return postOffer(event)">
+            <div class="list-form-row">
+              <div>
+                <label for="of-crop">Crop</label>
+                <select id="of-crop" required></select>
+              </div>
+              <div>
+                <label for="of-kg">KG</label>
+                <input type="number" id="of-kg" required placeholder="e.g. 50">
+              </div>
+              <div>
+                <label for="of-price">Floor (UGX/kg)</label>
+                <input type="number" id="of-price" required placeholder="e.g. 1500">
+              </div>
+            </div>
+            <button class="btn" type="submit" style="width:100%; margin-top:20px;">List on CRP Marketplace</button>
+          </form>
+        </div>
+      </div>
+      <div style="margin-top:40px; display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
+        <div>
+          <h2 class="display" style="font-size: 24px; margin-bottom:20px;">My CRP Listings</h2>
+          <div id="my-listings" class="crop-grid"></div>
+        </div>
+        <div>
+          <h2 class="display" style="font-size: 24px; margin-bottom:20px;">Trade Settlements</h2>
+          <div id="payments-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-learn" class="tab-pane">
+      <div style="padding-top:16px;">
+        <h2 class="display" style="font-size: 24px; margin-bottom:24px;">Training & Certifications</h2>
+        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
+          <div>
+            <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">Available Modules</h3>
+            <div id="training-modules" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;"></div>
+          </div>
+          <div>
+            <h3 style="font-size:12px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; letter-spacing:0.05em;">My Certifications</h3>
+            <div id="my-certifications" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
-  </div>
 <div class="chat-drawer" id="chat-drawer" aria-hidden="true">
   <div class="chat-head">
     <button class="chat-back" id="chat-back" onclick="renderInbox()" style="display:none;">← Inbox</button>
@@ -563,6 +493,27 @@
   </div>
 </div>
 
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <h2 class="display">Settings</h2>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
+      <div>
+        <div style="font-weight:600;">Dark Mode</div>
+        <div style="font-size:11px; color:var(--muted);">Switch between light and dark theme</div>
+      </div>
+      <label style="position:relative; display:inline-block; width:44px; height:24px; cursor:pointer;">
+        <input type="checkbox" id="dark-mode-switch" onchange="toggleTheme()" style="opacity:0; width:0; height:0;" />
+        <span style="position:absolute; inset:0; background:var(--line); border-radius:12px; transition:0.3s;"></span>
+        <span style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:var(--paper); border-radius:50%; transition:0.3s; box-shadow:0 1px 3px rgba(0,0,0,0.2);" id="toggle-knob"></span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('settings-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -606,8 +557,77 @@ async function jpost(url, body) {
 
 function _onAuthFail() { window.location.href = "/login"; }
 
-function openSidebar() { document.querySelector(".sidebar").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
-function closeSidebar() { document.querySelector(".sidebar").classList.remove("open"); document.getElementById("backdrop").classList.remove("open"); }
+function navigateTab(tabId) {
+  document.querySelectorAll('.sidebar .nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.getElementById('nav-' + tabId);
+  if (navItem) navItem.classList.add('active');
+  const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+  if (btn) switchTab(btn);
+}
+
+function switchTab(btn) {
+  const tabId = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+function logout() {
+  window.location.href = "/logout";
+}
+
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('user-dropdown').classList.toggle('show');
+}
+
+document.addEventListener('click', () => {
+  document.getElementById('user-dropdown').classList.remove('show');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('user-dropdown').classList.remove('show');
+});
+
+// Theme
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('mavuno-theme', next);
+  updateThemeIcon(next);
+  syncSettingsToggle(next);
+}
+
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('theme-icon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+
+function syncSettingsToggle(theme) {
+  const cb = document.getElementById('dark-mode-switch');
+  if (cb) cb.checked = theme === 'dark';
+  const knob = document.getElementById('toggle-knob');
+  if (knob) knob.style.transform = theme === 'dark' ? 'translateX(20px)' : 'translateX(0)';
+}
+
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function showSettings() {
+  syncSettingsToggle(document.documentElement.getAttribute('data-theme'));
+  openModal('settings-modal');
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('show');
+  }
+});
 
 function nutrientSpark(series, color) {
   if (!series || !series.length) return "";
@@ -630,9 +650,13 @@ async function pingSensor() {
     rainfall_mm: t.rain, humidity_pct: t.hum,
     n_mg_kg: t.n, p_mg_kg: t.p, k_mg_kg: t.k
   };
-  await jpost("/sensor/telemetry", payload);
-  toast("Telemetry received! Updating dashboard...");
-  loadData();
+  try {
+    await jpost("/sensor/telemetry", payload);
+    toast("Telemetry received! Updating dashboard...");
+    loadData();
+  } catch (e) {
+    toast("Failed to ping sensor");
+  }
 }
 
 function populateCropDropdown(farmCrop) {
@@ -651,88 +675,97 @@ function fmtDate(ts) {
 }
 
 async function loadData() {
-  document.getElementById("disp-farm-id").textContent = farmId;
-  const farms = await jget("/farms");
-  const farm = farms[farmId];
-  if (!farm || farm.error) { document.getElementById("farm-content").innerHTML = "Farm data unavailable."; return; }
-  currentFarm = farm; populateCropDropdown(farm.crop);
-  
-  loadMyListings();
-  loadPayments();
-  loadTraining();
-  loadCertifications();
+  try {
+    document.getElementById("disp-farm-id").textContent = farmId;
+    const farms = await jget("/farms");
+    const farm = farms[farmId];
+    if (!farm || farm.error) { document.getElementById("farm-content").innerHTML = "Farm data unavailable."; return; }
+    currentFarm = farm; populateCropDropdown(farm.crop);
 
-  document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
+    // Update dropdown info
+    document.getElementById("dropdown-farmer-name").textContent = farm.farmer_name;
+    document.getElementById("dropdown-farm-location").textContent = farm.district + " · " + (farm.crop || "Farm");
+    document.querySelector(".avatar-btn").childNodes[0].textContent = (farm.farmer_name || "F")[0].toUpperCase();
 
-  const score = await jget("/score/" + farmId);
-  
-  // Update YPS Meter
-  const yps = score.yps || 0;
-  document.getElementById("yps-value").textContent = yps;
-  document.getElementById("yps-ring").style.strokeDasharray = `${(yps/1000)*100}, 100`;
-  document.getElementById("yps-label").textContent = score.trade_health || "Calculating...";
+    loadMyListings();
+    loadPayments();
+    loadTraining();
+    loadCertifications();
 
-  // Update Predictive Yield
-  if (score.predicted_harvest_days !== null) {
+    document.getElementById("welcome-msg").textContent = `Welcome, ${farm.farmer_name}`;
+
+    const score = await jget("/score/" + farmId);
+
+    // Update YPS Meter
+    const yps = score.yps || 0;
+    document.getElementById("yps-value").textContent = yps;
+    document.getElementById("yps-ring").style.strokeDasharray = `${(yps/1000)*100}, 100`;
+    document.getElementById("yps-label").textContent = score.trade_health || "Calculating...";
+
+    // Update Predictive Yield
+    if (score.predicted_harvest_days !== null) {
       document.getElementById("predictive-yield-card").style.display = "block";
       document.getElementById("harvest-days-value").textContent = score.predicted_harvest_days;
       const forecastDate = new Date();
       forecastDate.setDate(forecastDate.getDate() + score.predicted_harvest_days);
       document.getElementById("harvest-prediction-title").textContent = "Harvest Forecast: " + forecastDate.toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
-      
+
       let desc = "Analyzing soil maturity curves...";
       if (score.predicted_harvest_days <= 14) desc = "Peak maturity approaching. Secure storage and transport.";
       else if (score.predicted_harvest_days > 60) desc = "Early growth stage. Maintain consistent irrigation.";
       else desc = "Mid-season development. NPK levels are critical.";
       document.getElementById("harvest-prediction-desc").textContent = desc;
-  }
-
-  const hClass = `b-${(score.trade_health || "poor").toLowerCase()}`;
-    // Render Smart Tasks
-  const taskList = document.getElementById("smart-tasks-list");
-  if (score.diagnostics && score.diagnostics.length > 0) {
-    if (score.diagnostics[0].includes("nominal")) {
-      taskList.innerHTML = '<div style="display:flex; align-items:center; gap:8px; color:var(--accent); font-size:12px; font-weight:600;"><span style="font-size:16px;">✅</span> Farm is healthy. No urgent actions.</div>';
-    } else {
-      taskList.innerHTML = score.diagnostics.map((d, i) => `
-        <label class="task-item">
-          <input type="checkbox" class="task-check">
-          <span class="task-label">${d.replace(/^[\u2705\u26A0\uFE0F\uD83D\uDCA7\uD83C\uDF31\uD83D\uDEE1\uFE0F]+\s*/, '')}</span>
-        </label>
-      `).join("");
     }
-  }
 
-document.getElementById("farm-content").innerHTML = `
-    <div class="farm-card">
-      <div class="f-head">
-        <div><h3>${farm.farmer_name}</h3><span style="color:var(--muted); font-size:10px;">${farm.district} · ${farm.crop}</span></div>
-        <span class="badge ${hClass}">${score.trade_health || "N/A"}</span>
-      </div>
-      <div class="spark-row">
-        <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(score.nutrients?.n, "var(--accent)")}</div>
-        <div class="spark-box"><span>Phos</span>${nutrientSpark(score.nutrients?.p, "var(--gold)")}</div>
-        <div class="spark-box"><span>Potass</span>${nutrientSpark(score.nutrients?.k, "var(--clay)")}</div>
-      </div>
+    const hClass = `b-${(score.trade_health || "poor").toLowerCase()}`;
+    // Render Smart Tasks
+    const taskList = document.getElementById("smart-tasks-list");
+    if (score.diagnostics && score.diagnostics.length > 0) {
+      if (score.diagnostics[0].includes("nominal")) {
+        taskList.innerHTML = '<div style="display:flex; align-items:center; gap:8px; color:var(--accent); font-size:12px; font-weight:600;"><span style="font-size:16px;">✅</span> Farm is healthy. No urgent actions.</div>';
+      } else {
+        taskList.innerHTML = score.diagnostics.map((d, i) => `
+          <label class="task-item">
+            <input type="checkbox" class="task-check">
+            <span class="task-label">${d.replace(/^[\u2705\u26A0\uFE0F\uD83D\uDCA7\uD83C\uDF31\uD83D\uDEE1\uFE0F]+\s*/, '')}</span>
+          </label>
+        `).join("");
+      }
+    }
 
-      <div class="signal-strip" onclick="pingSensor()">
-        <div class="signal-tile"><span class="s-label">Moist</span><span class="s-value">${lastTelemetry.moisture}<span class="s-unit">%</span></span></div>
-        <div class="signal-tile"><span class="s-label">Temp</span><span class="s-value">${lastTelemetry.temp}<span class="s-unit">°C</span></span></div>
-        <div class="signal-tile"><span class="s-label">N</span><span class="s-value">${lastTelemetry.n}<span class="s-unit">mg</span></span></div>
-        <div class="signal-tile"><span class="s-label">P</span><span class="s-value">${lastTelemetry.p}<span class="s-unit">mg</span></span></div>
-        <div class="signal-tile"><span class="s-label">K</span><span class="s-value">${lastTelemetry.k}<span class="s-unit">mg</span></span></div>
-        <div class="signal-tile"><span class="s-label">Hum</span><span class="s-value">${lastTelemetry.hum}<span class="s-unit">%</span></span></div>
-        <div class="signal-tile"><span class="s-label">Rain</span><span class="s-value">${lastTelemetry.rain}<span class="s-unit">mm</span></span></div>
+    document.getElementById("farm-content").innerHTML = `
+      <div class="farm-card">
+        <div class="f-head">
+          <div><h3>${farm.farmer_name}</h3><span style="color:var(--muted); font-size:10px;">${farm.district} · ${farm.crop}</span></div>
+          <span class="badge ${hClass}">${score.trade_health || "N/A"}</span>
+        </div>
+        <div class="spark-row">
+          <div class="spark-box"><span>Nitrogen</span>${nutrientSpark(score.nutrients?.n, "var(--accent)")}</div>
+          <div class="spark-box"><span>Phos</span>${nutrientSpark(score.nutrients?.p, "var(--gold)")}</div>
+          <div class="spark-box"><span>Potass</span>${nutrientSpark(score.nutrients?.k, "var(--clay)")}</div>
+        </div>
+        <div class="signal-strip" onclick="pingSensor()">
+          <div class="signal-tile"><span class="s-label">Moist</span><span class="s-value">${lastTelemetry.moisture}<span class="s-unit">%</span></span></div>
+          <div class="signal-tile"><span class="s-label">Temp</span><span class="s-value">${lastTelemetry.temp}<span class="s-unit">°C</span></span></div>
+          <div class="signal-tile"><span class="s-label">N</span><span class="s-value">${lastTelemetry.n}<span class="s-unit">mg</span></span></div>
+          <div class="signal-tile"><span class="s-label">P</span><span class="s-value">${lastTelemetry.p}<span class="s-unit">mg</span></span></div>
+          <div class="signal-tile"><span class="s-label">K</span><span class="s-value">${lastTelemetry.k}<span class="s-unit">mg</span></span></div>
+          <div class="signal-tile"><span class="s-label">Hum</span><span class="s-value">${lastTelemetry.hum}<span class="s-unit">%</span></span></div>
+          <div class="signal-tile"><span class="s-label">Rain</span><span class="s-value">${lastTelemetry.rain}<span class="s-unit">mm</span></span></div>
+        </div>
+        <div id="smart-tasks-list" style="margin-top:16px;"></div>
       </div>
-    </div>
-  `;
+    `;
 
-  // Markets & Weather
-  const priceRes = await jget(`/crp/prices?crop=${farm.crop}&region=${farm.district}`);
-  if(!priceRes.error) {
-    const arrow = priceRes.trend === "up" ? "↑" : priceRes.trend === "down" ? "↓" : "=";
-    const color = priceRes.trend === "up" ? "var(--accent)" : priceRes.trend === "down" ? "var(--bad)" : "var(--muted)";
-    document.getElementById("market-insight").innerHTML = `<div class="display" style="font-size:36px;">UGX ${priceRes.today.ugx.toLocaleString()}<span style="font-size:14px; color:var(--muted);"> / ${priceRes.unit}</span></div><div style="font-size:12px; color:var(--muted);">7d Avg: UGX ${priceRes.last7_avg.toLocaleString()} <strong style="color:${color};">${arrow}</strong></div>`;
+    // Markets & Weather
+    const priceRes = await jget(`/crp/prices?crop=${farm.crop}&region=${farm.district}`);
+    if(!priceRes.error) {
+      const arrow = priceRes.trend === "up" ? "↑" : priceRes.trend === "down" ? "↓" : "=";
+      const color = priceRes.trend === "up" ? "var(--accent)" : priceRes.trend === "down" ? "var(--bad)" : "var(--muted)";
+      document.getElementById("market-insight").innerHTML = `<div class="display" style="font-size:36px;">UGX ${priceRes.today.ugx.toLocaleString()}<span style="font-size:14px; color:var(--muted);"> / ${priceRes.unit}</span></div><div style="font-size:12px; color:var(--muted);">7d Avg: UGX ${priceRes.last7_avg.toLocaleString()} <strong style="color:${color};">${arrow}</strong></div>`;
+    }
+  } catch (e) {
+    toast("Failed to load dashboard data");
   }
 }
 
@@ -740,38 +773,24 @@ function renderMarkdown(text) {
   if (!text) return "";
   let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Handle lists more robustly
   const lines = html.split('\n');
   let inList = false;
   let result = [];
-  
   for (let line of lines) {
     if (line.trim().startsWith('* ')) {
-      if (!inList) {
-        result.push('<ul style="margin-top:4px; padding-left:20px; margin-bottom:8px;">');
-        inList = true;
-      }
+      if (!inList) { result.push('<ul style="margin-top:4px; padding-left:20px; margin-bottom:8px;">'); inList = true; }
       result.push(`<li>${line.trim().substring(2)}</li>`);
     } else {
-      if (inList) {
-        result.push('</ul>');
-        inList = false;
-      }
+      if (inList) { result.push('</ul>'); inList = false; }
       result.push(line + (line.trim() ? '<br>' : '<div style="height:8px;"></div>'));
     }
   }
   if (inList) result.push('</ul>');
-  
   return result.join('');
 }
 
-function toggleAiDrawer() {
-  document.getElementById("ai-drawer").classList.toggle("open");
-}
-function closeAiDrawer() {
-  document.getElementById("ai-drawer").classList.remove("open");
-}
+function toggleAiDrawer() { document.getElementById("ai-drawer").classList.toggle("open"); }
+function closeAiDrawer() { document.getElementById("ai-drawer").classList.remove("open"); }
 
 function quickAskAI(q) {
   document.getElementById("ai-chat-input").value = q;
@@ -782,192 +801,211 @@ async function sendAiChat() {
   const input = document.getElementById("ai-chat-input");
   const q = input.value;
   if (!q.trim()) return;
-  
   input.value = "";
   const body = document.getElementById("ai-chat-body");
   const btn = document.getElementById("ai-send-btn");
-  
-  // Append User bubble
   body.innerHTML += `<div class="chat-bubble chat-bubble-farmer">${escapeHtml(q)}</div>`;
   body.scrollTop = body.scrollHeight;
-  
   btn.disabled = true;
   btn.textContent = "...";
-  
-  // Append loading bubble
   const loadId = 'loading-' + Date.now();
   body.innerHTML += `<div id="${loadId}" class="chat-bubble" style="background:var(--bg-alt); color:var(--muted); align-self:flex-start; border:1px solid var(--line);">✨ Analyzing soil telemetry...</div>`;
   body.scrollTop = body.scrollHeight;
-  
   const publicChecked = document.getElementById("ai-make-public")?.checked || false;
-  const r = await jpost("/crp/ask", {farm_id: farmId, question: q, make_public: publicChecked});
-  
-  const loadEl = document.getElementById(loadId);
-  if (loadEl) loadEl.remove();
-  
-  btn.disabled = false;
-  btn.textContent = "Send";
-  
-  if (r.error) {
-     body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed. Please try again.</div>`;
-  } else {
-     const formatted = renderMarkdown(r.answer);
-     const sourceMap = {
-       "gemini": "Gemini 2.0 · Live",
-       "groq": "Llama 3.3 · Live",
-       "ai-fallback": "Mavuno Rule Bank · Offline"
-     };
-     const cite = sourceMap[r.source] || r.source;
-     body.innerHTML += `
-       <div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">
-         ${formatted}
-         <div style="font-size:9px; color:var(--muted); margin-top:8px; border-top:1px solid var(--line-soft); padding-top:4px; font-weight:600;">
-           ${cite} · Based on YPS ${r.context.yps} (${r.context.crop})
-         </div>
-       </div>`;
+  try {
+    const r = await jpost("/crp/ask", {farm_id: farmId, question: q, make_public: publicChecked});
+    const loadEl = document.getElementById(loadId);
+    if (loadEl) loadEl.remove();
+    btn.disabled = false;
+    btn.textContent = "Send";
+    if (r.error) {
+      body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Connection failed. Please try again.</div>`;
+    } else {
+      const formatted = renderMarkdown(r.answer);
+      const sourceMap = { "gemini": "Gemini 2.0 · Live", "groq": "Llama 3.3 · Live", "ai-fallback": "Mavuno Rule Bank · Offline" };
+      const cite = sourceMap[r.source] || r.source;
+      body.innerHTML += `<div class="chat-bubble" style="background:var(--bg-alt); color:var(--ink); align-self:flex-start; border:1px solid var(--line);">${formatted}<div style="font-size:9px; color:var(--muted); margin-top:8px; border-top:1px solid var(--line-soft); padding-top:4px; font-weight:600;">${cite} · Based on YPS ${r.context.yps} (${r.context.crop})</div></div>`;
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = "Send";
+    body.innerHTML += `<div class="chat-bubble" style="background:var(--bad); color:white; align-self:flex-start;">Network error. Please try again.</div>`;
   }
   body.scrollTop = body.scrollHeight;
 }
 
 /* --- Training & Certifications --- */
 async function loadTraining() {
-  const res = await jget("/training/modules");
-  const el = document.getElementById("training-modules");
-  if (!el || res.error) return;
-  
-  el.innerHTML = (res.modules || []).map(m => `
-    <div style="background:var(--bg-alt); padding:16px; border-radius:8px; border:1px solid var(--line-soft); display:flex; flex-direction:column; gap:8px;">
-      <div style="font-size:9px; font-weight:700; color:var(--gold); text-transform:uppercase;">${m.category}</div>
-      <div style="font-weight:600; font-size:13px;">${m.title}</div>
-      <div style="font-size:11px; color:var(--ink-soft); line-height:1.4;">${m.description}</div>
-      <button class="btn outline" style="margin-top:8px; font-size:9px;" onclick="completeTraining('${m.id}')">Complete +${m.xp_reward} XP</button>
-    </div>
-  `).join("");
+  try {
+    const res = await jget("/training/modules");
+    const el = document.getElementById("training-modules");
+    if (!el || res.error) return;
+    el.innerHTML = (res.modules || []).map(m => `
+      <div style="background:var(--bg-alt); padding:16px; border-radius:8px; border:1px solid var(--line-soft); display:flex; flex-direction:column; gap:8px;">
+        <div style="font-size:9px; font-weight:700; color:var(--gold); text-transform:uppercase;">${m.category}</div>
+        <div style="font-weight:600; font-size:13px;">${m.title}</div>
+        <div style="font-size:11px; color:var(--ink-soft); line-height:1.4;">${m.description}</div>
+        <button class="btn outline" style="margin-top:8px; font-size:9px;" onclick="completeTraining('${m.id}')">Complete +${m.xp_reward} XP</button>
+      </div>
+    `).join("");
+  } catch (e) { /* silent */ }
 }
 
 async function completeTraining(id) {
   toast("Recording completion...");
-  const res = await jpost("/training/complete", { module_id: id });
-  if (res.error) toast("Error: " + res.error);
-  else {
-    toast("Success! Certification issued.");
-    loadCertifications();
-  }
+  try {
+    const res = await jpost("/training/complete", { module_id: id });
+    if (res.error) toast("Error: " + res.error);
+    else { toast("Success! Certification issued."); loadCertifications(); }
+  } catch (e) { toast("Failed to record completion"); }
 }
 
 async function loadCertifications() {
-  const res = await jget(`/farmer/${farmId}/certifications`);
-  const el = document.getElementById("my-certifications");
-  if (!el || res.error) return;
-
-  if (!res.certifications.length) {
-    el.innerHTML = '<div style="font-size:11px; color:var(--muted); text-align:center; padding:20px; border:1px dashed var(--line); border-radius:8px;">No certifications earned yet.</div>';
-    return;
-  }
-
-  el.innerHTML = res.certifications.map(c => `
-    <div style="background:var(--accent); color:white; padding:12px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <div>
-        <div style="font-size:12px; font-weight:700;">${c.title}</div>
-        <div style="font-size:9px; opacity:0.8;">Issued: ${new Date(c.issued_at*1000).toLocaleDateString()}</div>
+  try {
+    const res = await jget(`/farmer/${farmId}/certifications`);
+    const el = document.getElementById("my-certifications");
+    if (!el || res.error) return;
+    if (!res.certifications.length) {
+      el.innerHTML = '<div style="font-size:11px; color:var(--muted); text-align:center; padding:20px; border:1px dashed var(--line); border-radius:8px;">No certifications earned yet.</div>';
+      return;
+    }
+    el.innerHTML = res.certifications.map(c => `
+      <div style="background:var(--accent); color:white; padding:12px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <div style="font-size:12px; font-weight:700;">${c.title}</div>
+          <div style="font-size:9px; opacity:0.8;">Issued: ${new Date(c.issued_at*1000).toLocaleDateString()}</div>
+        </div>
+        <div style="font-size:10px; font-weight:800; border:1.5px solid white; padding:2px 6px; border-radius:4px;">VERIFIED</div>
       </div>
-      <div style="font-size:10px; font-weight:800; border:1.5px solid white; padding:2px 6px; border-radius:4px;">VERIFIED</div>
-    </div>
-  `).join("");
+    `).join("");
+  } catch (e) { /* silent */ }
 }
 
 async function loadMyListings() {
-  const res = await jget(`/crp/offers?farm_id=${farmId}&include_closed=true`);
-  const el = document.getElementById("my-listings");
-  if (!el || res.error) return;
-  el.innerHTML = (res.offers || []).map(o => `
-    <div class="crop-tile">
-      <div class="c-crop">${o.crop}</div>
-      <div class="c-weight">${o.kg}<span style="font-size:12px; margin-left:4px;">kg</span></div>
-      <div class="c-price">${fmtUGX(o.floor_ugx)} / kg</div>
-      <div class="c-meta">
-        <span class="pill pill-${o.status}">${o.status}</span>
-        <span class="c-date">${fmtDate(o.created_at)}</span>
+  try {
+    const res = await jget(`/crp/offers?farm_id=${farmId}&include_closed=true`);
+    const el = document.getElementById("my-listings");
+    if (!el || res.error) return;
+    el.innerHTML = (res.offers || []).map(o => `
+      <div class="crop-tile">
+        <div class="c-crop">${o.crop}</div>
+        <div class="c-weight">${o.kg}<span style="font-size:12px; margin-left:4px;">kg</span></div>
+        <div class="c-price">${fmtUGX(o.floor_ugx)} / kg</div>
+        <div class="c-meta">
+          <span class="pill pill-${o.status}">${o.status}</span>
+          <span class="c-date">${fmtDate(o.created_at)}</span>
+        </div>
       </div>
-    </div>
-  `).join("");
+    `).join("");
+  } catch (e) { /* silent */ }
 }
 
 async function loadPayments() {
-  const res = await jget(`/payments/farmer/${farmId}`);
-  const el = document.getElementById("payments-feed");
-  if (!el || res.error) return;
-  el.innerHTML = (res.payments || []).map(p => `<div style="padding:12px 0; border-bottom:1px solid var(--line-soft);"><strong>+${fmtUGX(p.amount_ugx)}</strong><br><span style="font-size:9px; color:var(--muted);">${p.method} · ${fmtDate(p.settled_at || p.created_at)}</span></div>`).join("");
+  try {
+    const res = await jget(`/payments/farmer/${farmId}`);
+    const el = document.getElementById("payments-feed");
+    if (!el || res.error) return;
+    el.innerHTML = (res.payments || []).map(p => `<div style="padding:12px 0; border-bottom:1px solid var(--line-soft);"><strong>+${fmtUGX(p.amount_ugx)}</strong><br><span style="font-size:9px; color:var(--muted);">${p.method} · ${fmtDate(p.settled_at || p.created_at)}</span></div>`).join("");
+  } catch (e) { /* silent */ }
 }
 
-
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-  
-  event.currentTarget.classList.add('active');
-  document.getElementById('tab-' + tabId).classList.add('active');
+async function postOffer(event) {
+  event.preventDefault();
+  const crop = document.getElementById("of-crop").value;
+  const kg = parseFloat(document.getElementById("of-kg").value);
+  const floorUgx = parseFloat(document.getElementById("of-price").value);
+  if (!crop || !kg || !floorUgx) { toast("Please fill all fields."); return false; }
+  toast("Listing on CRP...");
+  try {
+    const r = await jpost("/crp/offer", { farm_id: farmId, crop, kg, floor_ugx: floorUgx });
+    if (r.error) toast("Error: " + r.error);
+    else { toast("Listed successfully!"); document.getElementById("of-kg").value = ""; document.getElementById("of-price").value = ""; loadMyListings(); }
+  } catch (e) { toast("Failed to list produce"); }
+  return false;
 }
 
 /* --- Notifications --- */
 async function refreshUnread() {
-  const [cRes, nRes] = await Promise.all([jget("/chat/unread/count"), jget("/notifications")]);
-  const msgDot = document.getElementById("msg-unread"); if (msgDot) { const n = (cRes && !cRes.error) ? Number(cRes.count || 0) : 0; if (n > 0) { msgDot.textContent = n; msgDot.classList.add("on"); } else msgDot.classList.remove("on"); }
-  const notifDot = document.getElementById("notif-unread"); if (notifDot) { const unread = (nRes.notifications || []).filter(n => !n.read).length; if (unread > 0) { notifDot.textContent = unread; notifDot.classList.add("on"); } else notifDot.classList.remove("on"); renderNotifications(nRes.notifications || []); }
+  try {
+    const [cRes, nRes] = await Promise.all([jget("/chat/unread/count"), jget("/notifications")]);
+    const msgDot = document.getElementById("msg-unread");
+    if (msgDot) { const n = (cRes && !cRes.error) ? Number(cRes.count || 0) : 0; if (n > 0) { msgDot.textContent = n; msgDot.style.display = "inline-block"; } else msgDot.style.display = "none"; }
+    const notifDot = document.getElementById("notif-unread");
+    if (notifDot) { const unread = (nRes.notifications || []).filter(n => !n.read).length; if (unread > 0) { notifDot.textContent = unread; notifDot.classList.add("on"); } else notifDot.classList.remove("on"); renderNotifications(nRes.notifications || []); }
+    // Also update avatar badge
+    const avatarBadge = document.getElementById("notif-badge-avatar");
+    if (avatarBadge) { const unread = (nRes.notifications || []).filter(n => !n.read).length; if (unread > 0) { avatarBadge.textContent = unread; avatarBadge.style.display = 'flex'; } else avatarBadge.style.display = 'none'; }
+  } catch (e) { /* silent */ }
 }
+
 function toggleNotifs() { const el = document.getElementById("notif-popover"); el.style.display = el.style.display === "none" ? "flex" : "none"; }
 function renderNotifications(notifs) { const el = document.getElementById("notif-list"); if (!el) return; el.innerHTML = notifs.map(n => `<div style="padding:12px; border-bottom:1px solid var(--line-soft); background:${n.read ? 'transparent' : 'var(--bg-alt)'};"><div style="font-weight:600; font-size:12px;">${escapeHtml(n.title)}</div><div style="font-size:11px; color:var(--ink-soft);">${escapeHtml(n.body)}</div></div>`).join(""); }
 async function markNotifsRead() { await jpost("/notifications/read"); refreshUnread(); }
 
-// Sidebar Toggle Logic
-const sb = document.querySelector('.sidebar');
-const main = document.querySelector('.main');
-const toggle = document.getElementById('sb-toggle');
+/* --- Chat --- */
+let chatState = "inbox";
+let activeThread = null;
 
-function setSB(collapsed) {
-  if (collapsed) {
-    sb.classList.add('collapsed');
-    toggle.innerHTML = '<i data-lucide="chevron-right"></i>';
-  } else {
-    sb.classList.remove('collapsed');
-    toggle.innerHTML = '<i data-lucide="chevron-left"></i>';
+function openChat() { document.getElementById("chat-drawer").classList.add("open"); renderInbox(); }
+function closeChat() { document.getElementById("chat-drawer").classList.remove("open"); }
+
+async function renderInbox() {
+  chatState = "inbox"; activeThread = null;
+  document.getElementById("chat-title").textContent = "Messages";
+  document.getElementById("chat-back").style.display = "none";
+  document.getElementById("chat-foot").style.display = "none";
+  const res = await jget("/chat/threads");
+  if (res.error) { document.getElementById("chat-body").innerHTML = '<div style="padding:20px; color:var(--muted);">Failed to load messages.</div>'; return; }
+  const threads = res.threads || [];
+  if (!threads.length) {
+    document.getElementById("chat-body").innerHTML = '<div style="padding:20px; color:var(--muted); text-align:center;">No messages yet. Start a conversation from a listing.</div>';
+    return;
   }
-  lucide.createIcons();
-  localStorage.setItem('mavuno-sb-collapsed', collapsed ? '1' : '0');
+  document.getElementById("chat-body").innerHTML = threads.map(t => `
+    <div class="chat-thread-row" onclick="openThread('${t.id}')">
+      <div class="ct-name">${escapeHtml(t.buyer_name || 'Buyer')}</div>
+      <div class="ct-preview">${escapeHtml(t.last_message || '')}</div>
+      ${t.unread > 0 ? `<span class="ct-unread">${t.unread}</span>` : ''}
+    </div>
+  `).join("");
 }
 
-toggle.onclick = () => setSB(!sb.classList.contains('collapsed'));
+async function openThread(threadId) {
+  chatState = "thread"; activeThread = threadId;
+  document.getElementById("chat-title").textContent = "Conversation";
+  document.getElementById("chat-back").style.display = "block";
+  document.getElementById("chat-foot").style.display = "flex";
+  const res = await jget(`/chat/thread/${threadId}`);
+  if (res.error) { document.getElementById("chat-body").innerHTML = '<div style="padding:20px; color:var(--muted);">Failed to load conversation.</div>'; return; }
+  const msgs = res.messages || [];
+  document.getElementById("chat-body").innerHTML = `<div class="chat-convo-flex">${msgs.map(m => `
+    <div class="chat-bubble ${m.role === 'farmer' ? 'chat-bubble-farmer' : 'chat-bubble-buyer'}">
+      ${escapeHtml(m.text || '')}
+      <div class="b-meta">${fmtDate(m.created_at)}</div>
+    </div>
+  `).join('')}</div>`;
+  document.getElementById("chat-body").scrollTop = document.getElementById("chat-body").scrollHeight;
+}
 
-function applyTheme(t) {
-  document.documentElement.setAttribute("data-theme", t);
-  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
-  tgs.forEach(btn => {
-    if (btn) {
-      if (t === "dark") {
-        btn.innerHTML = '<i data-lucide="sun"></i><span>Light Mode</span>';
-      } else {
-        btn.innerHTML = '<i data-lucide="moon"></i><span>Dark Mode</span>';
-      }
-    }
-  });
-  lucide.createIcons();
-  localStorage.setItem("mavuno-theme", t);
+async function sendChat() {
+  const input = document.getElementById("chat-input");
+  const text = input.value.trim();
+  if (!text || !activeThread) return;
+  input.value = "";
+  const body = document.getElementById("chat-body");
+  body.innerHTML += `<div class="chat-bubble chat-bubble-farmer">${escapeHtml(text)}<div class="b-meta">Just now</div></div>`;
+  body.scrollTop = body.scrollHeight;
+  await jpost("/chat/send", { thread_id: activeThread, text, role: "farmer", farm_id: farmId });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem('mavuno-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
   lucide.createIcons();
-  applyTheme(localStorage.getItem("mavuno-theme") || "light");
-  if (localStorage.getItem('mavuno-sb-collapsed') === '1' && window.innerWidth > 1024) {
-    setSB(true);
-  }
-  const tgs = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-side")];
-  tgs.forEach(btn => {
-    if (btn) btn.onclick = () => {
-      const cur = document.documentElement.getAttribute("data-theme");
-      applyTheme(cur === "dark" ? "light" : "dark");
-    };
-  });
-  loadData(); refreshUnread(); setInterval(refreshUnread, 15000);
+  loadData();
+  refreshUnread();
+  setInterval(refreshUnread, 15000);
 });
 </script>
 </body>

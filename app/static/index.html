@@ -439,10 +439,53 @@
   @media (max-width: 1100px) {
     .role-grid { grid-template-columns: repeat(2, 1fr); }
   }
+  /* Hamburger — hidden on desktop */
+  .ham-btn {
+    display: none; background: none; border: none; color: var(--ink); cursor: pointer;
+    padding: 8px; border-radius: 6px; transition: background var(--t-fast);
+  }
+  .ham-btn:hover { background: var(--bg-alt); }
+  .ham-btn svg { display: block; }
+
+  /* Mobile drawer — off-canvas */
+  .drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60;
+    opacity: 0; pointer-events: none; transition: opacity var(--t-med) var(--ease);
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 280px; z-index: 70;
+    background: var(--paper); border-left: 1px solid var(--line);
+    transform: translateX(100%); transition: transform var(--t-med) var(--ease);
+    display: flex; flex-direction: column; padding: 24px; gap: 8px;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer .drawer-brand {
+    font-family: "Fraunces", serif; font-size: 18px; font-weight: 600;
+    padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .drawer .drawer-close {
+    background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; border-radius: 4px;
+  }
+  .drawer .drawer-close:hover { color: var(--ink); }
+  .drawer .drawer-link {
+    display: block; padding: 12px 16px; border-radius: 8px; color: var(--ink-soft);
+    text-decoration: none; font-size: 15px; font-weight: 500; transition: background var(--t-fast);
+  }
+  .drawer .drawer-link:hover { background: var(--bg-alt); color: var(--ink); }
+  .drawer .drawer-theme {
+    margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-radius: 8px; background: var(--bg-alt);
+    font-size: 14px; font-weight: 500;
+  }
+
   @media (max-width: 960px) {
     .masthead-inner { padding: 12px 18px; gap: 8px; }
     .brand .wordmark .sub { display: none; }
     .nav-link { display: none; }
+    .ham-btn { display: flex; align-items: center; justify-content: center; }
     .prod-badge { display: none; }
     .hero {
       grid-template-columns: 1fr; gap: 28px;
@@ -461,7 +504,9 @@
     .fineprint { padding: 16px 18px; flex-direction: column; gap: 8px; }
   }
   @media (max-width: 520px) {
+    .role-grid { grid-template-columns: 1fr; }
     .colophon-inner { grid-template-columns: 1fr; }
+    .trust { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -486,9 +531,28 @@
       <a class="nav-link" href="#how-it-works">How it works</a>
       <a class="nav-link" href="#about">About us</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
+      <button class="ham-btn" id="ham-btn" aria-label="Open menu" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
     </nav>
   </div>
 </header>
+
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer" role="dialog" aria-label="Navigation menu">
+  <div class="drawer-brand">
+    Mavuno
+    <button class="drawer-close" id="drawer-close" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <a class="drawer-link" href="#how-it-works">How it works</a>
+  <a class="drawer-link" href="#about">About us</a>
+  <div class="drawer-theme">
+    <span>Dark mode</span>
+    <button id="drawer-theme-toggle" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink);padding:4px;">🌙</button>
+  </div>
+</div>
 
 <main id="main">
 
@@ -645,10 +709,14 @@
 <script>
 const THEME_KEY = "mavuno-theme";
 const themeBtn = document.getElementById("theme-toggle");
+const drawerThemeBtn = document.getElementById("drawer-theme-toggle");
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
-  themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
-  themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  const glyph = t === "dark" ? "☀️" : "🌙";
+  const label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  themeBtn.textContent = glyph;
+  themeBtn.setAttribute("aria-label", label);
+  if (drawerThemeBtn) { drawerThemeBtn.textContent = glyph; }
   document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "dark" ? "#0F1611" : "#1B4332");
 }
 // Initial theme already applied by inline pre-paint script — just sync the button glyph.
@@ -658,6 +726,39 @@ themeBtn.onclick = () => {
   localStorage.setItem(THEME_KEY, next);
   applyTheme(next);
 };
+if (drawerThemeBtn) {
+  drawerThemeBtn.onclick = themeBtn.onclick;
+}
+
+// Hamburger / Drawer toggle
+const hamBtn = document.getElementById("ham-btn");
+const drawer = document.getElementById("drawer");
+const drawerOverlay = document.getElementById("drawer-overlay");
+const drawerClose = document.getElementById("drawer-close");
+function openDrawer() {
+  drawer.classList.add("open");
+  drawerOverlay.classList.add("open");
+  hamBtn.setAttribute("aria-expanded", "true");
+  document.body.style.overflow = "hidden";
+}
+function closeDrawer() {
+  drawer.classList.remove("open");
+  drawerOverlay.classList.remove("open");
+  hamBtn.setAttribute("aria-expanded", "false");
+  document.body.style.overflow = "";
+}
+if (hamBtn) hamBtn.onclick = openDrawer;
+if (drawerClose) drawerClose.onclick = closeDrawer;
+if (drawerOverlay) drawerOverlay.onclick = closeDrawer;
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && drawer && drawer.classList.contains("open")) closeDrawer();
+});
+// Close drawer on nav link click
+if (drawer) {
+  drawer.querySelectorAll(".drawer-link").forEach(link => {
+    link.addEventListener("click", closeDrawer);
+  });
+}
 
 function tick() {
   document.getElementById("fineprint-time").textContent =

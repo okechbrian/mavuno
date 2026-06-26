@@ -1478,6 +1478,11 @@ def terms():
     return FileResponse(ROOT / "app" / "static" / "terms.html")
 
 
+@app.get("/signup", response_class=HTMLResponse)
+def signup_page():
+    return FileResponse(ROOT / "app" / "static" / "signup.html")
+
+
 @app.get("/phone", response_class=HTMLResponse)
 def phone_page():
     return FileResponse(ROOT / "app" / "static" / "phone.html")

@@ -13,7 +13,7 @@
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
     --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
-    --sb-rail: 72px; --sb-width: 280px;
+    --sb-rail: 200px; --sb-width: 280px;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
@@ -45,8 +45,7 @@
   }
   .sidebar .nav-item:hover { background: var(--bg-alt); }
   .sidebar .nav-item i { flex-shrink: 0; width: 20px; height: 20px; }
-  .sidebar .nav-item span { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
-  .sidebar:hover .nav-item span { opacity: 1; pointer-events: auto; }
+  .sidebar .nav-item span { transition: opacity 0.2s; }
   .main { flex: 1; margin-left: var(--sb-rail); overflow-y: auto; padding: 48px; }
 
   .masthead {
@@ -143,7 +142,6 @@
     .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 4px; font-size: 9px; flex: 1; justify-content: center; }
     .sidebar .nav-item span { display: block !important; opacity: 0.7; }
     .sidebar:hover { width: 100% !important; padding: 0 !important; }
-    .sidebar:hover .nav-item span { opacity: 0.7; }
     .main { margin-left: 0; padding: 20px; min-height: 100vh; padding-bottom: 80px; }
     .stats-grid { grid-template-columns: 1fr; }
   }

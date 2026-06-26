@@ -25,7 +25,7 @@
     background: var(--bg); color: var(--ink);
     font-family: "Inter", sans-serif; font-size: 16px; line-height: 1.6;
     margin: 0; padding: 40px 20px;
-    display: flex; justify-content: center;
+    display: flex; flex-direction: column; align-items: center;
   }
   .container {
     background: var(--paper); border: 1px solid var(--line); padding: 40px;
@@ -37,9 +37,42 @@
   p { color: var(--ink-soft); }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
+
+  .masthead {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 0 20px; margin-bottom: 40px; border-bottom: 1px solid var(--line);
+    width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;
+  }
+  .mast-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 24px; font-weight: 600; color: var(--ink); text-decoration: none; font-family: "Fraunces", serif; }
+  .role-badge {
+    background: var(--bg-alt); color: var(--muted);
+    padding: 4px 12px; border-radius: 999px; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-btn {
+    position: relative; padding: 8px 14px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); border-radius: 999px;
+    font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .topbar-btn:hover { background: var(--bg-alt); }
 </style>
 </head>
 <body>
+
+<header class="masthead">
+  <div class="mast-left">
+    <a href="/" class="logo display">Mavuno Yield</a>
+    <span class="role-badge">Terms</span>
+  </div>
+  <div class="topbar-actions">
+    <button id="theme-toggle" class="topbar-btn" title="Toggle Theme">🌙</button>
+    <a href="/logout" class="topbar-btn logout-btn" style="color: var(--bad) !important; font-weight: 600;">Sign out</a>
+  </div>
+</header>
+
 <div class="container">
   <h1>Terms & Conditions</h1>
   <p>Last updated: April 2026</p>
@@ -61,5 +94,21 @@
 
   <p style="margin-top: 40px; font-size: 14px;"><a href="/">&larr; Back to Dashboard</a></p>
 </div>
+
+<script>
+const THEME_KEY = "mavuno-theme";
+const themeBtn = document.getElementById("theme-toggle");
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
+themeBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+};
+</script>
 </body>
 </html>

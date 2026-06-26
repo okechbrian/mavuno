@@ -70,6 +70,22 @@
     --ink: #f2ece0; --muted: #8e887c; --bg: #14140f; --bg-alt: #1a1a14; --paper: #1c1b14;
     --line: #2d2b21; --accent: #78a163; --bad: #d07668;
   }
+
+  @media (max-width: 600px) {
+    body { padding: 20px 12px; font-size: 16px; overflow-x: hidden; }
+    .card { padding: 24px; }
+    .masthead { flex-wrap: wrap; gap: 12px; padding-bottom: 16px; margin-bottom: 24px; }
+    h1[style*="font-size: 28px"] { font-size: 24px !important; }
+    .progress-bar { gap: 4px; }
+    .step-circle { width: 22px; height: 22px; font-size: 10px; }
+    .step-label { font-size: 8px; letter-spacing: 0.03em; }
+    .hardware-card { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
+    .hardware-card > div:first-child { margin: 0 auto; }
+    .form-group input { min-height: 48px; font-size: 16px; }
+    .btn { min-height: 48px; font-size: 15px; }
+    #kyc-upload-area { padding: 20px 16px; }
+    .topbar-btn { font-size: 11px; padding: 6px 10px; }
+  }
 </style>
 </head>
 <body>

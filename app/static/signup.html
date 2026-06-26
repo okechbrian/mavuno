@@ -33,6 +33,19 @@
   .theme-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--muted); display: flex; align-items: center; transition: 0.2s; }
   .theme-btn:hover { background: var(--bg-alt); color: var(--ink); }
   .theme-btn svg { width: 18px; height: 18px; }
+
+  @media (max-width: 600px) {
+    body { padding: 12px; font-size: 16px; }
+    .card { padding: 24px; }
+    h1[style*="font-size: 32px"] { font-size: clamp(24px, 8vw, 32px) !important; }
+    .card > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    .form-group input, .form-group select { min-height: 48px; font-size: 16px; }
+    .btn { min-height: 48px; font-size: 15px; }
+    .tabs { gap: 8px; }
+    .tab { font-size: 12px; padding: 8px 8px; }
+    .theme-btn { top: 8px; right: 8px; }
+    .card > div:last-child { font-size: 13px !important; }
+  }
 </style>
 </head>
 <body>

@@ -97,6 +97,22 @@
     opacity: 0; transition: 300ms; z-index: 3000; font-size: 12px; font-weight: 700;
   }
   .toast.show { opacity: 1; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 20px 12px 80px; }
+    .masthead { flex-wrap: wrap; gap: 10px; }
+    .mast-left { gap: 8px; }
+    .logo { font-size: 20px; }
+    h1.display[style*="font-size: 32px"] { font-size: 26px !important; margin-bottom: 24px !important; }
+    .store-grid { gap: 16px; }
+    .product-card { padding: 16px; }
+    .product-img { height: 120px; font-size: 40px; }
+    .product-info h3 { font-size: 17px; }
+    .price-tag { font-size: 18px; }
+    .modal { padding: 24px; }
+    .modal div[style*="display: flex; gap: 12px;"] { flex-direction: column; }
+    .topbar-btn { font-size: 11px; padding: 6px 10px; }
+  }
 </style>
 </head>
 <body>
@@ -233,9 +249,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const r = await jget("/me");
   if (r && r.role) {
     const dl = document.getElementById("dash-link");
-    if (r.role === "farmer") dl.href = "/farmer/" + r.subject;
-    else if (r.role === "agent") dl.href = "/agent";
-    else if (r.role === "buyer") dl.href = "/buyer";
+    const logoEl = document.querySelector('.logo');
+    if (r.role === "farmer") { dl.href = "/farmer/" + r.id; logoEl.href = "/farmer/" + r.id; }
+    else if (r.role === "agent") { dl.href = "/agent"; logoEl.href = "/agent"; }
+    else if (r.role === "buyer") { dl.href = "/buyer/" + r.id; logoEl.href = "/buyer/" + r.id; }
+    else if (r.role === "supervisor") { dl.href = "/supervisor"; logoEl.href = "/supervisor"; }
+    else if (r.role === "logistics") { dl.href = "/logistics"; logoEl.href = "/logistics"; }
   }
   loadProducts();
 });

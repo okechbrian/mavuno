@@ -58,6 +58,18 @@
     align-items: center; gap: 6px;
   }
   .topbar-btn:hover { background: var(--bg-alt); }
+
+  @media (max-width: 600px) {
+    body { padding: 20px 12px; }
+    .masthead { flex-wrap: wrap; gap: 10px; padding-bottom: 16px; margin-bottom: 24px; }
+    .mast-left { gap: 8px; }
+    .logo { font-size: 20px; }
+    .role-badge { font-size: 8px; padding: 3px 8px; }
+    .topbar-btn { font-size: 11px; padding: 6px 10px; }
+    .container { padding: 24px; }
+    h1 { font-size: clamp(24px, 7vw, 32px); }
+    h2 { font-size: 17px; margin-top: 24px; }
+  }
 </style>
 </head>
 <body>

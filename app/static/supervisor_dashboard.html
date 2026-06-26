@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <title>Mavuno Yield — Regional Oversight</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href="/static/img/mavuno-mono.png" />
+<script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -11,6 +13,7 @@
     --bg: #f4efe3; --bg-alt: #ede7d6; --paper: #fbf8ee;
     --line: #d9d2bd; --line-soft: #e6dfc9;
     --accent: #2e4d1f; --accent-soft: #4a6b36; --clay: #a0542c; --gold: #a17b2c; --bad: #8a2f24;
+    --sb-rail: 72px; --sb-width: 280px;
   }
   :root[data-theme="dark"] {
     --ink: #f2ece0; --ink-soft: #d9d3c4; --muted: #8e887c; --muted-soft: #6a6558;
@@ -26,14 +29,26 @@
     -webkit-font-smoothing: antialiased; display: flex;
   }
   .display { font-family: "Fraunces", serif; }
-  
-  /* Sidebar */
+
+  /* Sidebar (Hover Rail) */
   .sidebar {
-    width: 300px; background: var(--paper); border-right: 1px solid var(--line);
-    padding: 32px; display: flex; flex-direction: column; gap: 32px; overflow-y: auto;
+    width: var(--sb-rail); background: var(--paper); border-right: 1px solid var(--line);
+    padding: 24px 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000;
   }
-  .main { flex: 1; overflow-y: auto; padding: 48px; }
-  
+  .sidebar:hover { width: var(--sb-width); padding: 24px; }
+  .sidebar .nav-item {
+    display: flex; align-items: center; gap: 16px; padding: 12px 16px;
+    text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 8px;
+    transition: all 0.2s; white-space: nowrap; width: 100%;
+  }
+  .sidebar .nav-item:hover { background: var(--bg-alt); }
+  .sidebar .nav-item i { flex-shrink: 0; width: 20px; height: 20px; }
+  .sidebar .nav-item span { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .sidebar:hover .nav-item span { opacity: 1; pointer-events: auto; }
+  .main { flex: 1; margin-left: var(--sb-rail); overflow-y: auto; padding: 48px; }
+
   .masthead {
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 0 20px; margin-bottom: 32px; border-bottom: 1px solid var(--line);
@@ -46,11 +61,56 @@
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
   }
 
-  /* Oversight Cards */
+  .theme-btn { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 6px; color: var(--muted); display: flex; align-items: center; transition: 0.2s; }
+  .theme-btn:hover { background: var(--bg-alt); color: var(--ink); }
+  .theme-btn svg { width: 18px; height: 18px; }
+
+  .user-menu { position: relative; }
+  .avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; color: white;
+    font-weight: 700; cursor: pointer; border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--line); position: relative;
+  }
+  .dropdown {
+    position: absolute; top: calc(100% + 12px); right: 0; width: 200px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; flex-direction: column;
+    padding: 8px; z-index: 2000; animation: dropdownSlide 0.2s ease;
+  }
+  .dropdown.show { display: flex; }
+  @keyframes dropdownSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    text-decoration: none; color: var(--ink); font-weight: 500; border-radius: 6px;
+    transition: 0.2s; font-size: 12px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
+  }
+  .dropdown-item:hover { background: var(--bg-alt); }
+  .dropdown-divider { height: 1px; background: var(--line-soft); margin: 8px 4px; }
+  .dropdown-item i { width: 16px; height: 16px; color: var(--muted); }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 5000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    padding: 32px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    animation: modalSlide 0.2s ease;
+  }
+  @keyframes modalSlide { from { opacity: 0; transform: scale(0.95) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-box h2 { margin: 0 0 24px; font-size: 20px; }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
   .stat-card { background: var(--paper); border: 1px solid var(--line); padding: 24px; border-radius: 6px; }
   .stat-card .label { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 600; display: block; margin-bottom: 12px; }
   .stat-card .value { font-family: "Fraunces", serif; font-size: 32px; color: var(--ink); }
+
+  .btn { padding: 10px 16px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+  .btn:hover { opacity: 0.8; }
 
   .chat-drawer {
     position: fixed; top: 0; right: 0; height: 100vh; width: 420px; max-width: 90vw;
@@ -63,43 +123,83 @@
   .chat-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
   .chat-close { border: none; background: transparent; font-size: 20px; cursor: pointer; }
 
-  .nav-toggle { display: none; width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; font-size: 20px; align-items: center; justify-content: center; }
-  .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1900; opacity: 0; pointer-events: none; transition: opacity 200ms; }
-  .backdrop.open { opacity: 1; pointer-events: auto; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 12px 24px; border-radius: 2px; opacity: 0; transition: 300ms; z-index: 9999; font-size: 12px; text-transform: uppercase; }
+  .toast.show { opacity: 1; }
 
-  @media (max-width: 1024px) {
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .masthead { animation: fadeInUp 0.4s ease-out 0.1s forwards; opacity: 0; }
+  h1.display { animation: fadeInUp 0.5s ease-out 0.15s forwards; opacity: 0; }
+  .stats-grid { animation: fadeInUp 0.5s ease-out 0.2s forwards; opacity: 0; }
+
+  @media (max-width: 1023px) {
     html, body { height: auto; overflow: auto; }
     body { display: block; }
-    .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 2000; width: 280px; transform: translateX(-100%); transition: transform 250ms; box-shadow: 10px 0 40px rgba(0,0,0,0.15); }
-    .sidebar.open { transform: translateX(0); }
-    .main { padding: 20px; min-height: 100vh; }
-    .nav-toggle { display: inline-flex; }
+    .sidebar {
+      position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+      width: 100% !important; height: 60px; border-right: none; border-top: 1px solid var(--line);
+      padding: 0 !important; flex-direction: row; justify-content: space-around; align-items: center;
+      background: var(--paper); z-index: 2000;
+    }
+    .sidebar .nav-item { flex-direction: column; gap: 4px; padding: 4px; font-size: 9px; flex: 1; justify-content: center; }
+    .sidebar .nav-item span { display: block !important; opacity: 0.7; }
+    .sidebar:hover { width: 100% !important; padding: 0 !important; }
+    .sidebar:hover .nav-item span { opacity: 0.7; }
+    .main { margin-left: 0; padding: 20px; min-height: 100vh; padding-bottom: 80px; }
+    .stats-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
 <div class="sidebar">
-  <div class="stat-card" style="background:var(--bg-alt); border:none;">
-    <span class="label">System Health</span>
-    <div class="value" style="font-size: 20px; color:var(--accent);">● Optimal</div>
-  </div>
-  <div style="margin-top:auto; display:flex; flex-direction:column; gap:8px;">
-    <a href="/store" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">📡 Hardware Store</a>
-    <a href="/feed-page" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">🌱 Mavuno Social</a>
-    <a href="#" onclick="openChat(); return false;" style="text-decoration:none; color:var(--ink); font-weight:600; display:block; padding:8px 0;">💬 Messages</a>
-    <a href="/logout" style="text-decoration:none; color:var(--bad); font-weight:600; display:block; padding:8px 0;">Sign out</a>
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+    <a href="/store" class="nav-item" title="Hardware Store">
+      <i data-lucide="package"></i>
+      <span>Hardware Store</span>
+    </a>
+    <a href="/feed-page" class="nav-item" title="Mavuno Social">
+      <i data-lucide="share-2"></i>
+      <span>Mavuno Social</span>
+    </a>
+    <a href="/agent-dashboard" class="nav-item" title="Agent Cockpit">
+      <i data-lucide="users"></i>
+      <span>Agent Cockpit</span>
+    </a>
+    <a href="/farmer-dashboard" class="nav-item" title="Farmer View">
+      <i data-lucide="sprout"></i>
+      <span>Farmer View</span>
+    </a>
   </div>
 </div>
-
-<div class="backdrop" id="backdrop" onclick="closeSidebar()"></div>
 
 <div class="main">
   <header class="masthead">
     <div class="mast-left">
-      <button class="nav-toggle" id="nav-toggle" onclick="openSidebar()">☰</button>
       <a href="/" class="logo display">Mavuno Yield</a>
       <span class="role-badge">Supervisor</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <div class="user-menu">
+        <div class="avatar-btn" onclick="toggleDropdown(event)">S</div>
+        <div id="user-dropdown" class="dropdown">
+          <div style="padding: 12px; border-bottom: 1px solid var(--line-soft); margin-bottom: 4px;">
+            <div style="font-weight: 600; font-size: 13px;">Supervisor</div>
+            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 2px;">Regional Oversight</div>
+          </div>
+          <button class="dropdown-item" onclick="showSettings()">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" onclick="logout()" style="color: var(--bad);">
+            <i data-lucide="log-out"></i>
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -118,27 +218,103 @@
   <div class="chat-body" id="chat-body"></div>
 </div>
 
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal-box">
+    <h2 class="display">Settings</h2>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
+      <div>
+        <div style="font-weight:600;">Dark Mode</div>
+        <div style="font-size:11px; color:var(--muted);">Switch between light and dark theme</div>
+      </div>
+      <label style="position:relative; display:inline-block; width:44px; height:24px; cursor:pointer;">
+        <input type="checkbox" id="dark-mode-switch" onchange="toggleTheme()" style="opacity:0; width:0; height:0;" />
+        <span style="position:absolute; inset:0; background:var(--line); border-radius:12px; transition:0.3s;"></span>
+        <span style="position:absolute; top:2px; left:2px; width:20px; height:20px; background:var(--paper); border-radius:50%; transition:0.3s; box-shadow:0 1px 3px rgba(0,0,0,0.2);" id="toggle-knob"></span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('settings-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3000);
+}
+
 function openChat() { document.getElementById("chat-drawer").classList.add("open"); }
 function closeChat() { document.getElementById("chat-drawer").classList.remove("open"); }
-function openSidebar() { document.querySelector(".sidebar").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
-function closeSidebar() { document.querySelector(".sidebar").classList.remove("open"); document.getElementById("backdrop").classList.remove("open"); }
+
+function logout() { window.location.href = "/logout"; }
+
+function toggleDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('user-dropdown').classList.toggle('show');
+}
+document.addEventListener('click', () => { document.getElementById('user-dropdown').classList.remove('show'); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('user-dropdown').classList.remove('show'); });
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('mavuno-theme', next);
+  updateThemeIcon(next);
+  syncSettingsToggle(next);
+}
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('theme-icon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+function syncSettingsToggle(theme) {
+  const cb = document.getElementById('dark-mode-switch');
+  if (cb) cb.checked = theme === 'dark';
+  const knob = document.getElementById('toggle-knob');
+  if (knob) knob.style.transform = theme === 'dark' ? 'translateX(20px)' : 'translateX(0)';
+}
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function showSettings() {
+  syncSettingsToggle(document.documentElement.getAttribute('data-theme'));
+  openModal('settings-modal');
+}
+document.addEventListener('click', (e) => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('show'); });
 
 async function jget(url) {
-  const r = await fetch(url);
-  if (r.status === 401) { window.location.href = "/"; return; }
-  return r.json();
+  try {
+    const r = await fetch(url);
+    if (r.status === 401) { window.location.href = "/"; return; }
+    return r.json();
+  } catch(e) { return {error: "network_error"}; }
 }
 
 async function loadData() {
-  const stats = await jget("/supervisor/stats");
-  if (stats && !stats.error) {
-    document.getElementById("agg-yps").textContent = Math.round(stats.regional_yps.reduce((acc, r) => acc + r.avg_yps, 0) / stats.regional_yps.length);
-    document.getElementById("total-vol").textContent = stats.trade_volume.reduce((acc, r) => acc + r.total_kg, 0).toLocaleString() + " KG";
-  }
+  try {
+    const stats = await jget("/supervisor/stats");
+    if (stats && !stats.error) {
+      document.getElementById("agg-yps").textContent = Math.round(stats.regional_yps.reduce((acc, r) => acc + r.avg_yps, 0) / stats.regional_yps.length);
+      document.getElementById("total-vol").textContent = stats.trade_volume.reduce((acc, r) => acc + r.total_kg, 0).toLocaleString() + " KG";
+    }
+  } catch(e) { toast("Failed to load dashboard data"); }
 }
 
-document.addEventListener("DOMContentLoaded", () => { loadData(); });
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem('mavuno-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
+  lucide.createIcons();
+  loadData();
+});
 </script>
 </body>
 </html>

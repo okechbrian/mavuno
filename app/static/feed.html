@@ -157,10 +157,22 @@
   }
 
   @media (max-width: 600px) {
-    .wrap { padding-top: 16px; }
-    .masthead { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .card { padding: 20px; }
-    .post-img-wrap { margin: 16px -20px; }
+    .wrap { padding: 16px 12px 80px; }
+    .masthead { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .mast-left { gap: 8px; }
+    .logo { font-size: 20px; }
+    .card { padding: 16px; }
+    .composer { padding: 20px; }
+    .composer-foot { flex-direction: column; align-items: stretch; gap: 12px; }
+    .composer-actions { display: flex; justify-content: space-between; align-items: center; }
+    .post-img-wrap { margin: 12px -16px; }
+    .post-body { font-size: 14px; }
+    .reactions { flex-wrap: wrap; gap: 6px; }
+    .react-btn { font-size: 12px; padding: 6px 10px; }
+    .topbar-btn { font-size: 11px; padding: 6px 10px; }
+    .feed-filters { gap: 8px; flex-wrap: wrap; }
+    .filter-btn { font-size: 11px; padding: 5px 10px; }
+    .btn { padding: 10px 16px; font-size: 10px; }
   }
 </style>
 </head>
@@ -320,7 +332,7 @@ async function placeBid(postId) {
   }
   toast("Bid initiated! Redirecting to chat...");
   setTimeout(() => {
-    window.location.href = me.role === "buyer" ? `/buyer/${me.subject}?thread=${res.thread_id}` : "/";
+    window.location.href = me.role === "buyer" ? `/buyer/${me.id}?thread=${res.thread_id}` : "/";
   }, 1500);
 }
 
@@ -332,16 +344,19 @@ async function loadMe() {
   if (r && !r.error) {
     me = r;
     const dashLink = document.getElementById("dash-link");
-    if (me.role === "farmer") dashLink.href = "/farmer/" + me.subject;
-    else if (me.role === "agent") dashLink.href = "/agent";
-    else if (me.role === "buyer") dashLink.href = "/buyer";
+    const logoLink = document.querySelector(".logo");
+    if (me.role === "farmer") { dashLink.href = "/farmer/" + me.id; logoLink.href = "/farmer/" + me.id; }
+    else if (me.role === "agent") { dashLink.href = "/agent"; logoLink.href = "/agent"; }
+    else if (me.role === "buyer") { dashLink.href = "/buyer/" + me.id; logoLink.href = "/buyer/" + me.id; }
+    else if (me.role === "supervisor") { dashLink.href = "/supervisor"; logoLink.href = "/supervisor"; }
+    else if (me.role === "logistics") { dashLink.href = "/logistics"; logoLink.href = "/logistics"; }
     
     if (me.role === "farmer") {
       document.getElementById("composer").style.display = "block";
       // Fetch district to enable local filter
       const profile = await jget("/farms");
-      if (profile[me.subject]) {
-        myDistrict = profile[me.subject].district;
+      if (profile[me.id]) {
+        myDistrict = profile[me.id].district;
         document.getElementById("filter-local").style.display = "inline-block";
         document.getElementById("filter-local").textContent = `Local (${myDistrict})`;
       }

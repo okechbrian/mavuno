@@ -84,7 +84,13 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 600px) {
-    .gallery-grid { grid-template-columns: 1fr; }
+    .wrap { padding: 24px 12px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .header h1 { font-size: 20px !important; padding-left: 12px !important; }
+    .logo { font-size: 20px; }
+    .gallery-grid { grid-template-columns: 1fr; gap: 20px; }
+    .nav-btn { font-size: 11px; padding: 8px 14px; }
+    .header > div:last-child { width: 100%; justify-content: flex-start; }
   }
 </style>
 </head>
@@ -146,9 +152,12 @@
       if (r.ok) {
         const me = await r.json();
         const dash = document.getElementById('dash-link');
-        if (me.role === 'farmer') dash.href = '/farmer/' + me.subject;
-        else if (me.role === 'agent') dash.href = '/agent';
-        else if (me.role === 'buyer') dash.href = '/buyer';
+        const logoLink = document.querySelector('.logo');
+        if (me.role === 'farmer') { dash.href = '/farmer/' + me.id; logoLink.href = '/farmer/' + me.id; }
+        else if (me.role === 'agent') { dash.href = '/agent'; logoLink.href = '/agent'; }
+        else if (me.role === 'buyer') { dash.href = '/buyer/' + me.id; logoLink.href = '/buyer/' + me.id; }
+        else if (me.role === 'supervisor') { dash.href = '/supervisor'; logoLink.href = '/supervisor'; }
+        else if (me.role === 'logistics') { dash.href = '/logistics'; logoLink.href = '/logistics'; }
       }
       loadGallery();
     }
